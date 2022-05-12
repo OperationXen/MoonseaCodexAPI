@@ -1,4 +1,5 @@
-from shutil import ReadError
+from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.models import ContentType
 from django.db import models
 
 from .character import Character
@@ -18,9 +19,14 @@ class Item(models.Model):
 
     character = models.ForeignKey(Character, on_delete=models.CASCADE)
     name = models.CharField(max_length=32, help_text="Item Name")
-    rarity = models.TextChoices(Rarities.choices, default="uncommon", help_text="Item rarity")
+    rarity = models.CharField(
+        choices=Rarities.choices, max_length=16, default=Rarities.UNCOMMON, help_text="Item rarity"
+    )
     description = models.TextField()
-    source = models.ForeignKey()  # game or shoping trip, dm reward, other
+    # source information (game / shopping / dm service reward / trade)
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.PositiveIntegerField()
+    source = GenericForeignKey("content_type", "object_id")
 
 
 class Consumable(Item):
@@ -34,7 +40,7 @@ class Consumable(Item):
         AMMO = "ammo", ("Ammunition")
         GEAR = "gear", ("Adventuring Gear")
 
-    type = models.TextChoices()
+    type = models.TextField(choices=ConsumableTypes.choices, default=ConsumableTypes.GEAR, help_text="Item type")
     count = models.IntegerField(null=True, help_text="Number of charges / items remaining")
 
 

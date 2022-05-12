@@ -10,7 +10,11 @@ class Character(models.Model):
     """Representation of a character"""
 
     player = models.ForeignKey(
-        user_model, on_delete=models.SET_NULL, related_name="characters", help_text="The player who owns this character"
+        user_model,
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name="characters",
+        help_text="The player who owns this character",
     )
     name = models.CharField(max_length=64, blank=False, default="Unnamed character")
     portrait = models.ImageField(upload_to="artwork")
@@ -21,7 +25,7 @@ class Character(models.Model):
     # More detailed information about the character
     race = models.CharField(max_length=32, blank=True, null=True)
     classes = models.CharField(max_length=256, blank=True, null=True, help_text="Classes and levels")
-    wealth = models.IntField(null=True)
+    gold = models.FloatField(null=True)
     downtime = models.FloatField(null=True, help_text="Days of downtime")
     # Useful information
     ac = models.IntegerField(null=True)

@@ -14,18 +14,24 @@ class Game(Event):
     """Record of a game of D&D"""
 
     dm = models.CharField(max_length=32)
-    module = models.CharField(max_length=32)
+    module = models.CharField(max_length=32, help_text="Module code")
+    name = models.CharField(max_length=32, blank=True, null=True, help_text="Module name")
+    location = models.CharField(max_length=64, blank=True, null=True, help_text="Where the game was organised or run")
     gold = models.IntegerField(null=True, help_text="Gold awarded")
-    item = models.ForeignKey(MagicItem)
+    downtime = models.IntegerField(null=True, help_text="Days of downtime")
 
 
 class Trade(Event):
     """Trade record"""
 
-    character_a = models.ForeignKey(Character)
-    item_a = models.ForeignKey(MagicItem)
-    character_b = models.ForeignKey(Character)
-    item_b = models.ForeignKey(MagicItem)
+    sender = models.ForeignKey(Character, null=True, on_delete=models.SET_NULL, related_name="traded_out")
+    sender_name = models.CharField(max_length=64, blank=True, null=True, help_text="Optional character name")
+    recipient = models.ForeignKey(Character, null=True, on_delete=models.SET_NULL, related_name="traded_in")
+    recipient_name = models.CharField(max_length=64, blank=True, null=True, help_text="Optional character name")
+    item = models.ForeignKey(MagicItem, null=True, on_delete=models.SET_NULL)
+    associated = models.ForeignKey(
+        "self", null=True, on_delete=models.SET_NULL, help_text="The other half of the trade"
+    )
 
 
 class DMReward(Event):
@@ -34,5 +40,4 @@ class DMReward(Event):
     hours = models.IntegerField(null=True, help_text="Number of service hours spent")
     name = models.CharField(max_length=32, blank=True, null=True, help_text="Service reward name")
     gold = models.IntegerField(null=True, help_text="Gold awarded")
-    item = models.ForeignKey(MagicItem)
     downtime = models.IntegerField(null=True, help_text="Days of downtime")
