@@ -1,16 +1,13 @@
-from ctypes.wintypes import HPALETTE
-from os import access
 from django.db import models
-from django.contrib.auth import get_user_model
 
-user_model = get_user_model()
+from .user import CodexUser
 
 
 class Character(models.Model):
     """Representation of a character"""
 
     player = models.ForeignKey(
-        user_model,
+        CodexUser,
         on_delete=models.SET_NULL,
         null=True,
         related_name="characters",

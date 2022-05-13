@@ -1,0 +1,40 @@
+    [
+    {
+        "model": "codex.codexuser",
+        "pk": 1,
+        "fields": {
+            "password": "pbkdf2_sha256$320000$RVjtY1RzILXLqv9C3WDsgD$FFUhm/we7RxINbBjUaoMNBfkPPJHYSiev9kw3DfeDtg=",
+            "last_login": "2022-05-13T14:51:04.647Z",
+            "is_superuser": true,
+            "username": "admin",
+            "first_name": "",
+            "last_name": "",
+            "email": "admin@moonseacodex.com",
+            "is_staff": true,
+            "is_active": true,
+            "date_joined": "2022-05-13T14:50:36.390Z",
+            "discord_id": null,
+            "groups": [],
+            "user_permissions": []
+        }
+    },
+    {
+        "model": "codex.codexuser",
+        "pk": 2,
+        "fields": {
+            "password": "pbkdf2_sha256$320000$691lZFtM4TY36FlrhzvVf3$gu/+EUpmDAlTML8+IxW9DUfysSXobDi556WGEzKae7I=",
+            "last_login": null,
+            "is_superuser": false,
+            "username": "testuser1",
+            "first_name": "",
+            "last_name": "",
+            "email": "",
+            "is_staff": false,
+            "is_active": true,
+            "date_joined": "2022-05-13T14:51:35.799Z",
+            "discord_id": null,
+            "groups": [],
+            "user_permissions": []
+        }
+    }
+]
