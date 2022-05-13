@@ -2,4 +2,4 @@ from . import character
 from . import events
 from . import items
 
-from .user import CodexUser
+from .users import CodexUser

@@ -3,7 +3,7 @@ from django.test import TestCase
 from codex.models import CodexUser
 
 
-class TestModelCodexUser(TestCase):
+class TestCodexUserModel(TestCase):
     """ Tests for the user model """
     fixtures = ['test_users']
 

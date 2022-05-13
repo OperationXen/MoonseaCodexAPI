@@ -1,6 +1,6 @@
 from django.db import models
 
-from .user import CodexUser
+from .users import CodexUser
 
 
 class Character(models.Model):
