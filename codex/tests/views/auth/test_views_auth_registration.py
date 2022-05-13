@@ -8,7 +8,7 @@ from codex.models import CodexUser
 
 
 class TestCodexUserRegistration(TestCase):
-    """ Tests for the user model """
+    """ User registration testing """
     fixtures = ['test_users']
 
     valid_data = {

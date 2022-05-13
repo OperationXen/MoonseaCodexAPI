@@ -1,4 +1,4 @@
-from django.contrib.auth import authenticate, logout
+from django.contrib.auth import authenticate, logout, login
 from rest_framework.views import APIView, Response
 from rest_framework.status import *
 
@@ -11,11 +11,16 @@ class LoginCodexUser(APIView):
         """ Handle a login request """
         username = request.data.get("username")
         password = request.data.get("password")
-
-        user = authenticate(request, username, password)
+        if not username or not password:
+            return Response({'message': 'Invalid login attempt'}, status=HTTP_400_BAD_REQUEST)
+        # Attempt to verify the credentials
+        user = authenticate(request, username=username, password=password)
         if user:
-            # add serialised user
-            return Response({'message': 'Login successful'}, status=HTTP_200_OK)
+            login(request, user)
+            authed_user = CodexUserSerialiser(user)
+            return Response(authed_user.data, status=HTTP_200_OK)
+        else:
+            return Response({'message': "Invalid credentials"}, status=HTTP_401_UNAUTHORIZED)
 
 
 class LogoutCodexUser(APIView):
@@ -24,6 +29,7 @@ class LogoutCodexUser(APIView):
     def post(self, request) -> Response:
         """ Handle a logout request (only POST allowed) """
         logout(request)
+        return Response({'message': 'Logged out'}, HTTP_200_OK)
 
 
 class RegisterCodexUser(APIView):
