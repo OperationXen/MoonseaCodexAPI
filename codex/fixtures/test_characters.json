@@ -1,0 +1,48 @@
+[
+    {
+        "model": "codex.character",
+        "pk": 1,
+        "fields": {
+            "player": 2,
+            "name": "Meepo",
+            "portrait": "",
+            "token": "",
+            "sheet": null,
+            "public": true,
+            "season": 11,
+            "race": "Kobold",
+            "classes": "Wizard (Abjuration) 10",
+            "gold": 423.1,
+            "downtime": null,
+            "ac": 16,
+            "hp": 34,
+            "dc": 18,
+            "vision": "Darkvision (60ft)",
+            "biography": "Meepo big hero, save clan from bad wizard",
+            "dm_text": "Summons: Shadow and Dragonkin\r\nPack tactics\r\nCan fly"
+        }
+    },
+    {
+        "model": "codex.character",
+        "pk": 2,
+        "fields": {
+            "player": 2,
+            "name": "Meela",
+            "portrait": "",
+            "token": "",
+            "sheet": null,
+            "public": true,
+            "season": 11,
+            "race": "Kobold",
+            "classes": "Paladin (Vengeance) 3",
+            "gold": 500.0,
+            "downtime": 0.0,
+            "ac": 18,
+            "hp": 42,
+            "dc": 14,
+            "vision": "Darkvision (60ft)",
+            "biography": "Meela determined to protect kobold clans from bad people who try to control them",
+            "dm_text": "No notable shenanigans"
+        }
+    }
+]
