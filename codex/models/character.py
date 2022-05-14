@@ -23,12 +23,16 @@ class Character(models.Model):
     race = models.CharField(max_length=32, blank=True, null=True)
     classes = models.CharField(max_length=256, blank=True, null=True, help_text="Classes and levels")
     gold = models.FloatField(null=True)
-    downtime = models.FloatField(null=True, help_text="Days of downtime")
+    downtime = models.FloatField(null=True, blank=True, help_text="Days of downtime")
     # Useful information
     ac = models.IntegerField(null=True, verbose_name='AC', help_text='Base armour class')
     hp = models.IntegerField(null=True, verbose_name='HP', help_text='Max HP')
     dc = models.IntegerField(null=True, verbose_name='DC', help_text='Spell Save DC')
     vision = models.CharField(max_length=64, blank=True, null=True, help_text='Any special vision modes (eg darkvision)')
     # Biographical information
-    biography = models.TextField()
-    dm_text = models.TextField()
+    biography = models.TextField(blank=True, null=True, help_text='Character biography')
+    dm_text = models.TextField(blank=True, null=True, verbose_name='DM help text', help_text='Any information that may be useful for your DM to know ahead of time')
+
+    def __str__(self):
+        """ String representation """
+        return f"{self.player.username} - {self.name}"

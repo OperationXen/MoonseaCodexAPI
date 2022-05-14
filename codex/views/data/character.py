@@ -8,7 +8,8 @@ from codex.serialisers.data import CharacterSerialiser
 class CharacterViewSet(viewsets.ModelViewSet):
     """ CRUD views for character model """
     serializer_class = CharacterSerialiser
+    permission_classes = []
 
     def get_queryset(self):
         """ Retrieve base queryset """
-        Character.objects.all()
+        return Character.objects.all()

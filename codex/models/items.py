@@ -17,15 +17,14 @@ class Item(models.Model):
         VERYRARE = "veryrare", ("Very Rare")
         LEGENDARY = "legendary", ("Legendary")
 
-    character = models.ForeignKey(Character, on_delete=models.CASCADE)
     name = models.CharField(max_length=32, help_text="Item Name")
     rarity = models.CharField(
         choices=Rarities.choices, max_length=16, default=Rarities.UNCOMMON, help_text="Item rarity"
     )
-    description = models.TextField()
+    description = models.TextField(blank=True, null=True)
     # source information (game / shopping / dm service reward / trade)
-    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
-    object_id = models.PositiveIntegerField()
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE, verbose_name='Origin Type', null=True, help_text='Type of event that resulted in this object coming to you')
+    object_id = models.PositiveIntegerField(verbose_name='Event ID', null=True, help_text='ID of the specific source event')
     source = GenericForeignKey("content_type", "object_id")
 
 
@@ -40,11 +39,23 @@ class Consumable(Item):
         AMMO = "ammo", ("Ammunition")
         GEAR = "gear", ("Adventuring Gear")
 
+    character = models.ForeignKey(Character, on_delete=models.CASCADE, related_name='consumables')
     type = models.TextField(choices=ConsumableTypes.choices, default=ConsumableTypes.GEAR, help_text="Item type")
     count = models.IntegerField(null=True, help_text="Number of charges / items remaining")
+
+    def __str__(self):
+        """ String representation """
+        if self.count:
+            return f"{self.name} X {self.count}"
+        return f"{self.name}"
 
 
 class MagicItem(Item):
     """A record of a permanant magical item"""
 
-    flavour = models.TextField(help_text="Flavour text")
+    character = models.ForeignKey(Character, on_delete=models.CASCADE, related_name='magicitems')
+    flavour = models.TextField(help_text="Flavour text", null=True, blank=True)
+
+    def __str__(self):
+        """ String representation """
+        return f"{self.name} ({self.rarity})"
