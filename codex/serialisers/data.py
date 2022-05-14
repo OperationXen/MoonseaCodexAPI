@@ -11,10 +11,9 @@ class MagicItemSerialiser(serializers.ModelSerializer):
     class Meta:
         model = MagicItem
         fields = ['id', 'owner', 'name', 'rarity']
-        #exclude = ['object_id', 'content_type']
 
 
-class MagicItemNestedSerialiser(serializers.ModelSerializer):
+class MagicItemSummarySerialiser(serializers.ModelSerializer):
     """ Serialiser for a magic item """
     class Meta:
         model = MagicItem
@@ -30,7 +29,7 @@ class MagicItemCreationSerialiser(serializers.ModelSerializer):
 
 class CharacterSerialiser(serializers.ModelSerializer):
     """ Serialiser to use for individual player characters """
-    magicitems = MagicItemNestedSerialiser(many=True)
+    magicitems = MagicItemSummarySerialiser(many=True)
 
     class Meta:
         model = Character

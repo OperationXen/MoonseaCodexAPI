@@ -4,7 +4,7 @@ from rest_framework.response import Response
 
 from codex.models.character import Character
 from codex.models.items import MagicItem
-from codex.serialisers.data import MagicItemSerialiser, MagicItemCreationSerialiser
+from codex.serialisers.data import MagicItemSerialiser, MagicItemCreationSerialiser, MagicItemSummarySerialiser
 
 
 class MagicItemViewSet(viewsets.GenericViewSet):
@@ -45,11 +45,18 @@ class MagicItemViewSet(viewsets.GenericViewSet):
         serialiser = MagicItemSerialiser(self.get_queryset(), many=True)
         return self.get_paginated_response(self.paginate_queryset(serialiser.data))
 
-    def update(self,request, *args, **kwargs):
-        """ Update an existing magic item """
-        item = self.get_object()
-        if item.character.player != request.user:
+    def partial_update(self,request, *args, **kwargs):
+        """ Update an existing magic item - only allow name and rarity updates """
+        existing_item = self.get_object()
+        if existing_item.character.player != request.user:
             return Response({'message': 'This item does not belong to you'}, HTTP_403_FORBIDDEN)
+        serialiser = MagicItemSummarySerialiser(existing_item, data=request.data, partial=True)
+        if serialiser.is_valid():
+            item = serialiser.save()
+            new_item = MagicItemSerialiser(item)
+            return Response(new_item.data, HTTP_200_OK)
+        else:
+            return Response({'message': 'Invalid data in item update'}, HTTP_400_BAD_REQUEST)
 
     def destroy(self, request, *args, **kwargs):
         """ Delete a magic item """
