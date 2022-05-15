@@ -44,5 +44,28 @@
             "biography": "Meela determined to protect kobold clans from bad people who try to control them",
             "dm_text": "No notable shenanigans"
         }
+    },
+    {
+        "model": "codex.character",
+        "pk": 3,
+        "fields": {
+            "player": 2,
+            "name": "Meesha",
+            "portrait": "",
+            "token": "",
+            "sheet": null,
+            "public": false,
+            "season": 11,
+            "race": "Kobold",
+            "classes": "Rogue () 1",
+            "gold": 10.0,
+            "downtime": 0.0,
+            "ac": 14,
+            "hp": 10,
+            "dc": null,
+            "vision": "Darkvision (60ft)",
+            "biography": "Meesha is a kobold rogue. What more backstory can there be?",
+            "dm_text": "Pack tactics!"
+        }
     }
 ]

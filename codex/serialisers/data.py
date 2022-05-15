@@ -27,10 +27,17 @@ class MagicItemCreationSerialiser(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class CharacterSerialiser(serializers.ModelSerializer):
-    """ Serialiser to use for individual player characters """
+class CharacterDetailsSerialiser(serializers.ModelSerializer):
+    """ Serialiser to use for individual player characters, includes inventories """
     magicitems = MagicItemSummarySerialiser(many=True)
 
     class Meta:
         model = Character
         exclude = ['player', 'public']
+
+class CharacterSerialiser(serializers.ModelSerializer):
+    """ Serialiser to use for creating or updating player characters """
+
+    class Meta:
+        model = Character
+        exclude = ['player']
