@@ -48,7 +48,9 @@ class MagicItem(models.Model):
     """A record of a permanant magical item"""
     name = models.CharField(max_length=32, help_text="Item Name")
     character = models.ForeignKey(Character, on_delete=models.CASCADE, related_name='magicitems')
+    equipped = models.BooleanField(default=False, help_text='Item is currently equipped by its owner')
     rarity = models.CharField(choices=Rarities.choices, max_length=16, default=Rarities.UNCOMMON, help_text="Item rarity")
+    attunement = models.BooleanField(default=False, help_text='Item requires attunement to be used')
     description = models.TextField(blank=True, null=True)
     flavour = models.TextField(help_text="Flavour text", null=True, blank=True)
     # source information (game / shopping / dm service reward / trade)

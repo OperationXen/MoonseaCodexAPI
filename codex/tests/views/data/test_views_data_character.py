@@ -50,7 +50,7 @@ class TestCharacterCRUDViews(TestCase):
         self.assertEqual(response.status_code, HTTP_201_CREATED)
         
         character = Character.objects.get(name=test_data['name'])
-        self.assertEqual(response.data['magicitems'], [])
+        self.assertEqual(response.data['equipped_items'], [])
         self.assertEqual(character.player, response.wsgi_request.user)
         self.assertEqual(character.biography, test_data['biography'])
         self.assertEqual(character.vision, test_data['vision'])
@@ -74,8 +74,8 @@ class TestCharacterCRUDViews(TestCase):
 
         response = self.client.get(reverse('character-detail', kwargs={'pk': '1'}))
         self.assertEqual(response.status_code, HTTP_200_OK)
-        self.assertIn('magicitems', response.data)
-        self.assertGreaterEqual(len(response.data['magicitems']), 3)
+        self.assertIn('equipped_items', response.data)
+        self.assertGreaterEqual(len(response.data['equipped_items']), 3)
 
     def test_anonymous_user_can_list_characters(self) -> None:
         response = self.client.get(reverse('character-list'))
