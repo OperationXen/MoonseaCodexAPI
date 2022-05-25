@@ -2,7 +2,7 @@ name: Docker container deployment
 
 on:
   push:
-    branches: ["main"]
+    branches: ["main", "cicd"]
 
 jobs:
   Build-Docker-Container:
@@ -21,7 +21,7 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v3
         with:
-          file: build/Dockerfile
+          context: ./build/
           push: true
           tags: operationxen/moonsea_codex_api:main
 
