@@ -9,9 +9,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout source
-        uses: actions/checkout@v3
-
       - name: Login to DockerHub
         uses: docker/login-action@v2
         with:
@@ -21,7 +18,7 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v3
         with:
-          context: ./build/
+          file: ./build/Dockerfile
           push: true
           tags: operationxen/moonsea_codex_api:main
 
