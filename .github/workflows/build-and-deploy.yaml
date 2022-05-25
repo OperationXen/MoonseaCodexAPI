@@ -21,7 +21,6 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v3
         with:
-          context: "{{defaultContext}}:build"
           push: true
           tags: operationxen/moonsea_codex_api:main
 
