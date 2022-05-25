@@ -1,0 +1,62 @@
+[
+  {
+    "model": "codex.magicitem",
+    "pk": 1,
+    "fields": {
+      "name": "Arcane Grimore +1",
+      "character": 1,
+      "equipped": true,
+      "rarity": "uncommon",
+      "attunement": true,
+      "description": "",
+      "flavour": "",
+      "content_type": 8,
+      "object_id": 1
+    }
+  },
+  {
+    "model": "codex.magicitem",
+    "pk": 2,
+    "fields": {
+      "name": "Atlas of Endless Horizons",
+      "character": 1,
+      "equipped": true,
+      "rarity": "rare",
+      "attunement": true,
+      "description": "",
+      "flavour": "",
+      "content_type": 13,
+      "object_id": 1
+    }
+  },
+  {
+    "model": "codex.magicitem",
+    "pk": 3,
+    "fields": {
+      "name": "Winged boots",
+      "character": 1,
+      "equipped": true,
+      "rarity": "uncommon",
+      "attunement": true,
+      "description": "",
+      "flavour": "",
+      "content_type": 9,
+      "object_id": 1
+    }
+  },
+  {
+    "model": "codex.magicitem",
+    "pk": 4,
+    "fields": {
+      "name": "Lantern of Revealing",
+      "character": 2,
+      "equipped": true,
+      "rarity": "uncommon",
+      "attunement": false,
+      "description": "",
+      "flavour": "",
+      "content_type": 10,
+      "object_id": 1
+    }
+  }
+]
