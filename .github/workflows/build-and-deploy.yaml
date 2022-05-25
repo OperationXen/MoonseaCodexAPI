@@ -18,6 +18,7 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v3
         with:
+          context: .
           file: ./build/Dockerfile
           push: true
           tags: operationxen/moonsea_codex_api:main
