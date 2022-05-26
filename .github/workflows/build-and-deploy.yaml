@@ -53,7 +53,7 @@ jobs:
             docker pull operationxen/moonsea_codex_api:main
             docker stop ${{ secrets.CONTAINER_NAME }} || true
             docker rm ${{ secrets.CONTAINER_NAME }} || true
-            docker run -d --name ${{ secrets.CONTAINER_NAME }} --network=moonsea_net -e DJANGO_SECRET -e DB_HOST -e DB_USER -e DB_PASS operationxen/moonsea_codex_api:main
+            docker run -d --name ${{ secrets.CONTAINER_NAME }} --network=moonsea_net -p 127.0.0.1:8000:8000 -e DJANGO_SECRET -e DB_HOST -e DB_USER -e DB_PASS operationxen/moonsea_codex_api:main
 
       - name: Database migrations
         uses: appleboy/ssh-action@v0.1.4
