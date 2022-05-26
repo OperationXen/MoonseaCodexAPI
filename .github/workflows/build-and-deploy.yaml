@@ -21,7 +21,6 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v3
         with:
-          file: build/Dockerfile
           push: true
           tags: operationxen/moonsea_codex_api:main
 
@@ -30,5 +29,36 @@ jobs:
     needs: Build-Docker-Container
 
     steps:
-      - name: Connect to target
-        run: echo "do the thing"
+      - name: Database backup
+        uses: appleboy/ssh-action@v0.1.4
+        with:
+          host: ${{ secrets.SERVER }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
+          script: echo 'insert database backup'
+
+      - name: Deploy new container
+        uses: appleboy/ssh-action@v0.1.4
+        env:
+          DJANGO_SECRET: "${{ secrets.DJANGO_SECRET }}"
+          DB_HOST: "${{ secrets.DB_HOST }}"
+          DB_USER: "${{ secrets.DB_USER }}"
+          DB_PASS: "${{ secrets.DB_PASS }}"
+        with:
+          host: ${{ secrets.SERVER }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
+          envs: DJANGO_SECRET, DB_HOST, DB_USER, DB_PASS
+          script: |
+            docker pull operationxen/moonsea_codex_api:main
+            docker stop ${{ secrets.CONTAINER_NAME }} || true
+            docker rm ${{ secrets.CONTAINER_NAME }} || true
+            docker run -d --name ${{ secrets.CONTAINER_NAME }} --network=moonsea_net -e DJANGO_SECRET -e DB_HOST -e DB_USER -e DB_PASS operationxen/moonsea_codex_api:main
+
+      - name: Database migrations
+        uses: appleboy/ssh-action@v0.1.4
+        with:
+          host: ${{ secrets.SERVER }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
+          script: docker exec ${{ secrets.CONTAINER_NAME }} python manage.py migrate
