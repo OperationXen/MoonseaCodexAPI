@@ -8,6 +8,12 @@ ENV PYTHONUNBUFFERED 1
 
 # Install python external libs, and web server packages
 RUN apt update && apt install apache2 libapache2-mod-wsgi-py3 libpq-dev -y
+
+# Create python virtual env
+ENV VIRTUAL_ENV=/opt/venv
+RUN python3 -m venv $VIRTUAL_ENV
+ENV PATH="$VIRTUAL_ENV/bin:$PATH"
+
 # Update tooling and install required packages
 RUN pip install --upgrade pip setuptools wheel && pip install -r requirements.txt
 # Enable site
