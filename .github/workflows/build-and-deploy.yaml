@@ -45,12 +45,14 @@ jobs:
           DB_USER: ${{ secrets.DB_USER }}
           DB_PASS: ${{ secrets.DB_PASS }}
           SERVER: ${{ secrets.SERVER }}
+          TEST: "an interesting string"
         with:
           host: ${{ secrets.SERVER }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSH_KEY }}
-          envs: DJANGO_SECRET, DB_HOST, DB_USER, DB_PASS, SERVER
+          envs: DJANGO_SECRET,DB_HOST,DB_USER,DB_PASS,SERVER,TEST
           script: |
+            echo $TEST
             docker pull operationxen/moonsea_codex_api:main
             docker stop ${{ secrets.CONTAINER_NAME }} || true
             docker rm ${{ secrets.CONTAINER_NAME }} || true
