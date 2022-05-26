@@ -13,4 +13,4 @@ RUN pip install --upgrade pip setuptools wheel && pip install -r requirements.tx
 # Enable site
 RUN mv /moonseacodex_api/deploy/api.conf /etc/apache2/sites-available/api.conf && a2ensite api
 
-CMD apachectl -D foreground
+CMD ["apachectl", "-D",  "FOREGROUND"]
