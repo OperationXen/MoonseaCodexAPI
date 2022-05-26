@@ -7,7 +7,7 @@ ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
 # Install python external libs, and web server packages
-RUN apt update && apt install zlib1g libjpeg-dev apache2 -y
+RUN apt update && apt install zlib-dev libjpeg-dev apache2 -y
 # Update tooling and install required packages
 RUN pip install --upgrade pip setuptools wheel && pip install -r requirements.txt
 
