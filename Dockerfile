@@ -1,4 +1,4 @@
-FROM python:3
+FROM ubuntu:20
 
 WORKDIR /moonseacodex_api
 COPY . /moonseacodex_api
