@@ -7,10 +7,13 @@ from string import ascii_letters
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 RANDOM_KEY = ''.join(choices(ascii_letters, k=128))
-SECRET_KEY = getenv("DJANGO_SECRET", RANDOM_KEY)
+DJANGO_SECRET = getenv("DJANGO_SECRET")
+SECRET_KEY = DJANGO_SECRET or RANDOM_KEY
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+if DJANGO_SECRET:
+    DEBUG=False
+else:
+    DEBUG=True
 
 SERVER = getenv("SERVER")
 ALLOWED_HOSTS = [SERVER] if SERVER else []
@@ -56,7 +59,14 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "core.wsgi.application"
 
-if getenv("DB_HOST"):
+if DEBUG:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+        },
+    }
+else:
     DATABASES = {
         'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
@@ -66,13 +76,6 @@ if getenv("DB_HOST"):
         'HOST': getenv("DB_HOST"),
         'PORT': '5432',
         }
-    }
-else:
-    DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.sqlite3",
-            "NAME": BASE_DIR / "db.sqlite3",
-        },
     }
 
 AUTH_USER_MODEL = "codex.CodexUser"
