@@ -40,11 +40,11 @@ jobs:
       - name: Deploy new container
         uses: appleboy/ssh-action@v0.1.4
         env:
-          DJANGO_SECRET: "${{ secrets.DJANGO_SECRET }}"
-          DB_HOST: "${{ secrets.DB_HOST }}"
-          DB_USER: "${{ secrets.DB_USER }}"
-          DB_PASS: "${{ secrets.DB_PASS }}"
-          SERVER: "${{ secrets.SERVER }}"
+          DJANGO_SECRET: ${{ secrets.DJANGO_SECRET }}
+          DB_HOST: ${{ secrets.DB_HOST }}
+          DB_USER: ${{ secrets.DB_USER }}
+          DB_PASS: ${{ secrets.DB_PASS }}
+          SERVER: ${{ secrets.SERVER }}
         with:
           host: ${{ secrets.SERVER }}
           username: ${{ secrets.USERNAME }}
