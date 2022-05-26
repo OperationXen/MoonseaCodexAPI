@@ -2,7 +2,7 @@ name: Docker container deployment
 
 on:
   push:
-    branches: ["main"]
+    branches: ["main", "cicd"]
 
 jobs:
   Build-Docker-Container:
