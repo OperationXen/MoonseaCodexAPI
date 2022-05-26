@@ -44,16 +44,17 @@ jobs:
           DB_HOST: "${{ secrets.DB_HOST }}"
           DB_USER: "${{ secrets.DB_USER }}"
           DB_PASS: "${{ secrets.DB_PASS }}"
+          SERVER: "${{ secrets.SERVER }}"
         with:
           host: ${{ secrets.SERVER }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSH_KEY }}
-          envs: DJANGO_SECRET, DB_HOST, DB_USER, DB_PASS
+          envs: DJANGO_SECRET, DB_HOST, DB_USER, DB_PASS, SERVER
           script: |
             docker pull operationxen/moonsea_codex_api:main
             docker stop ${{ secrets.CONTAINER_NAME }} || true
             docker rm ${{ secrets.CONTAINER_NAME }} || true
-            docker run -d --name ${{ secrets.CONTAINER_NAME }} --network=moonsea_net -p 127.0.0.1:8000:8000 -e DJANGO_SECRET -e DB_HOST -e DB_USER -e DB_PASS operationxen/moonsea_codex_api:main
+            docker run -d --name ${{ secrets.CONTAINER_NAME }} --network=moonsea_net -p 127.0.0.1:8000:8000 -e DJANGO_SECRET -e DB_HOST -e DB_USER -e DB_PASS -e SERVER operationxen/moonsea_codex_api:main
 
       - name: Database migrations
         uses: appleboy/ssh-action@v0.1.4
