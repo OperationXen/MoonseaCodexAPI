@@ -6,6 +6,8 @@ COPY . /moonseacodex_api
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
+# Install python external libs, and web server packages
+RUN apt update && apt install zlib libjpeg apache2 -y
 # Update tooling and install required packages
 RUN pip install --upgrade pip setuptools wheel && pip install -r requirements.txt
 
