@@ -7,7 +7,7 @@ ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
 # Install python external libs, and web server packages
-RUN apk add --no-cache apache2
+RUN apk update && apk add --no-cache apache2 postgresql-dev
 # Update tooling and install required packages
 RUN pip install --upgrade pip setuptools wheel && pip install -r requirements.txt
 
