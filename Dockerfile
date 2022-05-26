@@ -1,4 +1,4 @@
-FROM ubuntu:20
+FROM ubuntu:20.04
 
 WORKDIR /moonseacodex_api
 COPY . /moonseacodex_api
@@ -7,7 +7,7 @@ ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
 # Install python external libs, and web server packages
-RUN apt update && apt install apache2 libapache2-mod-wsgi-py3 libpq-dev -y
+RUN apt update && apt install python3 python3-pip python3-venv apache2 libapache2-mod-wsgi-py3 libpq-dev -y
 
 # Create python virtual env
 ENV VIRTUAL_ENV=/opt/venv
