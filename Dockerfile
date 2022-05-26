@@ -11,4 +11,4 @@ RUN apk update && apk add --no-cache apache2 postgresql-dev build-base
 # Update tooling and install required packages
 RUN pip install --upgrade pip setuptools wheel && pip install -r requirements.txt
 
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+CMD apachectl -D foreground
