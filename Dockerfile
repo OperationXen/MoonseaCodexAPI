@@ -10,7 +10,8 @@ ENV PYTHONUNBUFFERED 1
 RUN apk update && apk add --no-cache apache2 apache2-ctl apache2-mod-wsgi postgresql-dev build-base
 # Update tooling and install required packages
 RUN pip install --upgrade pip setuptools wheel && pip install -r requirements.txt
-RUN ls /moonseacodex_api/deploy/
+RUN ls /etc/
+RUN ls /etc/apache2/
 RUN mv /moonseacodex_api/deploy/api.conf /etc/apache2/sites-available/api.conf
 RUN a2enmod wsgi 
 RUN a2ensite apache-wsgi
