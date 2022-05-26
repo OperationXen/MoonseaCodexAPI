@@ -2,7 +2,7 @@ name: Docker container deployment
 
 on:
   push:
-    branches: ["main"]
+    branches: ["main", "cicd"]
 
 jobs:
   Build-Docker-Container:
@@ -44,11 +44,13 @@ jobs:
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSH_KEY }}
           script: |
+            ls \
+              -lah
             docker pull operationxen/moonsea_codex_api:main
             docker stop ${{ secrets.CONTAINER_NAME }} || true
             docker rm ${{ secrets.CONTAINER_NAME }} || true
             docker run -d --name ${{ secrets.CONTAINER_NAME }} --network=moonsea_net -p 127.0.0.1:8000:8000 \
-              -e DJANGO_SECRET=${{ secrets.DJANGO_SECRET }} -e DB_HOST= ${{ secrets.DB_HOST }} \
+              -e DJANGO_SECRET=${{ secrets.DJANGO_SECRET }} -e DB_HOST=${{ secrets.DB_HOST }} \
               -e DB_USER=${{ secrets.DB_USER }} -e DB_PASS=${{ secrets.DB_PASS }} -e SERVER=${{ secrets.SERVER }} \
               operationxen/moonsea_codex_api:main
 
