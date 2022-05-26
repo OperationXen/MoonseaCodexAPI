@@ -29,5 +29,35 @@ jobs:
     needs: Build-Docker-Container
 
     steps:
-      - name: Connect to target
-        run: echo "do the thing"
+      - name: Database backup
+        uses: appleboy/ssh-action@v0.1.4
+        with:
+          host: ${{ secrets.SERVER }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
+          script: echo 'insert database backup'
+
+      - name: Deploy new container
+        uses: appleboy/ssh-action@v0.1.4
+        env:
+          DJANGO_SECRET: ${{ DJANGO_SECRET }}
+          DB_HOST: ${{ DB_HOST }}
+          DB_USER: ${{ DB_USER }}
+          DB_PASS: ${{ DB_PASS }}
+        with:
+          host: ${{ secrets.SERVER }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
+          envs: DJANGO_SECRET, DB_HOST, DB_USER, DB_PASS
+          script: |
+            docker pull operationxen/moonsea_codex_api:main
+            docker stop ${{ secrets.CONTAINER_NAME }} && docker rm ${{ secrets.CONTAINER_NAME }}
+            docker run --name ${{ secrets.CONTAINER_NAME }} -e DJANGO_SECRET -e DB_HOST -e DB_USER -e DB_PASS
+
+      - name: Database migrations
+        uses: appleboy/ssh-action@v0.1.4
+        with:
+          host: ${{ secrets.SERVER }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
+          script: docker exec ${{ secrets.CONTAINER_NAME }} python manage.py migrate
