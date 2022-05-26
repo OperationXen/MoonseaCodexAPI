@@ -7,7 +7,7 @@ ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
 # Install python external libs, and web server packages
-RUN apt update && apt install apache2 libapache2-mod-wsgi-py3 libpq-dev
+RUN apt update && apt install apache2 libapache2-mod-wsgi-py3 libpq-dev -y
 # Update tooling and install required packages
 RUN pip install --upgrade pip setuptools wheel && pip install -r requirements.txt
 
