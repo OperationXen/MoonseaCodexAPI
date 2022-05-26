@@ -51,7 +51,8 @@ jobs:
           envs: DJANGO_SECRET, DB_HOST, DB_USER, DB_PASS
           script: |
             docker pull operationxen/moonsea_codex_api:main
-            docker stop ${{ secrets.CONTAINER_NAME }} && docker rm ${{ secrets.CONTAINER_NAME }}
+            docker stop ${{ secrets.CONTAINER_NAME }} || true
+            docker rm ${{ secrets.CONTAINER_NAME }} || true
             docker run --name ${{ secrets.CONTAINER_NAME }} -e DJANGO_SECRET -e DB_HOST -e DB_USER -e DB_PASS
 
       - name: Database migrations
