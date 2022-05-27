@@ -1,12 +1,33 @@
-name: Docker container deployment
+name: Docker based deployment
 
 on:
   push:
     branches: ["main"]
 
 jobs:
+  Unit-Test-API:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v3
+      - name: Set up python
+        uses: actions/setup-python@v3
+        with:
+          python-version: "3.x"
+          cache: "pip"
+      - name: Install dependencies
+        run: python -m pip install --upgrade pip && pip install -r requirements.txt && pip install coverage
+      - name: Run tests
+        run: python -m coverage run -m pytest
+      - name: "Upload coverage to Codecov"
+        uses: codecov/codecov-action@v1
+
   Build-Docker-Container:
     runs-on: ubuntu-latest
+    timeout-minutes: 5
+    needs: Unit-Test-API
 
     steps:
       - name: Checkout source
@@ -26,6 +47,7 @@ jobs:
 
   Deploy-To-Server:
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     needs: Build-Docker-Container
 
     steps:
@@ -47,7 +69,7 @@ jobs:
             docker pull operationxen/moonsea_codex_api:main
             docker stop ${{ secrets.CONTAINER_NAME }} || true
             docker rm ${{ secrets.CONTAINER_NAME }} || true
-            docker run -d --name ${{ secrets.CONTAINER_NAME }} --network=moonsea_net -p 127.0.0.1:8000:8000 \
+            docker run -d --name ${{ secrets.CONTAINER_NAME }} --network=moonsea_net -p 127.0.0.1:8000:80 \
               -e DJANGO_SECRET=${{ secrets.DJANGO_SECRET }} -e DB_HOST=${{ secrets.DB_HOST }} \
               -e DB_USER=${{ secrets.DB_USER }} -e DB_PASS=${{ secrets.DB_PASS }} -e SERVER=${{ secrets.SERVER }} \
               operationxen/moonsea_codex_api:main
