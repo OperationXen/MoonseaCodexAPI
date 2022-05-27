@@ -19,7 +19,7 @@ else:
 
 SERVER = getenv("SERVER")
 ALLOWED_HOSTS = [SERVER] if SERVER else []
-CSRF_TRUSTED_ORIGINS=[SERVER] if SERVER else []
+CSRF_TRUSTED_ORIGINS=[f"https://{SERVER}"] if SERVER else []
 
 # Application definition
 INSTALLED_APPS = [
