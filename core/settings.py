@@ -12,6 +12,8 @@ SECRET_KEY = DJANGO_SECRET or RANDOM_KEY
 
 if DJANGO_SECRET:
     DEBUG=False
+    FORCE_SCRIPT_NAME="/moonseacodex"
+    ADMIN_URL="/moonseacodex/admin"
 else:
     DEBUG=True
 
