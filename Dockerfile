@@ -19,6 +19,7 @@ ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 
 # Update tooling and install required packages
 RUN pip install --upgrade pip setuptools wheel && pip install -r requirements.txt
+RUN python manage.py collectstatic --no-input
 # Enable site
 RUN mv /moonseacodex_api/deploy/api.conf /etc/apache2/sites-available/api.conf && a2ensite api
 
