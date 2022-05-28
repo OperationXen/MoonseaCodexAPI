@@ -1,4 +1,4 @@
-name: Docker based deployment
+name: Pre-merge tests
 
 on:
   pull_request:
