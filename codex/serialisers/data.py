@@ -2,6 +2,7 @@ from rest_framework import serializers
 
 from codex.models.character import Character
 from codex.models.items import MagicItem
+from codex.models.dungeonmaster import DungeonMasterLog
 
 
 class MagicItemSerialiser(serializers.ModelSerializer):
@@ -32,7 +33,6 @@ class MagicItemCreationSerialiser(serializers.ModelSerializer):
 
 class CharacterDetailsSerialiser(serializers.ModelSerializer):
     """Serialiser to use for individual player characters, includes inventories"""
-
     items = MagicItemSerialiser(many=True, source="magicitems")
 
     class Meta:
@@ -46,3 +46,12 @@ class CharacterSerialiser(serializers.ModelSerializer):
     class Meta:
         model = Character
         exclude = ["player"]
+
+
+class DMLogSerialiser(serializers.ModelSerializer):
+    """ Serialise a dungeon master log record """
+    dm_name = serializers.ReadOnlyField(source='player.username', read_only=True)
+
+    class Meta:
+        model = DungeonMasterLog
+        fields = ['id', 'dm_name', 'hours']
