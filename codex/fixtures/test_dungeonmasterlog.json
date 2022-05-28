@@ -1,0 +1,18 @@
+[
+  {
+    "model": "codex.dungeonmasterlog",
+    "pk": 1,
+    "fields": {
+      "player": 1,
+      "hours": 10
+    }
+  },
+  {
+    "model": "codex.dungeonmasterlog",
+    "pk": 2,
+    "fields": {
+      "player": 2,
+      "hours": 100
+    }
+  }
+]
