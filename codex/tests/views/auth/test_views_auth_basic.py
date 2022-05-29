@@ -4,7 +4,7 @@ from rest_framework.status import *
 from django.test import TestCase
 from django.urls import reverse
 
-from codex.models.dungeonmaster import DungeonMasterLog
+from codex.models.dungeonmaster import DungeonMasterInfo
 
 
 class TestCodexUserLogin(TestCase):
@@ -92,8 +92,8 @@ class TestCodexUserLogin(TestCase):
         self.assertIn('dm_info', response.data)
         dm_info = response.data['dm_info'][0]
         self.assertIn('uuid', dm_info)
-        dm_log = DungeonMasterLog.objects.get(uuid=dm_info['uuid'])
-        self.assertIsInstance(dm_log, DungeonMasterLog)
+        dm_log = DungeonMasterInfo.objects.get(uuid=dm_info['uuid'])
+        self.assertIsInstance(dm_log, DungeonMasterInfo)
         self.assertEqual(dm_log.player, response.wsgi_request.user)
         
 

@@ -32,7 +32,7 @@ class CodexUserRegistrationSerialiser(serializers.ModelSerializer):
 
 class CodexUserSerialiser(serializers.ModelSerializer):
     """ Serialiser for retrieving data about a specific user """
-    dm_info = DMLogSerialiser(source='dm_log', many=True)
+    dm_info = DMLogSerialiser(many=True)
 
     class Meta:
         model = CodexUser

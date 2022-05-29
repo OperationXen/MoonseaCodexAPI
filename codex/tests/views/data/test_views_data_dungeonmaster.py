@@ -5,7 +5,7 @@ from rest_framework.status import *
 from django.test import TestCase
 from django.urls import reverse
 
-from codex.models.dungeonmaster import DungeonMasterLog
+from codex.models.dungeonmaster import DungeonMasterInfo
 
 
 class DungeonMasterLogCRUDViews(TestCase):
@@ -40,12 +40,12 @@ class DungeonMasterLogCRUDViews(TestCase):
         response = self.client.patch(reverse("dm_log-detail", kwargs={"pk": "2"}), json.dumps(test_data), content_type="application/json")
         self.assertEqual(response.status_code, HTTP_200_OK)
         self.assertEqual(response.data['hours'], test_data['hours'])
-        dm_log = DungeonMasterLog.objects.get(pk=2)
+        dm_log = DungeonMasterInfo.objects.get(pk=2)
         self.assertEqual(dm_log.player.id, 2)
 
     def test_all_users_can_retrieve_dm_log_by_uuid(self) -> None:
         """ A users (authed or not) should be able to get a dm record """
-        dm_log = DungeonMasterLog.objects.get(pk=1)
+        dm_log = DungeonMasterInfo.objects.get(pk=1)
         response = self.client.get(reverse("dm_log-detail", kwargs={'pk': dm_log.uuid}))
         self.assertEqual(response.status_code, HTTP_200_OK)
         self.assertEqual(response.data['hours'], 10)
@@ -57,11 +57,10 @@ class DungeonMasterLogCRUDViews(TestCase):
 
     def test_dm_log_includes_player_name(self) -> None:
         """ A dm log object should include a user's username (but not their email or discord names) """
-        dm_log = DungeonMasterLog.objects.get(pk=1)
+        dm_log = DungeonMasterInfo.objects.get(pk=1)
         response = self.client.get(reverse("dm_log-detail", kwargs={'pk': dm_log.uuid}))
         self.assertEqual(response.status_code, HTTP_200_OK)
         self.assertIn("dm_name", response.data)
         self.assertEqual(response.data['dm_name'], "admin")
         self.assertNotIn("email", response.data)
         self.assertNotIn("discord_id", response.data)
-

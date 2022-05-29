@@ -1,6 +1,6 @@
 [
   {
-    "model": "codex.dungeonmasterlog",
+    "model": "codex.dungeonmasterinfo",
     "pk": 1,
     "fields": {
       "player": 1,
@@ -8,7 +8,7 @@
     }
   },
   {
-    "model": "codex.dungeonmasterlog",
+    "model": "codex.dungeonmasterinfo",
     "pk": 2,
     "fields": {
       "player": 2,
