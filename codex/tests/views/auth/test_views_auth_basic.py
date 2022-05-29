@@ -4,10 +4,12 @@ from rest_framework.status import *
 from django.test import TestCase
 from django.urls import reverse
 
+from codex.models.dungeonmaster import DungeonMasterLog
+
 
 class TestCodexUserLogin(TestCase):
     """ Check login functionality """
-    fixtures = ['test_users']
+    fixtures = ['test_users', 'test_dungeonmasterlog']
 
     valid_data = {
         'username': 'testuser1',
@@ -67,13 +69,33 @@ class TestCodexUserLogin(TestCase):
 
         response = self.client.post(reverse('login'), test_data)
         self.assertEqual(response.status_code, HTTP_200_OK)
+        self.assertTrue(response.wsgi_request.user.is_authenticated)
+
+    def test_login_returns_user_data(self) -> None:
+        """ When you log in, the system should return a load of user metadata """
+        test_data = copy(self.valid_data)
+
+        response = self.client.post(reverse('login'), test_data)
+        self.assertEqual(response.status_code, HTTP_200_OK)
         self.assertIn('username', response.data)
         self.assertIn('email', response.data)
         self.assertIn('discord_id', response.data)
         self.assertEqual(response.data['username'], 'testuser1')
         self.assertEqual(response.data['email'], 'testuser1@moonseacodex.local')
-        self.assertTrue(response.wsgi_request.user.is_authenticated)
+        
+    def test_login_returns_dm_info(self) -> None:
+        """ A successful login should also contain information about a users dm profile """
+        test_data = copy(self.valid_data)
 
+        response = self.client.post(reverse('login'), test_data)
+        self.assertEqual(response.status_code, HTTP_200_OK)
+        self.assertIn('dm_info', response.data)
+        dm_info = response.data['dm_info'][0]
+        self.assertIn('uuid', dm_info)
+        dm_log = DungeonMasterLog.objects.get(uuid=dm_info['uuid'])
+        self.assertIsInstance(dm_log, DungeonMasterLog)
+        self.assertEqual(dm_log.player, response.wsgi_request.user)
+        
 
 class TestCodexUserLogout(TestCase):
     """ Check logout functionality """

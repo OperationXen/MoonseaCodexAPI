@@ -1,10 +1,11 @@
+from django.forms import ValidationError
 from rest_framework.status import *
 from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
 from codex.models.dungeonmaster import DungeonMasterLog
-from codex.serialisers.data import DMLogSerialiser
+from codex.serialisers.dm_info import DMLogSerialiser
 
 
 class DMLogViewSet(viewsets.GenericViewSet):
@@ -18,7 +19,11 @@ class DMLogViewSet(viewsets.GenericViewSet):
 
     def retrieve(self, request, *args, **kwargs):
         """ Get a specific user's DM Log """
-        dm_log = self.get_object()
+        try:
+            queryset = self.get_queryset()
+            dm_log = queryset.get(uuid=kwargs.get('pk'))
+        except ValidationError as ve:
+            return Response({'message': 'Invalid Dungeon Master Identifier'}, HTTP_400_BAD_REQUEST)
         serializer = DMLogSerialiser(dm_log)
         return Response(serializer.data)
 

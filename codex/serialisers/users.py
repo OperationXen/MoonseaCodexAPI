@@ -3,6 +3,7 @@ from rest_framework.validators import UniqueValidator
 from rest_framework import serializers
 
 from codex.models import CodexUser
+from codex.serialisers.dm_info import DMLogSerialiser
 
 
 class CodexUserRegistrationSerialiser(serializers.ModelSerializer):
@@ -31,6 +32,8 @@ class CodexUserRegistrationSerialiser(serializers.ModelSerializer):
 
 class CodexUserSerialiser(serializers.ModelSerializer):
     """ Serialiser for retrieving data about a specific user """
+    dm_info = DMLogSerialiser(source='dm_log', many=True)
+
     class Meta:
         model = CodexUser
-        fields = ['username', 'email', 'discord_id']
+        fields = ['username', 'email', 'discord_id', 'dm_info']
