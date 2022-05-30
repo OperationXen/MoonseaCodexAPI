@@ -1,0 +1,18 @@
+[
+  {
+    "model": "codex.dmreward",
+    "pk": 1,
+    "fields": {
+      "uuid": "8d7a5f38-4e2c-419c-96b1-74e977541931",
+      "datetime": "2022-05-30T14:48:51.950Z",
+      "name": "Test Reward",
+      "dm": 2,
+      "hours": 10,
+      "gold": 250,
+      "downtime": 0,
+      "levels": 1,
+      "character_level_assigned": null,
+      "character_items_assigned": null
+    }
+  }
+]

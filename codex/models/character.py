@@ -1,3 +1,4 @@
+import uuid
 from django.db import models
 
 from .users import CodexUser
@@ -5,7 +6,6 @@ from .users import CodexUser
 
 class Character(models.Model):
     """Representation of a character"""
-
     player = models.ForeignKey(
         CodexUser,
         on_delete=models.SET_NULL,
