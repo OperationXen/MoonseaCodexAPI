@@ -1,7 +1,7 @@
 from codex.models.dungeonmaster import DungeonMasterInfo
 
 
-def update_dm_hours(dm_info: DungeonMasterInfo, hours: int|str) -> bool:
+def update_dm_hours(dm_info: DungeonMasterInfo, hours: int) -> bool:
     """ Update the dm record """
     try:
         dm_info.hours = dm_info.hours + int(hours)

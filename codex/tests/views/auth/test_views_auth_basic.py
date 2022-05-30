@@ -9,7 +9,7 @@ from codex.models.dungeonmaster import DungeonMasterInfo
 
 class TestCodexUserLogin(TestCase):
     """ Check login functionality """
-    fixtures = ['test_users', 'test_dungeonmasterlog']
+    fixtures = ['test_users', 'test_dungeonmaster_info']
 
     valid_data = {
         'username': 'testuser1',

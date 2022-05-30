@@ -5,6 +5,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
 from codex.models.events import DMReward
+from codex.models.dungeonmaster import DungeonMasterInfo
 from codex.serialisers.dm_info import DMRewardSerialiser, DMRewardUpdateSerialiser
 from codex.utils.dm_info import update_dm_hours
 
@@ -23,8 +24,9 @@ class DMRewardViewSet(viewsets.GenericViewSet):
         """ Create a new reward, ownership set to requesting user """
         serialiser = DMRewardSerialiser(data=request.data)
         if serialiser.is_valid():
+            dm = DungeonMasterInfo.objects.filter(player = request.user)[0]
             reward = serialiser.save(dm=request.user)
-            update_dm_hours(request.user, -request.data['hours'])
+            update_dm_hours(dm, -int(request.data['hours']))
             return Response(serialiser.data, HTTP_201_CREATED)
         else:
             return Response({"message": "DM Reward creation failed"}, HTTP_400_BAD_REQUEST)
@@ -69,7 +71,7 @@ class DMRewardViewSet(viewsets.GenericViewSet):
         except ValidationError as ve:
             return Response({'message': 'Invalid DM Reward Identifier'}, HTTP_400_BAD_REQUEST)
 
-        if reward.dm.player != request.user:
+        if reward.dm != request.user:
             return Response({"message": "This DM reward does not belong to you"}, HTTP_403_FORBIDDEN)
         reward.delete()
         return Response({"message": "Reward destroyed"}, HTTP_200_OK)

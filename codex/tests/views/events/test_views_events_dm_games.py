@@ -11,7 +11,7 @@ from codex.models.events import Game
 class TestDMGamesCRUDViews(TestCase):
     """Check dm_reward create / retrieve / update / delete functionality"""
 
-    fixtures = ["test_users", "test_dm_games"]
+    fixtures = ["test_users", "test_dungeonmaster_games"]
     valid_data = {
         'name': 'Tier 1 Adventure Reward',
         'dm_name': 'Test user',

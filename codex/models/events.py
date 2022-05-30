@@ -23,8 +23,8 @@ class Game(models.Model):
     hours_notes = models.CharField(max_length=256, blank=True, null=True, help_text='Time breakdown for game')
     location = models.CharField(max_length=64, blank=True, null=True, help_text="Where the game was organised or run")
 
-    gold = models.IntegerField(null=True, help_text="Gold awarded")
-    downtime = models.IntegerField(null=True, help_text="Days of downtime")
+    gold = models.IntegerField(default=0, help_text="Gold awarded")
+    downtime = models.IntegerField(default=0, help_text="Days of downtime")
     levels = models.IntegerField(default=0, help_text='Levels to take')
 
     def __str__(self):
@@ -51,10 +51,13 @@ class DMReward(models.Model):
 
     name = models.CharField(max_length=32, blank=True, null=True, help_text="Service reward name")
     dm = models.ForeignKey(user_model, null=True, on_delete=models.CASCADE, related_name='dm_rewards', help_text='Moonsea Codex DM')
-    hours = models.IntegerField(null=True, help_text="Number of service hours spent")
-    gold = models.IntegerField(null=True, help_text="Gold awarded")
-    downtime = models.IntegerField(null=True, help_text="Days of downtime")
+    hours = models.IntegerField(null=True, default=0, help_text="Number of service hours spent")
+    gold = models.IntegerField(default=0, help_text="Gold awarded")
+    downtime = models.IntegerField(default=0, help_text="Days of downtime")
     levels = models.IntegerField(default=0, help_text='Bonus levels to assign')
 
-    character_level_assigned = models.ForeignKey(Character, on_delete=models.SET_NULL, null=True, related_name='dm_levels', help_text='Character given levels')
-    character_items_assigned = models.ForeignKey(Character, on_delete=models.SET_NULL, null=True, related_name='dm_items', help_text='Character given item / gold / downtime rewards')
+    character_level_assigned = models.ForeignKey(Character, on_delete=models.SET_NULL, null=True, blank=True, related_name='dm_levels', help_text='Character given levels')
+    character_items_assigned = models.ForeignKey(Character, on_delete=models.SET_NULL, null=True, blank=True, related_name='dm_items', help_text='Character given item / gold / downtime rewards')
+
+    def __str__(self):
+        return f"{self.dm.username} - {self.name}"

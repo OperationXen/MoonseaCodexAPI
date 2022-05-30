@@ -19,7 +19,8 @@ class DMRewardSerialiser(serializers.ModelSerializer):
 
     class Meta:
         model = DMReward
-        fields = ['datetime', 'dm', 'name', 'gold', 'downtime', 'hours', 'character_level_assigned', 'character_items_assigned']
+        fields = ['uuid', 'datetime', 'dm', 'name', 'gold', 'downtime', 'hours', 'character_level_assigned', 'character_items_assigned']
+        read_only_fields = ['uuid']
 
 
 class DMRewardUpdateSerialiser(serializers.ModelSerializer):
