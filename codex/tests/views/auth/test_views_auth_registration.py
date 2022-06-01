@@ -14,9 +14,8 @@ class TestCodexUserRegistration(TestCase):
     valid_data = {
         'username': 'testuser_new',
         'email': 'testuser_new@moonseacodex.local',
-        'password1': 'new_test_password',
-        'password2': 'new_test_password',
-        'discord_id': 'MrDiscord#1337'
+        'discord_id': 'MrDiscord#1337',
+        'password': 'new_test_password',
     }
 
     def test_cannot_create_blank_codexuser(self) -> None:
@@ -47,15 +46,6 @@ class TestCodexUserRegistration(TestCase):
 
         response = self.client.post(reverse('register'), test_data)
         self.assertEqual(response.status_code, HTTP_400_BAD_REQUEST)
-
-    def test_passwords_must_match(self) -> None:
-        """ Test that mismatching passwords fail with a sensible error """
-        test_data = copy(self.valid_data)
-        test_data['password2'] = 'NeW_TeSt_PaSsWoRd'
-
-        response = self.client.post(reverse('register'), test_data)
-        self.assertEqual(response.status_code, HTTP_400_BAD_REQUEST)
-        self.assertIn('password', response.data)
 
     def test_can_create_valid_codexuser(self) -> None:
         """ Test that a valid user can be registered """
