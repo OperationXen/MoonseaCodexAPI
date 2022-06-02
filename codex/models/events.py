@@ -1,5 +1,6 @@
 import uuid
 from django.db import models
+from django.utils import timezone
 from django.contrib.auth import get_user_model
 
 from codex.models.items import MagicItem
@@ -12,7 +13,7 @@ user_model = get_user_model()
 class Game(models.Model):
     """Record of a game of D&D"""
     uuid = models.UUIDField(default=uuid.uuid4, editable=False)
-    datetime = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+    datetime = models.DateTimeField(default=timezone.now, null=True, blank=True)
 
     name = models.CharField(max_length=32, blank=True, null=True, help_text="Module name")
     dm = models.ForeignKey(DungeonMasterInfo, null=True, on_delete=models.SET_NULL, related_name='games', help_text='Moonsea Codex DM (optional)')
