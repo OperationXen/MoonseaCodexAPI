@@ -1,4 +1,3 @@
-from types import NoneType
 from codex.models.dungeonmaster import DungeonMasterInfo
 
 
