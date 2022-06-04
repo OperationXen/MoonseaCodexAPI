@@ -7,7 +7,7 @@ from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from codex.models.events import DMReward
 from codex.models.character import Character
 from codex.models.dungeonmaster import DungeonMasterInfo
-from codex.serialisers.dm_info import DMRewardSerialiser, DMRewardUpdateSerialiser
+from codex.serialisers.dm_info import DMRewardSerialiser, DMRewardUpdateSerialiser, DMRewardDisplaySerialiser
 from codex.utils.dm_info import update_dm_hours
 
 
@@ -36,8 +36,11 @@ class DMRewardViewSet(viewsets.GenericViewSet):
         serialiser = DMRewardSerialiser(data=request.data)
         if serialiser.is_valid():
             reward = serialiser.save(dm=dm, character_level_assigned=character_levels, character_items_assigned=character_items)
-            update_dm_hours(dm, -int(request.data['hours']))
-            return Response(serialiser.data, HTTP_201_CREATED)
+            hours = request.data.get('hours')
+            if hours:
+                update_dm_hours(dm, -int(hours))
+            new_reward = DMRewardDisplaySerialiser(reward)            
+            return Response(new_reward.data, HTTP_201_CREATED)
         else:
             return Response({"message": "DM Reward creation failed"}, HTTP_400_BAD_REQUEST)
 
@@ -49,12 +52,12 @@ class DMRewardViewSet(viewsets.GenericViewSet):
         except ValidationError as ve:
             return Response({'message': 'Invalid DM Reward Identifier'}, HTTP_400_BAD_REQUEST)
 
-        serializer = DMRewardSerialiser(reward)
+        serializer = DMRewardDisplaySerialiser(reward)
         return Response(serializer.data)
 
     def list(self, request):
         """ List all events (paginated) """
-        serialiser = DMRewardSerialiser(self.get_queryset(), many=True)
+        serialiser = DMRewardDisplaySerialiser(self.get_queryset(), many=True)
         return self.get_paginated_response(self.paginate_queryset(serialiser.data))
 
     def partial_update(self, request, *args, **kwargs):

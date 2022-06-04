@@ -61,4 +61,4 @@ class DMReward(models.Model):
     character_items_assigned = models.ForeignKey(Character, on_delete=models.SET_NULL, null=True, blank=True, related_name='dm_items', help_text='Character given item / gold / downtime rewards')
 
     def __str__(self):
-        return f"{self.dm.username} - {self.name}"
+        return f"{self.dm.player.username} - {self.name}"
