@@ -32,6 +32,17 @@ class DMRewardUpdateSerialiser(serializers.ModelSerializer):
         read_only_fields =['uuid', 'dm']
 
 
+class DMRewardDisplaySerialiser(serializers.ModelSerializer):
+    """ Converts DMRewards for display """
+    dm_uuid = serializers.ReadOnlyField(source="dm.uuid")
+    character_level_assigned = serializers.ReadOnlyField(source='character_level_assigned.uuid')
+    character_items_assigned = serializers.ReadOnlyField(source='character_items_assigned.uuid')
+
+    class Meta:
+        model = DMReward
+        fields = ['uuid', 'datetime', 'dm_uuid', 'name', 'gold', 'downtime', 'hours', 'character_level_assigned', 'character_items_assigned']
+
+
 class DMGameSerialiser(serializers.ModelSerializer):
     """ serialiser for games DMed """
 

@@ -3,6 +3,7 @@
     "model": "codex.dungeonmasterinfo",
     "pk": 1,
     "fields": {
+      "uuid": "ff0079fb-d3b9-4717-907b-a2ef16052287",
       "player": 1,
       "hours": 10
     }
@@ -11,6 +12,7 @@
     "model": "codex.dungeonmasterinfo",
     "pk": 2,
     "fields": {
+      "uuid": "c73f3db8-676e-4566-bdcd-d0f2aadf4798",
       "player": 2,
       "hours": 100
     }
