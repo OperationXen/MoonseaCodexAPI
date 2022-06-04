@@ -6,6 +6,7 @@ from .users import CodexUser
 
 class Character(models.Model):
     """Representation of a character"""
+    uuid = models.UUIDField(default=uuid.uuid4, editable=False)
     player = models.ForeignKey(
         CodexUser,
         on_delete=models.SET_NULL,

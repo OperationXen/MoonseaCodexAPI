@@ -79,3 +79,11 @@ class TestDMRewardCRUDViews(TestCase):
         self.assertEqual(response.status_code, HTTP_200_OK)
         self.assertEqual(response.data['count'], 1)
         self.assertEqual(response.data['results'][0]['name'], "Test Reward")
+
+    def test_can_award_level(self) -> None:
+        """ test that a dm reward can be used to grant a level to a character """
+        pass
+
+    def test_can_award_items(self) -> None:
+        """ ensure that a dm reward can be applied to an arbitrary character """
+        pass

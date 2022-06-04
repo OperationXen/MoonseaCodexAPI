@@ -51,7 +51,7 @@ class DMReward(models.Model):
     datetime = models.DateTimeField(auto_now_add=True, null=True, blank=True)
 
     name = models.CharField(max_length=32, blank=True, null=True, help_text="Service reward name")
-    dm = models.ForeignKey(user_model, null=True, on_delete=models.CASCADE, related_name='dm_rewards', help_text='Moonsea Codex DM')
+    dm = models.ForeignKey(DungeonMasterInfo, null=True, on_delete=models.CASCADE, related_name='rewards', help_text='Moonsea Codex DM')
     hours = models.IntegerField(null=True, default=0, help_text="Number of service hours spent")
     gold = models.IntegerField(default=0, help_text="Gold awarded")
     downtime = models.IntegerField(default=0, help_text="Days of downtime")
