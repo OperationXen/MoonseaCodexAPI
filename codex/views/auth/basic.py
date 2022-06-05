@@ -1,4 +1,3 @@
-
 from django.contrib.auth.password_validation import validate_password
 from django.contrib.auth import authenticate, logout, login
 from django.core.exceptions import ValidationError
