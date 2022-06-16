@@ -17,7 +17,7 @@ else:
     DEBUG=True
 
 SERVER = getenv("SERVER")
-ALLOWED_HOSTS = [SERVER] if SERVER else []
+ALLOWED_HOSTS = ['127.0.0.1:8000'] if SERVER else []
 CSRF_TRUSTED_ORIGINS=[f"https://{SERVER}"] if SERVER else []
 
 # Application definition
