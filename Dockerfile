@@ -21,6 +21,6 @@ ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 RUN pip install --upgrade pip setuptools wheel && pip install -r requirements.txt
 RUN python manage.py collectstatic --no-input
 # Enable site
-RUN mv /moonseacodex_api/deploy/api.conf /etc/apache2/sites-available/api.conf && a2ensite api
+RUN mv /moonseacodex_api/deploy/api.conf /etc/apache2/sites-available/000-default.conf && a2ensite 000-default
 
 CMD ["apachectl", "-D",  "FOREGROUND"]
