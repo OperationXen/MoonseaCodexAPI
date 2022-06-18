@@ -15,7 +15,7 @@ class Character(models.Model):
         help_text="The player who owns this character",
     )
     name = models.CharField(max_length=64, blank=False, default="Unnamed character")
-    portrait = models.ImageField(upload_to="character/artwork", null=True, blank=True)
+    artwork = models.ImageField(upload_to="character/artwork", null=True, blank=True)
     token = models.ImageField(upload_to="character/tokens", null=True, blank=True)
     sheet = models.URLField(max_length=256, blank=True, null=True, help_text="Link to DND Beyond character sheet")
     public = models.BooleanField(default=True, help_text="Allow anyone to view this character")
