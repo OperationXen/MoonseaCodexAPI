@@ -1,4 +1,5 @@
 import base64
+from pickle import FALSE
 
 from rest_framework.views import APIView
 from rest_framework.status import *
@@ -15,12 +16,15 @@ class CharacterImageView(APIView):
             character = Character.objects.get(id=id)
             if character.player == request.user:
                 filedata = request.data.get("content")
+                filename = request.data.get("name")
                 _, imgstr = filedata.split(';base64,')
                 if image_type == "artwork":
-                    character.artwork.save(f"{character.player.username}-{character.name}-{character.pk}", ContentFile(base64.b64decode(imgstr)))
+                    character.artwork.delete(False)
+                    character.artwork.save(filename, ContentFile(base64.b64decode(imgstr)))
                     return Response({"message" : "File data upload OK", "path": character.artwork.url}, HTTP_200_OK)
                 elif image_type == "token":
-                    character.token.save(f"{character.player.username}-{character.name}-{character.pk}", ContentFile(base64.b64decode(imgstr)))
+                    character.token.delete(False)
+                    character.token.save(filename, ContentFile(base64.b64decode(imgstr)))
                     return Response({"message" : "File data upload OK", "path": character.token.url}, HTTP_200_OK)
             else:
                 return Response({"message" : "You do not own the character you are attempting to change"}, HTTP_403_FORBIDDEN)
