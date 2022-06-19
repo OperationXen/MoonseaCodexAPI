@@ -19,8 +19,6 @@ class CharacterImageViews(TestCase):
         b'\x02\x4c\x01\x00\x3b'
     )
     valid_data = {"name": "small.gif", "content":f"data:image/gif;base64,{base64.b64encode(test_image_gif)}", "lastModified": "1653158867634"}
-    
-#        uploaded = SimpleUploadedFile('small.gif', small_gif, content_type='image/gif')
 
     def test_anonymous_user_cannot_change_data(self) -> None:
         """ A user who isn't logged in should be prevented from updating character images """
