@@ -5,7 +5,7 @@
     "fields": {
       "player": 2,
       "name": "Meepo",
-      "portrait": "",
+      "artwork": "",
       "token": "",
       "sheet": null,
       "public": true,
@@ -30,7 +30,7 @@
     "fields": {
       "player": 2,
       "name": "Meela",
-      "portrait": "",
+      "artwork": "",
       "token": "",
       "sheet": null,
       "public": true,
@@ -55,7 +55,7 @@
     "fields": {
       "player": 2,
       "name": "Meesha",
-      "portrait": "",
+      "artwork": "",
       "token": "",
       "sheet": null,
       "public": false,
