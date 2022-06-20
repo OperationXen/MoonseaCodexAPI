@@ -36,7 +36,7 @@ class CharacterDetailsSerialiser(serializers.ModelSerializer):
 
     class Meta:
         model = Character
-        exclude = ["player", "public"]
+        exclude = ['id', 'player', 'public']
         read_only_fields = ['uuid']
 
 

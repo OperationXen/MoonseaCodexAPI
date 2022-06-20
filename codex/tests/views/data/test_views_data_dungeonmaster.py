@@ -8,7 +8,7 @@ from django.urls import reverse
 from codex.models.dungeonmaster import DungeonMasterInfo
 
 
-class DungeonMasterLogCRUDViews(TestCase):
+class TestDungeonMasterLogCRUDViews(TestCase):
     """Check dm log update and retrieve functionality """
     fixtures = ["test_users", "test_dungeonmaster_info"]
     valid_data={
