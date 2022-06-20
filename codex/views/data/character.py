@@ -2,6 +2,8 @@ from rest_framework import viewsets
 from rest_framework.status import *
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
 
 from codex.models.character import Character
 from codex.serialisers.data import CharacterSerialiser, CharacterDetailsSerialiser
@@ -9,13 +11,16 @@ from codex.serialisers.data import CharacterSerialiser, CharacterDetailsSerialis
 
 class CharacterViewSet(viewsets.GenericViewSet):
     """CRUD views for character model"""
+    lookup_field = "uuid"
+    lookup_url_kwarg = "uuid"
+    lookup_value_regex = '[\-0-9a-f]{36}'
 
     serializer_class = CharacterSerialiser
     permission_classes = [IsAuthenticatedOrReadOnly]
 
     def get_queryset(self):
         """Retrieve base queryset"""
-        return Character.objects.filter(public=True)
+        return Character.objects.all()
 
     def create(self, request):
         """Create a new character, ownership set to requesting user"""
@@ -35,7 +40,12 @@ class CharacterViewSet(viewsets.GenericViewSet):
 
     def list(self, request):
         """List all characters (paginated)"""
-        serialiser = CharacterDetailsSerialiser(self.get_queryset(), many=True)
+        if request.user.is_anonymous:
+            return Response({"message": "You need to log in to do that"}, HTTP_403_FORBIDDEN)
+
+        queryset = self.get_queryset()
+        queryset = queryset.filter(player = request.user)
+        serialiser = CharacterDetailsSerialiser(queryset, many=True)
         return self.get_paginated_response(self.paginate_queryset(serialiser.data))
 
     def partial_update(self, request, *args, **kwargs):

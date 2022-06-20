@@ -1,7 +1,6 @@
 import base64
 from copy import copy
 
-from django.core.files.uploadedfile import SimpleUploadedFile
 from rest_framework.status import *
 from django.test import TestCase
 from django.urls import reverse
@@ -9,7 +8,7 @@ from django.urls import reverse
 from codex.models.character import Character
 
 
-class CharacterImageViews(TestCase):
+class TestCharacterImageViews(TestCase):
     """ Check character image upload functionality """
     fixtures = ["test_users", "test_characters"]
 

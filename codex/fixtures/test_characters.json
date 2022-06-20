@@ -12,7 +12,11 @@
       "season": 11,
       "race": "Kobold",
       "level": 10,
-      "classes": "Wizard (Abjuration) 10",
+      "classes": {
+        "name": "Wizard",
+        "subclass": "College of Abjuration",
+        "value": 10
+      },
       "gold": 423.1,
       "downtime": null,
       "ac": 16,
@@ -37,7 +41,11 @@
       "season": 11,
       "race": "Kobold",
       "level": 3,
-      "classes": "Paladin (Vengeance) 3",
+      "classes": {
+        "name": "Paladin",
+        "subclass": "Oath of Vengeance",
+        "value": 3
+      },
       "gold": 500.0,
       "downtime": 0.0,
       "ac": 18,
@@ -53,7 +61,7 @@
     "model": "codex.character",
     "pk": 3,
     "fields": {
-      "player": 2,
+      "player": 3,
       "name": "Meesha",
       "artwork": "",
       "token": "",
@@ -62,7 +70,11 @@
       "season": 11,
       "race": "Kobold",
       "level": 1,
-      "classes": "Rogue () 1",
+      "classes": {
+        "name": "Rogue",
+        "subclass": "",
+        "value": 1
+      },
       "gold": 10.0,
       "downtime": 0.0,
       "ac": 14,
