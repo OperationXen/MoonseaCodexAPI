@@ -51,3 +51,19 @@ class Character(models.Model):
     def __str__(self):
         """ String representation """
         return f"{self.player.username} - {self.name}"
+
+    def save(self, *args, **kwargs):
+        """ Override save method to auto calculate level from class levels """
+        # coerce classes to a list if given a single instance
+        if type(self.classes) == dict:
+            self.classes = [self.classes]
+
+        accumulator = 0
+        try:
+            for item in self.classes:
+                accumulator += item['value']
+            self.level = accumulator
+        except Exception:
+            self.level = 1
+
+        super().save(*args, **kwargs)
