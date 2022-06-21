@@ -23,7 +23,7 @@ router.register(r'dm_game', DMGamesViewSet, basename='dm_game')
 urlpatterns = [
     path('dm_events/<uuid:dm_uuid>', DMEventView.as_view(), name='dm_events'),
     re_path('^dm_events/*', DMEventView.as_view(), name='dm_events'),
-    re_path('^character/(?P<id>[0-9]+)/(?P<image_type>(artwork|token))/?', CharacterImageView.as_view(), name='character_artwork'),
+    re_path('^character/(?P<uuid>[0-9a-f\-]{36})/(?P<image_type>(artwork|token))/?', CharacterImageView.as_view(), name='character_artwork'),
     #re_path('^character/(?P<uuid>[0-9a-f\-]{32,})/?', CharacterViewSet.as_view({'get': 'retrieve', }), name='character-detail'),
     #re_path('^character/?$', CharacterViewSet.as_view(), name="character-list")
 ]

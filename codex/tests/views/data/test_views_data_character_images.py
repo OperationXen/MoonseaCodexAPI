@@ -22,25 +22,28 @@ class TestCharacterImageViews(TestCase):
     def test_anonymous_user_cannot_change_data(self) -> None:
         """ A user who isn't logged in should be prevented from updating character images """
         test_data = copy(self.valid_data)
+        character = Character.objects.get(pk=1)
         
-        response = self.client.post(reverse("character_artwork", kwargs={"id": "1", "image_type": "artwork"}), test_data)
+        response = self.client.post(reverse("character_artwork", kwargs={"uuid": character.uuid, "image_type": "artwork"}), test_data)
         self.assertEqual(response.status_code, HTTP_403_FORBIDDEN)
 
     def test_user_cannot_change_other_data(self) -> None:
         """ A logged in user who attempts to change another user's character info should be given a 403 error """
         test_data = copy(self.valid_data)
+        character = Character.objects.get(pk=1)
         
         self.client.login(username="testuser2", password="testpassword")
-        response = self.client.post(reverse("character_artwork", kwargs={"id": "1", "image_type": "artwork"}), test_data)
+        response = self.client.post(reverse("character_artwork", kwargs={"uuid": character.uuid, "image_type": "artwork"}), test_data)
         self.assertEqual(response.status_code, HTTP_403_FORBIDDEN)
 
     def test_user_can_update_own_character_artwork(self) -> None:
         """ A logged in user can successfully change their own character imagery (artwork) """
         test_data = copy(self.valid_data)
+        character = Character.objects.get(pk=1)
         
         self.client.login(username="testuser1", password="testpassword")
         initial = Character.objects.get(pk=1)
-        response = self.client.post(reverse("character_artwork", kwargs={"id": "1", "image_type": "artwork"}), test_data)
+        response = self.client.post(reverse("character_artwork", kwargs={"uuid": character.uuid, "image_type": "artwork"}), test_data)
         character = Character.objects.get(pk=1)
         self.assertEqual(response.status_code, HTTP_200_OK)
         self.assertIn("message", response.data)
@@ -56,10 +59,11 @@ class TestCharacterImageViews(TestCase):
     def test_user_can_update_own_character_token(self) -> None:
         """ A logged in user can successfully change their own character imagery (token) """
         test_data = copy(self.valid_data)
+        character = Character.objects.get(pk=1)
         
         self.client.login(username="testuser1", password="testpassword")
         initial = Character.objects.get(pk=1)
-        response = self.client.post(reverse("character_artwork", kwargs={"id": "1", "image_type": "token"}), test_data)
+        response = self.client.post(reverse("character_artwork", kwargs={"uuid": character.uuid, "image_type": "token"}), test_data)
         character = Character.objects.get(pk=1)
         self.assertEqual(response.status_code, HTTP_200_OK)
         self.assertIn("message", response.data)

@@ -10,10 +10,10 @@ from codex.models.character import Character
 
 class CharacterImageView(APIView):
     """ Character image views """
-    def post(self, request, id, image_type):
+    def post(self, request, uuid, image_type):
         """ submit a new image for the character """
         try:
-            character = Character.objects.get(id=id)
+            character = Character.objects.get(uuid=uuid)
             if character.player == request.user:
                 filedata = request.data.get("content")
                 filename = request.data.get("name")
