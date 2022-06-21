@@ -61,7 +61,7 @@ class TestCharacterBasicViews(TestCase):
             self.assertIsInstance(response.data[key], (int|float|None), msg=f"{key} is not a number")
 
         self.assertIn('classes', response.data)
-        self.assertIsInstance(response.data['classes'], dict)
+        self.assertIsInstance(response.data['classes'], dict|list)
 
     def test_anonymous_user_cannot_list_all_characters(self) -> None:
         """ Anonymous user shouldn't be able to trawl characters """
