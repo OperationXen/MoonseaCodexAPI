@@ -11,9 +11,10 @@ from codex.serialisers.data import CharacterSerialiser, CharacterDetailsSerialis
 
 class CharacterViewSet(viewsets.GenericViewSet):
     """CRUD views for character model"""
+
     lookup_field = "uuid"
     lookup_url_kwarg = "uuid"
-    lookup_value_regex = '[\-0-9a-f]{36}'
+    lookup_value_regex = "[\-0-9a-f]{36}"
 
     serializer_class = CharacterSerialiser
     permission_classes = [IsAuthenticatedOrReadOnly]
@@ -32,10 +33,10 @@ class CharacterViewSet(viewsets.GenericViewSet):
         else:
             return Response({"message": "Character creation failed"}, HTTP_400_BAD_REQUEST)
 
-    def retrieve(self, response, *args, **kwargs):
+    def retrieve(self, request, *args, **kwargs):
         """Get details for a single character"""
         character = self.get_object()
-        serializer = CharacterDetailsSerialiser(character)
+        serializer = CharacterDetailsSerialiser(character, context={"user": request.user})
         return Response(serializer.data)
 
     def list(self, request):
@@ -44,8 +45,8 @@ class CharacterViewSet(viewsets.GenericViewSet):
             return Response({"message": "You need to log in to do that"}, HTTP_403_FORBIDDEN)
 
         queryset = self.get_queryset()
-        queryset = queryset.filter(player = request.user)
-        serialiser = CharacterDetailsSerialiser(queryset, many=True)
+        queryset = queryset.filter(player=request.user)
+        serialiser = CharacterDetailsSerialiser(queryset, many=True, context={"user": request.user})
         return self.get_paginated_response(self.paginate_queryset(serialiser.data))
 
     def partial_update(self, request, *args, **kwargs):
