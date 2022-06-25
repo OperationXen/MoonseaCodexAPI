@@ -6,12 +6,12 @@ from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
 from codex.models.events import Game
 from codex.models.dungeonmaster import DungeonMasterInfo
-from codex.serialisers.dm_info import DMGameSerialiser, DMGameUpdateSerialiser
+from codex.serialisers.dm_events import DMGameSerialiser, DMGameUpdateSerialiser
 from codex.utils.dm_info import update_dm_hours
 
 
 class DMGamesViewSet(viewsets.GenericViewSet):
-    """CRUD views for DM Reward model"""
+    """CRUD views for DM games"""
     serializer_class = DMGameSerialiser
     permission_classes = [IsAuthenticatedOrReadOnly]
 

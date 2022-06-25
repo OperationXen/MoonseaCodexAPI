@@ -41,20 +41,3 @@ class DMRewardDisplaySerialiser(serializers.ModelSerializer):
     class Meta:
         model = DMReward
         fields = ['uuid', 'datetime', 'dm_uuid', 'name', 'gold', 'downtime', 'hours', 'character_level_assigned', 'character_items_assigned']
-
-
-class DMGameSerialiser(serializers.ModelSerializer):
-    """ serialiser for games DMed """
-
-    class Meta:
-        model = Game
-        fields =['uuid', 'datetime', 'name', 'dm_name', 'dm', 'module', 'location', 'hours', 'hours_notes', 'notes', 'gold', 'downtime', 'levels']
-        read_only_fields = ['uuid']
-
-class DMGameUpdateSerialiser(serializers.ModelSerializer):
-    """ serialiser for updating games DMed """
-
-    class Meta:
-        model = Game
-        fields =['uuid', 'datetime', 'name', 'dm_name', 'dm', 'module', 'location', 'hours', 'hours_notes', 'notes', 'gold', 'downtime', 'levels']
-        read_only_fields = ['uuid', 'dm']

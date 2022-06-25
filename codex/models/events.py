@@ -23,6 +23,7 @@ class Game(models.Model):
     hours = models.IntegerField(default=0, help_text='DM Hours claimed')
     hours_notes = models.CharField(max_length=256, blank=True, null=True, help_text='Time breakdown for game')
     location = models.CharField(max_length=64, blank=True, null=True, help_text="Where the game was organised or run")
+    characters = models.ManyToManyField(Character, related_name='games', help_text='Moonseacodex characters played')
 
     gold = models.IntegerField(default=0, help_text="Gold awarded")
     downtime = models.IntegerField(default=0, help_text="Days of downtime")

@@ -13,6 +13,24 @@ class DMGameSummary(serializers.ModelSerializer):
         read_only_fields = ['uuid']
 
 
+class DMGameSerialiser(serializers.ModelSerializer):
+    """ serialiser for games DMed """
+
+    class Meta:
+        model = Game
+        fields =['uuid', 'datetime', 'name', 'dm_name', 'dm', 'module', 'location', 'hours', 'hours_notes', 'notes', 'gold', 'downtime', 'levels']
+        read_only_fields = ['uuid']
+
+
+class DMGameUpdateSerialiser(serializers.ModelSerializer):
+    """ serialiser for updating games DMed """
+
+    class Meta:
+        model = Game
+        fields =['uuid', 'datetime', 'name', 'dm_name', 'dm', 'module', 'location', 'hours', 'hours_notes', 'notes', 'gold', 'downtime', 'levels']
+        read_only_fields = ['uuid', 'dm']
+
+
 class DMRewardSummary(serializers.ModelSerializer):
     """ Sumamry of DM rewards - for use in list view """
     event_type = serializers.ReadOnlyField(default="reward")
