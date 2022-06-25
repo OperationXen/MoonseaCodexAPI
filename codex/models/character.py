@@ -36,7 +36,7 @@ class Character(models.Model):
     race = models.CharField(max_length=32, blank=True, null=True)
     level = models.IntegerField(default=1, help_text='Total level')
     classes = models.JSONField(default=dict, help_text="A JSON object detailing current classes")
-    gold = models.FloatField(null=True, help_text="Gold held by character (silver and copper in decimal)")
+    gold = models.FloatField(null=True, blank=True, help_text="Gold held by character (silver and copper in decimal)")
     downtime = models.FloatField(null=True, blank=True, help_text="Days of downtime")
     # Useful information
     ac = models.IntegerField(null=True, verbose_name='AC', help_text='Base armour class')

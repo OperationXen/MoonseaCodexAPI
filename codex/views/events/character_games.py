@@ -27,19 +27,19 @@ class CharacterGamesViewSet(viewsets.GenericViewSet):
     def create(self, request):
         """ Create a new game and place the current character into it """
         try:
-            character_uuid = request.data['uuid']
+            character_uuid = request.data['character_uuid']
             character = Character.objects.get(uuid=character_uuid)
         except (KeyError, Character.DoesNotExist):
             return Response({"message": "Character UUID not set or invalid"}, HTTP_400_BAD_REQUEST)
 
-        if character.player is not request.user:
+        if character.player != request.user:
             return Response({"message": "This character does not belong to you"}, HTTP_403_FORBIDDEN)
         
         serialiser = CharacterGameSerialiser(data=request.data)
         if serialiser.is_valid():          
             game = serialiser.save()
-            game.players.add(character)
-            update_character_rewards(character, gold=request.data.get('gold'), downtime=request.data.get('downtime'))
+            game.characters.add(character)
+            update_character_rewards(character, gold=float(request.data.get('gold')), downtime=int(request.data.get('downtime')))
             return Response(serialiser.data, HTTP_201_CREATED)
         else:
             return Response({"message": "Game creation failed, invalid data"}, HTTP_400_BAD_REQUEST)
@@ -49,7 +49,6 @@ class CharacterGamesViewSet(viewsets.GenericViewSet):
         game=self.get_object()
         serializer = CharacterGameSerialiser(game)
         return Response(serializer.data)
-
 
     def list(self, request):
         """ List all events (paginated) """
