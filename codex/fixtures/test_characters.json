@@ -20,7 +20,7 @@
         }
       ],
       "gold": 423.1,
-      "downtime": null,
+      "downtime": 0.0,
       "ac": 16,
       "hp": 34,
       "pp": 10,

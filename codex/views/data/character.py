@@ -2,8 +2,6 @@ from rest_framework import viewsets
 from rest_framework.status import *
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
-from django.contrib.auth.decorators import login_required
-from django.utils.decorators import method_decorator
 
 from codex.models.character import Character
 from codex.serialisers.data import CharacterSerialiser, CharacterDetailsSerialiser

@@ -128,7 +128,7 @@ class TestCharacterBasicViews(TestCase):
         initial = Character.objects.get(pk=3)
         self.assertNotEqual(initial.player.username, "testuser1")
 
-        response = self.client.patch(reverse("character-detail", kwargs={"uuid": initial.uuid}), test_data)
+        response = self.client.patch(reverse("character-detail", kwargs={"uuid": initial.uuid}), json.dumps(test_data), content_type="application/json")
         self.assertEqual(response.status_code, HTTP_403_FORBIDDEN)
         self.assertIn("message", response.data)
         character = Character.objects.get(pk=3)
