@@ -93,4 +93,4 @@ class CharacterGamesViewSet(viewsets.GenericViewSet):
         if not game.characters.all().exists():
             game.delete()
             return Response({"message": "Game has no players left, deleted"}, HTTP_200_OK)
-        return Response({"message": "Game has players outsdtanding and so cannot be deleted"}, HTTP_200_OK)
+        return Response({"message": "Game has players outstanding and so cannot be deleted"}, HTTP_200_OK)
