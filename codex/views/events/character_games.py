@@ -6,7 +6,7 @@ from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
 from codex.models.events import Game
 from codex.models.character import Character
-from codex.models.dungeonmaster import DungeonMasterInfo
+
 from codex.serialisers.character_events import CharacterGameSerialiser, CharacterGameSummarySerialiser
 from codex.utils.character import update_character_rewards
 
@@ -51,16 +51,16 @@ class CharacterGamesViewSet(viewsets.GenericViewSet):
         return Response(serializer.data)
 
     def list(self, request):
-        """ List all events (paginated) """
-        try:
-            character_uuid = request.data["uuid"]
+        """ List all events for character, or for player if logged in and no character specified (paginated) """
+        if 'character_uuid' in request.GET:
+            character_uuid = request.GET["character_uuid"]
             character = Character.objects.get(uuid=character_uuid)
-            assert character is not None
-        except (KeyError, AssertionError, Character.DoesNotExist):
-            return Response({"message": "Character UUID not set or invalid"}, HTTP_400_BAD_REQUEST)
+            queryset = character.games.all()
+        else:
+            if not request.user.is_authenticated:
+                return Response({"message": "Character UUID not set or invalid"}, HTTP_400_BAD_REQUEST)
+            queryset = Game.objects.filter(characters__player=request.user)
 
-        # Seach for all games where the character identified was in the party
-        queryset = self.get_queryset().filter(characters=character)
         serialiser = CharacterGameSummarySerialiser(queryset, many=True)
         return self.get_paginated_response(self.paginate_queryset(serialiser.data))
 
@@ -70,7 +70,7 @@ class CharacterGamesViewSet(viewsets.GenericViewSet):
         try:
             character_uuid = request.data['character_uuid']    
             character = Character.objects.get(uuid=character_uuid)
-            if character.player is not request.user:
+            if character.player != request.user:
                 return Response({"message": "This character does not belong to you"}, HTTP_403_FORBIDDEN)
         except (KeyError, Character.DoesNotExist):
             return Response({"message": "Character UUID not set or invalid"}, HTTP_400_BAD_REQUEST)
@@ -83,7 +83,7 @@ class CharacterGamesViewSet(viewsets.GenericViewSet):
         try:
             character_uuid = request.data['character_uuid']
             character = Character.objects.get(uuid=character_uuid)
-            if character.player is not request.user:
+            if character.player != request.user:
                 return Response({"message": "This character does not belong to you"}, HTTP_403_FORBIDDEN)
         except (KeyError, Character.DoesNotExist):
             character = None

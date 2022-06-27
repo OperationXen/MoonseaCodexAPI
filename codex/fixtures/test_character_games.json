@@ -1,0 +1,62 @@
+[
+  {
+    "model": "codex.game",
+    "pk": 1,
+    "fields": {
+      "uuid": "8739d408-2e89-4af1-b4d0-442823b44e3d",
+      "datetime": "2022-06-20T11:46:37Z",
+      "name": "Darkwood Webs",
+      "dm": 1,
+      "dm_name": "Admin",
+      "notes": "",
+      "module": "DDAL0001A",
+      "hours": 4,
+      "hours_notes": null,
+      "location": "Foundry",
+      "gold": 250,
+      "downtime": 10,
+      "levels": 1,
+      "characters": [2]
+    }
+  },
+  {
+    "model": "codex.game",
+    "pk": 2,
+    "fields": {
+      "uuid": "8739d408-2e89-4af1-b4d0-442823b44e3e",
+      "datetime": "2022-06-21T11:46:37Z",
+      "name": "A thousand tiny deaths ",
+      "dm": 1,
+      "dm_name": "Admin",
+      "notes": "Kobolds everywhere",
+      "module": "DDAL06-01",
+      "hours": 6,
+      "hours_notes": "3 hours playing, plus 3 hours mentoring",
+      "location": "Foundry",
+      "gold": 250,
+      "downtime": 10,
+      "levels": 1,
+      "characters": [2]
+    }
+  },
+  {
+    "model": "codex.game",
+    "pk": 3,
+    "fields": {
+      "uuid": "8739d408-2e89-4af1-b4d0-442823b44e3f",
+      "datetime": "2022-06-22T11:46:37Z",
+      "name": "Best Served Cold",
+      "dm": 1,
+      "dm_name": "Admin",
+      "notes": "Also found a spellbook",
+      "module": "DDAL0505",
+      "hours": 4,
+      "hours_notes": "4 hours straight run",
+      "location": "Foundry",
+      "gold": 250,
+      "downtime": 10,
+      "levels": 1,
+      "characters": [2]
+    }
+  }
+]
