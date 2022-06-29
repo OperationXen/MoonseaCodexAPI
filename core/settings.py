@@ -6,7 +6,9 @@ from string import ascii_letters
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SENDGRID_API_KEY = getenv("EMAIL_API_KEY")
+EMAIL_API_KEY = getenv("EMAIL_API_KEY")
+DEFAULT_EMAIL_SENDER = getenv("DEFAULT_EMAIL_SENDER", "")
+
 RANDOM_KEY = "".join(choices(ascii_letters, k=128))
 DJANGO_SECRET = getenv("DJANGO_SECRET")
 SECRET_KEY = DJANGO_SECRET or RANDOM_KEY
@@ -134,7 +136,8 @@ MEDIA_ROOT = BASE_DIR / "media/"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 EMAIL_HOST = "smtp.sendgrid.net"
+DEFAULT_FROM_EMAIL = DEFAULT_EMAIL_SENDER
 EMAIL_HOST_USER = "apikey"
-EMAIL_HOST_PASSWORD = SENDGRID_API_KEY
+EMAIL_HOST_PASSWORD = EMAIL_API_KEY
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
