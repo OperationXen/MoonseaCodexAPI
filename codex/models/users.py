@@ -6,17 +6,20 @@ from django.db import models
 
 class CodexUser(AbstractUser):
     """Extended base user class"""
-    discord_id = models.CharField(max_length=32, blank=True, null=True, unique=True, help_text="Discord ID for bot integration")
-    email_verified = models.BooleanField(default=False, help_text='User has verified their email address')
+
+    discord_id = models.CharField(
+        max_length=32, blank=True, null=True, unique=True, help_text="Discord ID for bot integration"
+    )
+    email_verified = models.BooleanField(default=False, help_text="User has verified their email address")
 
     class Meta:
-        verbose_name = 'Codex User'
+        verbose_name = "Codex User"
         constraints = [
-            UniqueConstraint(Upper('username'), name='username_unique'),
-            UniqueConstraint(Upper('email'), name='email_unique'),
-            UniqueConstraint(Upper('discord_id'), name='discord_id_unique'),
+            UniqueConstraint(Upper("username"), name="username_unique"),
+            UniqueConstraint(Upper("email"), name="email_unique"),
+            UniqueConstraint(Upper("discord_id"), name="discord_id_unique"),
         ]
 
     def __str__(self) -> str:
-        """ String representation """
+        """String representation"""
         return f"{self.username}"
