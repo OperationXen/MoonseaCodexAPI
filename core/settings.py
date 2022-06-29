@@ -6,20 +6,21 @@ from string import ascii_letters
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-RANDOM_KEY = ''.join(choices(ascii_letters, k=128))
+SENDGRID_API_KEY = getenv("EMAIL_API_KEY")
+RANDOM_KEY = "".join(choices(ascii_letters, k=128))
 DJANGO_SECRET = getenv("DJANGO_SECRET")
 SECRET_KEY = DJANGO_SECRET or RANDOM_KEY
 
 if DJANGO_SECRET:
-    DEBUG=False
-    FORCE_SCRIPT_NAME = '/moonseacodex/'
-    ADMIN_URL="/moonseacodex/admin"
+    DEBUG = False
+    FORCE_SCRIPT_NAME = "/moonseacodex/"
+    ADMIN_URL = "/moonseacodex/admin"
 else:
-    DEBUG=True
+    DEBUG = True
 
 SERVER = getenv("SERVER")
-ALLOWED_HOSTS = ['127.0.0.1'] if SERVER else []
-CSRF_TRUSTED_ORIGINS=[f"https://{SERVER}"] if SERVER else []
+ALLOWED_HOSTS = ["127.0.0.1"] if SERVER else []
+CSRF_TRUSTED_ORIGINS = [f"https://{SERVER}"] if SERVER else []
 
 # Application definition
 INSTALLED_APPS = [
@@ -71,13 +72,13 @@ if DEBUG:
     }
 else:
     DATABASES = {
-        'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'postgres',
-        'USER': getenv("DB_USER"),
-        'PASSWORD': getenv("DB_PASS"),
-        'HOST': getenv("DB_HOST"),
-        'PORT': '5432',
+        "default": {
+            "ENGINE": "django.db.backends.postgresql_psycopg2",
+            "NAME": "postgres",
+            "USER": getenv("DB_USER"),
+            "PASSWORD": getenv("DB_PASS"),
+            "HOST": getenv("DB_HOST"),
+            "PORT": "5432",
         }
     }
 
@@ -100,11 +101,11 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': [
-        'codex.utils.security.SessionCSRFExemptAuthentication',
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "codex.utils.security.SessionCSRFExemptAuthentication",
     ],
-    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
-    'PAGE_SIZE': 100,
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.LimitOffsetPagination",
+    "PAGE_SIZE": 100,
 }
 
 
@@ -122,12 +123,18 @@ APPEND_SLASH = False
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
 STATIC_URL = "admin_static/"
-STATIC_ROOT = BASE_DIR / 'admin_static'
+STATIC_ROOT = BASE_DIR / "admin_static"
 
 MEDIA_URL = "media/"
-MEDIA_ROOT = BASE_DIR / 'media/'
+MEDIA_ROOT = BASE_DIR / "media/"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+EMAIL_HOST = "smtp.sendgrid.net"
+EMAIL_HOST_USER = "apikey"
+EMAIL_HOST_PASSWORD = SENDGRID_API_KEY
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
