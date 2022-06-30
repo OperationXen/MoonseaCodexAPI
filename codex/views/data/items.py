@@ -19,8 +19,8 @@ class MagicItemViewSet(viewsets.GenericViewSet):
         """ Create a new magic item """
         # Verify that the target character belongs to the requester
         try:
-            character_id = request.data.get('character')
-            character = Character.objects.get(id=character_id)
+            character_uuid = request.data.get('character_uuid')
+            character = Character.objects.get(id=character_uuid)
             if character.player != request.user:
                 return Response({'message': 'This character does not belong to you'}, HTTP_403_FORBIDDEN)
         except Character.DoesNotExist:
