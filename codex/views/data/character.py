@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
 from codex.models.character import Character
-from codex.serialisers.data import CharacterSerialiser, CharacterDetailsSerialiser
+from codex.serialisers.characters import CharacterSerialiser, CharacterDetailsSerialiser
 
 
 class CharacterViewSet(viewsets.GenericViewSet):
