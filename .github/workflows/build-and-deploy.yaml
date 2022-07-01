@@ -72,6 +72,7 @@ jobs:
             docker run -d --name ${{ secrets.CONTAINER_NAME }} --network=moonsea_net -p 127.0.0.1:8000:80 \
               -e DJANGO_SECRET=${{ secrets.DJANGO_SECRET }} -e DB_HOST=${{ secrets.DB_HOST }} \
               -e DB_USER=${{ secrets.DB_USER }} -e DB_PASS=${{ secrets.DB_PASS }} -e SERVER=${{ secrets.SERVER }} \
+              -e EMAIL_API_KEY=${{secrets.EMAIL_API_KEY}} -e DEFAULT_EMAIL_SENDER=${{ secrets.DEFAULT_EMAIL_SENDER }} \
               -v /var/opt/moonseacodex_media:/moonseacodex_api/media \
               operationxen/moonsea_codex_api:main
 
