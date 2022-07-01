@@ -16,18 +16,19 @@ class CustomUserCreationForm(UserCreationForm):
 class CustomUserAdmin(UserAdmin):
     add_form = CustomUserCreationForm
     model = CustomUser
-    list_display = ('username', 'discord_id', 'email', 'is_staff', 'is_active',)
-    list_filter = ('username', 'discord_id', 'email', 'is_staff', 'is_active',)
+    list_display = ('username', 'discord_id', 'email', 'is_staff', 'is_active', 'email_verified',)
+    list_filter = ('username', 'discord_id', 'email', 'is_staff', 'is_active', 'email_verified',)
 
     fieldsets = (
-        (None, {'fields': ('username', 'email', 'discord_id', 'password')}),
+        ('User Details', {'fields': ('username', 'email', 'discord_id', 'password', 'email_verified')}),
         ('Permissions', {'fields': ('is_staff', 'is_active')}),
     )
     add_fieldsets = (
-        (None, {
+        ('User Details', {
             'classes': ('wide',),
-            'fields': ('email', 'password1', 'password2', 'is_staff', 'is_active')}
+            'fields': ('email', 'discord_id', 'password1', 'password2', 'email_verified',)}
         ),
+        ('Permissions', {'fields': ('is_staff', 'is_active')})
     )
 
     search_fields = ('username', 'email', 'discord_id',)
