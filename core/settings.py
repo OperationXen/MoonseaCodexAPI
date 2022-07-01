@@ -6,6 +6,7 @@ from string import ascii_letters
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+DOMAIN = getenv("DOMAIN", "127.0.0.1:8000")
 EMAIL_API_KEY = getenv("EMAIL_API_KEY")
 DEFAULT_EMAIL_SENDER = getenv("DEFAULT_EMAIL_SENDER")
 

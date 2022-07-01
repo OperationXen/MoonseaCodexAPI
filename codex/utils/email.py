@@ -1,5 +1,5 @@
 from django.template.loader import render_to_string
-from core.settings import SERVER
+from core.settings import DOMAIN
 
 
 def send_account_confirm_email(request, user, activation_token):
@@ -10,7 +10,7 @@ def send_account_confirm_email(request, user, activation_token):
         {
             "user": user,
             "user_id": user.pk,
-            "domain": SERVER,
+            "domain": DOMAIN,
             "token": activation_token,
         },
     )
