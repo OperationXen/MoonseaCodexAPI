@@ -1,4 +1,4 @@
-from django.contrib.auth import authenticate, logout, login
+from django.contrib.auth import authenticate
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView, Response
 from rest_framework.status import *
@@ -14,3 +14,12 @@ class UserDetailsView(APIView):
         """ A request for user details """
         serialiser = CodexUserSerialiser(request.user)
         return Response(serialiser.data, status=HTTP_200_OK)
+
+    def patch(self, request) -> Response:
+        """ Allow a user to update their own details """
+        serialiser = CodexUserSerialiser(request.user, request.data, partial=True)
+        if serialiser.is_valid():
+            data = serialiser.save()
+            updated = CodexUserSerialiser(data)
+            return Response(updated.data, HTTP_200_OK)
+        return Response({'message': 'Unable to update account'})
