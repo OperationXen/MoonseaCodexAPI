@@ -28,7 +28,7 @@ class TestCodexUserModel(TestCase):
         discord_name = 'discord_name#1234'
 
         user = CodexUser.objects.get(username='testuser1')
-        self.assertEqual(user.discord_id, None)
+        self.assertNotEqual(user.discord_id, discord_name)
         user.discord_id = discord_name
         user.save()
 
