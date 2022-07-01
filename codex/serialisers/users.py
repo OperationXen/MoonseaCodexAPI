@@ -34,4 +34,5 @@ class CodexUserSerialiser(serializers.ModelSerializer):
 
     class Meta:
         model = CodexUser
-        fields = ['username', 'email', 'discord_id', 'dm_info']
+        fields = ['username', 'email', 'discord_id', 'dm_info', 'email_verified']
+        read_only_fields = ['email', 'dm_info', 'email_verified']
