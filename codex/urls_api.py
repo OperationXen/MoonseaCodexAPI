@@ -7,6 +7,7 @@ from codex.views.data.magicitems import MagicItemViewSet
 from codex.views.data.dungeonmaster import DMLogViewSet
 from codex.views.data.character import CharacterViewSet
 from codex.views.data.character_images import CharacterImageView
+from codex.views.data.discord import DiscordBotQueryView
 
 from codex.views.events.character_events import CharacterEventView
 from codex.views.events.character_games import CharacterGamesViewSet
@@ -28,6 +29,7 @@ urlpatterns = [
     path('character_events/<uuid:character_uuid>', CharacterEventView.as_view(), name='character_events'),
     re_path('^dm_events/*', DMEventView.as_view(), name='dm_events'),
     re_path('^character/(?P<uuid>[0-9a-f\-]{36})/(?P<image_type>(artwork|token))/?', CharacterImageView.as_view(), name='character_artwork'),
+    re_path('^discord_lookup/(?P<query_type>(character|items))/', DiscordBotQueryView.as_view(), name='discord_lookup')
 ]
 
 urlpatterns += router.urls
