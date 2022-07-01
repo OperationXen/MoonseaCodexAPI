@@ -5,13 +5,12 @@ from core.settings import SERVER
 def send_account_confirm_email(request, user, activation_token):
     """Generate a confirmatin token and send it to the user"""
     subject = "Welcome to the Moonsea Codex"
-    current_site = SERVER
     message = render_to_string(
         "emails/account_activation_email.html",
         {
             "user": user,
             "user_id": user.pk,
-            "domain": current_site.domain,
+            "domain": SERVER,
             "token": activation_token,
         },
     )
