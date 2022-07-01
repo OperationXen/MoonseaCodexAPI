@@ -7,7 +7,7 @@ from string import ascii_letters
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 EMAIL_API_KEY = getenv("EMAIL_API_KEY")
-DEFAULT_EMAIL_SENDER = getenv("DEFAULT_EMAIL_SENDER", "")
+DEFAULT_EMAIL_SENDER = getenv("DEFAULT_EMAIL_SENDER")
 
 RANDOM_KEY = "".join(choices(ascii_letters, k=128))
 DJANGO_SECRET = getenv("DJANGO_SECRET")
@@ -32,6 +32,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "rest_framework",
     "codex",
 ]
 
@@ -50,7 +51,7 @@ ROOT_URLCONF = "core.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [BASE_DIR / 'templates'],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
