@@ -21,7 +21,7 @@ class CustomUserAdmin(UserAdmin):
 
     fieldsets = (
         ('User Details', {'fields': ('username', 'email', 'discord_id', 'password', 'email_verified')}),
-        ('Permissions', {'fields': ('is_staff', 'is_active')}),
+        ('Permissions', {'fields': ('is_active', 'is_staff', 'is_superuser')}),
     )
     add_fieldsets = (
         ('User Details', {

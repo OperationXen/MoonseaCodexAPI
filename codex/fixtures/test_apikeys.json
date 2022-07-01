@@ -1,0 +1,14 @@
+[
+    {
+        "model": "codex.apikey",
+        "pk": 1,
+        "fields": {
+            "uuid": "c4ff2421-3c21-40ee-a334-7ac71e4a7e8f",
+            "name": "Predefined test key",
+            "description": "A key for use in fixtures",
+            "value": "qi3jONF2gk0uchwNTw6sD5kHhlHr33mF5QeVeHsUJxePjIDY90pvN0RIs1pTy4SP",
+            "datetime": "2022-07-01T12:25:59.629Z",
+            "user": 1
+        }
+    }
+]
