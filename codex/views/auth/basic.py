@@ -45,10 +45,14 @@ class RegisterCodexUser(APIView):
         """Receive and handle a registration request"""
         serialiser = CodexUserRegistrationSerialiser(data=request.data)
         if serialiser.is_valid(raise_exception=True):
-            user = serialiser.save()
-            new_user = CodexUserSerialiser(user, email_verified=False)
-            token = account_activation_token.make_token(new_user)
-            send_account_confirm_email(new_user, token)
+            user = serialiser.save(email_verified=False)
+            try:
+                token = account_activation_token.make_token(user)
+                send_account_confirm_email(request, user, token)
+                new_user = CodexUserSerialiser(user)
+            except Exception as e:
+                user.delete()
+                return Response({"message": "Unable to register your account"}, HTTP_500_INTERNAL_SERVER_ERROR)
             return Response(new_user.data, status=HTTP_200_OK)
 
 

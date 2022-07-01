@@ -1,0 +1,9 @@
+{% autoescape off %} 
+
+Hi {{ user.username }}, 
+
+Please click on the link below to activate your Moonsea Codex account: 
+
+https://{{ domain }}{% url 'activate' user_id=user_id token=token %} 
+
+{% endautoescape %}
