@@ -1,6 +1,6 @@
+from rest_framework.views import APIView
+from django.shortcuts import redirect, render
 from django.contrib.auth import login
-from rest_framework.views import APIView, Response
-from django.shortcuts import redirect
 from rest_framework.status import *
 
 from codex.utils.tokens import account_activation_token
@@ -21,5 +21,5 @@ class ActivateCodexUser(APIView):
             user.email_verified = True
             user.save()
             login(request, user)
-            return redirect('/')
-        return Response({'message': 'Unable to verify email address'}, HTTP_400_BAD_REQUEST)
+            return redirect('/moonseacodex/')
+        return render(request, 'codex/account_activation_failed.html')
