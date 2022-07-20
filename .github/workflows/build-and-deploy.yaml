@@ -74,7 +74,7 @@ jobs:
               -e DB_USER=${{ secrets.DB_USER }} -e DB_PASS=${{ secrets.DB_PASS }} \
               -e SERVER=${{ secrets.SERVER }} -e DOMAIN=${{ secrets.DOMAIN }} \
               -e EMAIL_API_KEY=${{secrets.EMAIL_API_KEY}} -e DEFAULT_EMAIL_SENDER=${{ secrets.DEFAULT_EMAIL_SENDER }} \
-              -v /var/opt/moonseacodex_media:/moonseacodex_api/media \
+              --restart=always -v /var/opt/moonseacodex_media:/moonseacodex_api/media \
               operationxen/moonsea_codex_api:main
 
       - name: Database migrations
