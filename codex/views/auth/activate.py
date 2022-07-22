@@ -1,6 +1,8 @@
-from rest_framework.views import APIView, Response
-from django.shortcuts import redirect, render
 from django.contrib.auth import login
+from django.shortcuts import redirect, render
+from rest_framework.views import APIView, Response
+from django.core.exceptions import ValidationError
+from django.contrib.auth.password_validation import validate_password
 from rest_framework.status import *
 
 from codex.utils.email import send_password_reset_email
@@ -43,7 +45,13 @@ class PasswordReset(APIView):
     def post(self, request, user_id, token):
         """ called when the reset request is made """
         user = CodexUser.objects.get(pk=user_id)
+        password = request.post.get('password')      
+        try:
+            validate_password(password, user)
+        except ValidationError as ve:
+                return Response({'message': 'New password is invalid'}, status=HTTP_400_BAD_REQUEST)    
+
         if user is not None and password_reset_token.check_token(user, token):
-            user.set_password(request.post.get('password'))
+            user.set_password(password)
             return Response({'message': 'Password updated'}, status=HTTP_200_OK)
         return Response({'message':'Failed to update password'}, status=HTTP_400_BAD_REQUEST)
