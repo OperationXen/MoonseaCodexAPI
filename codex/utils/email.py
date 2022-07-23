@@ -24,7 +24,7 @@ def send_password_reset_email(request, user, activation_token):
         {
             "domain": DOMAIN,
             "token": activation_token,
-            "user_id": user.id,
+            "user": user,
         },
     )
     return user.email_user(subject, message)

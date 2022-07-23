@@ -32,8 +32,8 @@ class RequestPasswordReset(APIView):
     """ Handle a password reset request """
     def post(self, request):
         """ Called when the password reset request is made"""
-        email = request.post.get('email')
-        user = CodexUser.objects.get(email=email)
+        email = request.data.get('email')
+        user = CodexUser.objects.filter(email=email).first()
         if user:
             token = password_reset_token.make_token(user)
             send_password_reset_email(request, user, token)
@@ -42,10 +42,13 @@ class RequestPasswordReset(APIView):
 
 class PasswordReset(APIView):
     """ Handle a password reset from a token """
-    def post(self, request, user_id, token):
+    def post(self, request):
         """ called when the reset request is made """
-        user = CodexUser.objects.get(pk=user_id)
-        password = request.post.get('password')      
+        user_id = request.data.get('user_id')
+        token = request.data.get('token')
+        password = request.data.get('password')
+
+        user = CodexUser.objects.filter(pk=user_id).first()
         try:
             validate_password(password, user)
         except ValidationError as ve:
