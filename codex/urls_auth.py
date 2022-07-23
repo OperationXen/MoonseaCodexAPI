@@ -11,6 +11,6 @@ urlpatterns = [
     re_path("^change_password", ChangeCodexUserPassword.as_view(), name="change_password"),
     re_path("^forgot_password", RequestPasswordReset.as_view(), name="forgot_password"),
     re_path("^user_details", UserDetailsView.as_view(), name="user_details"),
-    re_path("^password_reset/", PasswordReset.as_view(), name='password_reset'),
+    re_path("^password_reset/?", PasswordReset.as_view(), name='password_reset'),
     re_path("^activate/(?P<user_id>[0-9]+)/(?P<token>[\w\-]+)/", ActivateCodexUser.as_view(), name="activate"),
 ]
