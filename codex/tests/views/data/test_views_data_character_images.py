@@ -50,7 +50,6 @@ class TestCharacterImageViews(TestCase):
         self.assertEqual("File data upload OK", response.data['message'])
         self.assertIn("path", response.data)
         self.assertIn("small.gif", response.data['path'])
-        self.assertIn("testuser1", response.data['path'])
         self.assertIn("Meepo", response.data['path'])
         self.assertEqual(character.artwork.url, response.data['path'])
         self.assertEqual(initial.token, character.token)
@@ -70,8 +69,19 @@ class TestCharacterImageViews(TestCase):
         self.assertEqual("File data upload OK", response.data['message'])
         self.assertIn("path", response.data)
         self.assertIn("small.gif", response.data['path'])
-        self.assertIn("testuser1", response.data['path'])
         self.assertIn("Meepo", response.data['path'])
         self.assertEqual(character.token.url, response.data['path'])
         self.assertEqual(initial.artwork, character.artwork)
         self.assertNotEqual(initial.token, character.token)
+
+    def test_username_not_disclosed_in_path(self) -> None:
+        test_data = copy(self.valid_data)
+        character = Character.objects.get(pk=1)
+        
+        self.client.login(username="testuser1", password="testpassword")
+        response = self.client.post(reverse("character_artwork", kwargs={"uuid": character.uuid, "image_type": "token"}), test_data)
+
+        self.assertEqual(response.status_code, HTTP_200_OK)
+        self.assertIn("path", response.data)
+        self.assertNotIn('testuser1', response.data['path'])
+ 
