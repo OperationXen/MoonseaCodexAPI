@@ -8,12 +8,12 @@ from .users import CodexUser
 def get_user_artwork_path(instance, filename):
     """ Returns a path for image storage on a per user basis """
     rand_string = ''.join(random.choices(string.ascii_letters, k = 8))
-    return f"{instance.player.username}/artwork/{instance.name}/{rand_string}-{filename}"
+    return f"{instance.player.pk}/artwork/{instance.name}/{rand_string}-{filename}"
 
 def get_user_token_path(instance, filename):
     """ Returns a path for image storage on a per user basis """
     rand_string = ''.join(random.choices(string.ascii_letters, k = 8))
-    return f"{instance.player.username}/tokens/{instance.name}/{rand_string}-{filename}"
+    return f"{instance.player.pk}/tokens/{instance.name}/{rand_string}-{filename}"
 
 
 class Character(models.Model):
