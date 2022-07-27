@@ -50,7 +50,9 @@ class Character(models.Model):
 
     def __str__(self):
         """ String representation """
-        return f"{self.player.username} - {self.name}"
+        if self.player:
+            return f"{self.player.username} - {self.name}"
+        return f"[Orphaned] - {self.name}"
 
     def save(self, *args, **kwargs):
         """ Override save method to auto calculate level from class levels """
