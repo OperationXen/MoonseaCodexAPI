@@ -76,8 +76,8 @@ class TestCodexUserPasswordReset(TestCase):
         
         # attempt to re-use token
         reset_data = {'user_id': user.pk, 'token': activation_token, 'password': new_password2}
-        reset_response1 = self.client.post(reverse('password_reset'), reset_data)
-        self.assertEqual(reset_response1.status_code, HTTP_400_BAD_REQUEST)
+        reset_response2 = self.client.post(reverse('password_reset'), reset_data)
+        self.assertEqual(reset_response2.status_code, HTTP_400_BAD_REQUEST)
         user.refresh_from_db()
         self.assertFalse(user.check_password(new_password2))
         self.assertTrue(user.check_password(new_password1))
