@@ -36,5 +36,6 @@ class PasswordReset(APIView):
 
         if user is not None and password_reset_token.check_token(user, token):
             user.set_password(password)
+            user.save()
             return Response({'message': 'Password updated'}, status=HTTP_200_OK)
         return Response({'message':'Failed to update password'}, status=HTTP_400_BAD_REQUEST)
