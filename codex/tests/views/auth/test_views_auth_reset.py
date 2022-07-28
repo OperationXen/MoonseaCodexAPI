@@ -41,7 +41,8 @@ class TestCodexUserPasswordReset(TestCase):
         self.assertEqual(response.status_code, HTTP_200_OK)
         self.assertEqual(mock_email_user.call_count, 1)
 
-    @mock.patch('codex.utils.email.send_password_reset_email')
+    # Patch the function _after_ it is imported to views
+    @mock.patch('codex.views.auth.reset.send_password_reset_email')
     def test_token_allows_password_reset(self, mock_send_password_reset_email) -> None:
         """ Check that the forgot password gives us a token that will allow a password reset """
         forgot_data = {'email': 'testuser1@moonseacodex.local'}
@@ -60,7 +61,8 @@ class TestCodexUserPasswordReset(TestCase):
         user.refresh_from_db()
         self.assertTrue(user.check_password(new_password))
 
-    @mock.patch('codex.utils.email.send_password_reset_email')
+    # Patch the function _after_ it is imported to views
+    @mock.patch('codex.views.auth.reset.send_password_reset_email')
     def test_token_cannot_be_reused(self, mock_send_password_reset_email):
         """ A token cannot be used to set a password more than once """
         user = CodexUser.objects.get(email = 'testuser1@moonseacodex.local')
