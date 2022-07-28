@@ -59,5 +59,25 @@ class TestCodexUserPasswordReset(TestCase):
         user.refresh_from_db()
         self.assertTrue(user.check_password(new_password))
 
-    def test_token_cannot_be_reused(self):
-        pass
+    @mock.patch('codex.utils.email.send_password_reset_email')
+    def test_token_cannot_be_reused(self, mock_send_password_reset_email):
+        """ A token cannot be used to set a password more than once """
+        user = CodexUser.objects.get(email = 'testuser1@moonseacodex.local')
+        new_password1 = 'updatedtestpassword1'
+        new_password2 = 'updatedtestpassword2'
+        
+        _ = self.client.post(reverse('forgot_password'), {'email': 'testuser1@moonseacodex.local'})
+        (_, user, activation_token) = mock_send_password_reset_email.call_args[0]
+
+        # use token as usual
+        reset_data = {'user_id': user.pk, 'token': activation_token, 'password': new_password1}
+        reset_response1 = self.client.post(reverse('password_reset'), reset_data)
+        self.assertEqual(reset_response1.status_code, HTTP_200_OK)
+        
+        # attempt to re-use token
+        reset_data = {'user_id': user.pk, 'token': activation_token, 'password': new_password2}
+        reset_response1 = self.client.post(reverse('password_reset'), reset_data)
+        self.assertEqual(reset_response1.status_code, HTTP_400_BAD_REQUEST)
+        user.refresh_from_db()
+        self.assertFalse(user.check_password(new_password2))
+        self.assertTrue(user.check_password(new_password1))
