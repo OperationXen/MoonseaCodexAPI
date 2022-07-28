@@ -44,14 +44,15 @@ class TestCodexUserPasswordReset(TestCase):
     @mock.patch('codex.utils.email.send_password_reset_email')
     def test_token_allows_password_reset(self, mock_send_password_reset_email) -> None:
         """ Check that the forgot password gives us a token that will allow a password reset """
-        forgot_data = copy(self.valid_data)
+        forgot_data = {'email': 'testuser1@moonseacodex.local'}
         user = CodexUser.objects.get(email = forgot_data['email'])
         new_password = 'updatedtestpassword'
         self.assertFalse(user.check_password(new_password))
 
         forgot_response = self.client.post(reverse('forgot_password'), forgot_data)
         self.assertEqual(forgot_response.status_code, HTTP_200_OK)
-        (_, user, activation_token) = mock_send_password_reset_email.call_args[0]     
+        self.assertTrue(mock_send_password_reset_email.called)
+        (_request, _user, activation_token) = mock_send_password_reset_email.call_args[0]     
         
         reset_data = {'user_id': user.pk, 'token': activation_token, 'password': new_password}
         reset_response = self.client.post(reverse('password_reset'), reset_data)
@@ -67,7 +68,8 @@ class TestCodexUserPasswordReset(TestCase):
         new_password2 = 'updatedtestpassword2'
         
         _ = self.client.post(reverse('forgot_password'), {'email': 'testuser1@moonseacodex.local'})
-        (_, user, activation_token) = mock_send_password_reset_email.call_args[0]
+        self.assertTrue(mock_send_password_reset_email.called)
+        (_request, _user, activation_token) = mock_send_password_reset_email.call_args[0]
 
         # use token as usual
         reset_data = {'user_id': user.pk, 'token': activation_token, 'password': new_password1}
