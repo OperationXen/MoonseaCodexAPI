@@ -1,7 +1,8 @@
 from django.urls import re_path
 
 from codex.views.auth.basic import LoginCodexUser, LogoutCodexUser, RegisterCodexUser, ChangeCodexUserPassword
-from codex.views.auth.activate import ActivateCodexUser, RequestPasswordReset, PasswordReset
+from codex.views.auth.activate import ActivateCodexUser
+from codex.views.auth.reset import RequestPasswordReset, PasswordReset
 from codex.views.auth.details import UserDetailsView
 
 urlpatterns = [

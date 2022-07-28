@@ -50,3 +50,18 @@ class TestDiscordBotCharacterSearch(TestCase):
         self.assertEqual(response.status_code, HTTP_200_OK)
         self.assertIsInstance(response.data, list)
         self.assertGreaterEqual(len(response.data), 0)
+
+    def test_search_by_discord_id_with_space(self) -> None:
+        """ Check that a discord ID for a player brings back their public characters """
+        apikey = APIKey.objects.get(pk=1)
+        user = CodexUser.objects.get(username='testuser1')
+        user.discord_id = "Volothamp Gedarm#1337"
+        user.save()
+
+        test_data = {'apikey': apikey.value, 'discord_id': user.discord_id}
+        response = self.client.post(reverse('discord_lookup', kwargs={'query_type': 'character'}), test_data)
+        self.assertEqual(response.status_code, HTTP_200_OK)
+        self.assertIsInstance(response.data, list)
+        self.assertGreaterEqual(len(response.data), 2)
+        self.assertIn('name', response.data[0])
+        self.assertEqual('Meepo', response.data[0]['name'])
