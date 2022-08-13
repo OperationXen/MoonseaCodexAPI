@@ -1,3 +1,4 @@
+import json
 from copy import copy
 
 from rest_framework.status import *
@@ -64,6 +65,30 @@ class TestDMGamesCRUDViews(TestCase):
         self.assertEqual(response.status_code, HTTP_200_OK)
         with self.assertRaises(Game.DoesNotExist):
             game = Game.objects.get(pk=1)
+
+    def test_user_can_update_own_dmed_games(self) -> None:
+        self.client.login(username="testuser1", password="testpassword")
+        test_data = { 'gold': 1337}
+        
+        game = Game.objects.get(pk=1)
+        self.assertIsInstance(game, Game)
+        self.assertEqual(game.gold, 100)
+        response = self.client.patch(reverse('dm_game-detail', kwargs={'pk': game.uuid}), json.dumps(test_data), content_type="application/json")
+        self.assertEqual(response.status_code, HTTP_200_OK)
+        game.refresh_from_db()
+        self.assertEqual(game.gold, test_data['gold'])
+
+    def test_user_cannot_update_other_dmed_games(self) -> None:
+        self.client.login(username="testuser2", password="testpassword")
+        test_data = { 'gold': 1337}
+        
+        game = Game.objects.get(pk=1)
+        self.assertIsInstance(game, Game)
+        self.assertEqual(game.gold, 100)
+        response = self.client.patch(reverse('dm_game-detail', kwargs={'pk': game.uuid}), json.dumps(test_data), content_type="application/json")
+        self.assertEqual(response.status_code, HTTP_403_FORBIDDEN)
+        game.refresh_from_db()
+        self.assertEqual(game.gold, 100)
 
     def test_list_own_by_default(self) -> None:
         self.client.login(username="testuser1", password="testpassword")

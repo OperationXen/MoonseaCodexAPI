@@ -61,7 +61,7 @@ class DMGamesViewSet(viewsets.GenericViewSet):
         except ValidationError as ve:
             return Response({'message': 'Invalid DM Reward Identifier'}, HTTP_400_BAD_REQUEST)
 
-        if game.dm != request.user:
+        if game.dm.player != request.user:
             return Response({"message": "This game was not DMed by you"}, HTTP_403_FORBIDDEN)
         serialiser = DMGameUpdateSerialiser(game, data=request.data, partial=True)
         if serialiser.is_valid():
