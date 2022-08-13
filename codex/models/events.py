@@ -30,7 +30,9 @@ class Game(models.Model):
     levels = models.IntegerField(default=0, help_text='Levels to take')
 
     def __str__(self):
-        return f"{self.datetime.strftime('%Y/%m/%d')} - {self.name}"
+        if(self.datetime):
+            return f"{self.datetime.strftime('%Y/%m/%d')} - {self.name}"
+        return f"UNKNOWN DATE - {self.name}"
 
 
 class Trade(models.Model):
