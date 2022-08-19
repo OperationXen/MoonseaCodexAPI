@@ -145,7 +145,7 @@ class TestMagicItemCRUDViews(TestCase):
 
         response = self.client.patch(reverse("magicitem-detail", kwargs={"uuid": initial.uuid}), json.dumps(test_data), content_type="application/json")
         self.assertEqual(response.status_code, HTTP_200_OK)
-        self.assertEqual(response.data['name'], test_data['name'])
+        self.assertEqual(response.data['name'], test_data['name']) 
         self.assertEqual(response.data['description'], initial.description)
         item = MagicItem.objects.get(pk=4)
         self.assertEqual(item.name, test_data['name'])
