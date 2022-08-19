@@ -37,6 +37,8 @@ class Game(models.Model):
 
 class Trade(models.Model):
     """Trade record"""
+    uuid = models.UUIDField(default=uuid.uuid4, editable=False)
+    datetime = models.DateTimeField(auto_now_add=True, null=True, blank=True)
 
     sender = models.ForeignKey(Character, null=True, on_delete=models.SET_NULL, related_name="traded_out")
     sender_name = models.CharField(max_length=64, blank=True, null=True, help_text="Optional character name")
@@ -44,8 +46,13 @@ class Trade(models.Model):
     recipient_name = models.CharField(max_length=64, blank=True, null=True, help_text="Optional character name")
     item = models.ForeignKey(MagicItem, null=True, on_delete=models.SET_NULL)
     associated = models.ForeignKey(
-        "self", null=True, on_delete=models.SET_NULL, help_text="The other half of the trade"
+        "self", null=True, blank=True, on_delete=models.SET_NULL, help_text="The other half of the trade"
     )
+
+    def __str__(self):
+        if(self.datetime):
+            return f"{self.datetime.strftime('%Y/%m/%d')} - {self.item.name}"
+        return f"UNKNOWN DATE - {self.item.name}"
 
 
 class DMReward(models.Model):

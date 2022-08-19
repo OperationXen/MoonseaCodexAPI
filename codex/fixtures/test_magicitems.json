@@ -10,8 +10,7 @@
       "attunement": true,
       "description": "",
       "flavour": "",
-      "content_type": 8,
-      "object_id": 1
+      "content_type": ["codex", "dmreward"], "object_id": 1
     }
   },
   {
@@ -25,8 +24,7 @@
       "attunement": true,
       "description": "",
       "flavour": "",
-      "content_type": 13,
-      "object_id": 1
+      "content_type": ["codex", "dmreward"], "object_id": 1
     }
   },
   {
@@ -40,8 +38,7 @@
       "attunement": true,
       "description": "",
       "flavour": "",
-      "content_type": 9,
-      "object_id": 1
+      "content_type": ["codex", "dmreward"], "object_id": 1
     }
   },
   {
@@ -55,8 +52,7 @@
       "attunement": false,
       "description": "This finds secret things",
       "flavour": "",
-      "content_type": 10,
-      "object_id": 1
+      "content_type": ["codex", "game"], "object_id": 1
     }
   }
 ]
