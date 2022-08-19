@@ -28,7 +28,7 @@ class MagicItemOriginManualSerialiser(serializers.ModelSerializer):
 
     class Meta:
         model = ManualCreation
-        fields = ['uuid', 'datetime', 'name', 'character_name']
+        fields = ['uuid', 'datetime', 'name', 'character_name', 'event_type']
 
 
 class MagicItemTradeEventSerialiser(serializers.ModelSerializer):

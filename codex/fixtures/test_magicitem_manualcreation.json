@@ -1,0 +1,11 @@
+[
+    {
+        "model": "codex.manualcreation",
+        "pk": 1,
+        "fields": {
+            "datetime": "2022-08-19T17:04:30.490Z",
+            "character": 3,
+            "name": "Created by user"
+        }
+    }
+]
