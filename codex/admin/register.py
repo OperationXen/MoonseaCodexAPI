@@ -7,7 +7,7 @@ from codex.models.items import MagicItem, Consumable
 from codex.models.api_keys import APIKey
 from codex.admin.users import CustomUserAdmin
 
-from codex.models.events import Game, DMReward
+from codex.models.events import Game, DMReward, Trade
 
 
 admin.site.register(CodexUser, CustomUserAdmin)
@@ -20,3 +20,4 @@ admin.site.register(MagicItem)
 
 admin.site.register(Game)
 admin.site.register(DMReward)
+admin.site.register(Trade)

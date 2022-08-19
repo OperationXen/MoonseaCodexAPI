@@ -1,0 +1,28 @@
+[
+    {
+        "model": "codex.trade",
+        "pk": 1,
+        "fields": {
+            "datetime": "2022-08-19T17:04:30.490Z",
+            "sender": 1,
+            "sender_name": "Meepo",
+            "recipient": 3,
+            "recipient_name": "Meesha",
+            "item": 4,
+            "associated": 2
+        }
+    },
+    {
+        "model": "codex.trade",
+        "pk": 2,
+        "fields": {
+            "datetime": "2022-08-19T17:04:30.490Z",
+            "sender": 3,
+            "sender_name": "Meesha",
+            "recipient": 1,
+            "recipient_name": "Meepo",
+            "item": 2,
+            "associated": 1
+        }
+    }
+]
