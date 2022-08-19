@@ -54,5 +54,19 @@
       "flavour": "",
       "content_type": ["codex", "game"], "object_id": 1
     }
+  },
+  {
+    "model": "codex.magicitem",
+    "pk": 5,
+    "fields": {
+      "name": "The Hypnotoad",
+      "character": 3,
+      "equipped": true,
+      "rarity": "veryrare",
+      "attunement": false,
+      "description": "All glory to the hypnotoad",
+      "flavour": "",
+      "content_type": ["codex", "manualcreation"], "object_id": 1
+    }
   }
 ]
