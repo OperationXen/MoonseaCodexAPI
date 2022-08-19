@@ -20,16 +20,18 @@ class MagicItemEventView(APIView):
     
         queryset_trade = Trade.objects.filter(item=item)
 
-        serialiser_origin = {}
+        origin_data = {'event_type': 'Divine intervention'}
         if type(item.source) is Game:
             serialiser_origin = MagicItemOriginGameSerialiser(item.source)
+            origin_data = serialiser_origin.data
         elif type(item.source) is DMReward:
             serialiser_origin = MagicItemOriginDMRewardSerialiser(item.source)
+            origin_data = serialiser_origin.data
 
         serialiser_trade = MagicItemTradeEventSerialiser(queryset_trade, many=True)
         try:
             data = {
-                'origin': serialiser_origin.data,
+                'origin': origin_data,
                 'trades': serialiser_trade.data
             }
             return Response(data, HTTP_200_OK)
