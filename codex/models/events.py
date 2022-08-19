@@ -72,3 +72,12 @@ class DMReward(models.Model):
 
     def __str__(self):
         return f"{self.dm.player.username} - {self.name}"
+
+
+class ManualCreation(models.Model):
+    """ An instance where a user has directly created an item, perhaps an import """
+    uuid = models.UUIDField(default=uuid.uuid4, editable=False)
+    datetime = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+
+    name = models.CharField(max_length=32, blank=True, null=True, help_text="Type of manual creation", default="Created by user")
+    character = models.ForeignKey(Character, on_delete=models.SET_NULL, null=True, blank=True, help_text='Character item was created for')

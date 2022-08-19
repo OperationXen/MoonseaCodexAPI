@@ -3,8 +3,9 @@ from rest_framework.views import APIView
 from rest_framework.status import *
 
 from codex.models.items import MagicItem
-from codex.models.events import Game, DMReward, Trade
-from codex.serialisers.events import MagicItemOriginDMRewardSerialiser, MagicItemOriginGameSerialiser, MagicItemTradeEventSerialiser
+from codex.models.events import Game, DMReward, Trade, ManualCreation
+from codex.serialisers.events import MagicItemOriginDMRewardSerialiser, MagicItemOriginGameSerialiser, MagicItemOriginManualSerialiser
+from codex.serialisers.events import MagicItemTradeEventSerialiser
 
 
 class MagicItemEventView(APIView):
@@ -17,16 +18,15 @@ class MagicItemEventView(APIView):
         except MagicItem.DoesNotExist:
             return Response({'message': 'Unable to find item'}, HTTP_400_BAD_REQUEST)
     
-    
         queryset_trade = Trade.objects.filter(item=item)
 
-        origin_data = {'event_type': 'Divine intervention'}
+        origin_data = {'event_type': 'Divine intervention', 'uuid': ""}
         if type(item.source) is Game:
-            serialiser_origin = MagicItemOriginGameSerialiser(item.source)
-            origin_data = serialiser_origin.data
+            origin_data = MagicItemOriginGameSerialiser(item.source).data
+        elif type(item.source) is ManualCreation:
+            origin_data = MagicItemOriginManualSerialiser(item.source).data
         elif type(item.source) is DMReward:
-            serialiser_origin = MagicItemOriginDMRewardSerialiser(item.source)
-            origin_data = serialiser_origin.data
+            origin_data = MagicItemOriginDMRewardSerialiser(item.source).data
 
         serialiser_trade = MagicItemTradeEventSerialiser(queryset_trade, many=True)
         try:

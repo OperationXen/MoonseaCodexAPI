@@ -5,6 +5,7 @@ from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
 from codex.models.character import Character
 from codex.models.items import MagicItem
+from codex.models.events import ManualCreation
 from codex.serialisers.items import MagicItemSerialiser, MagicItemSummarySerialiser
 
 
@@ -35,6 +36,9 @@ class MagicItemViewSet(viewsets.GenericViewSet):
         serialiser = MagicItemSerialiser(data=request.data)
         if serialiser.is_valid():
             item = serialiser.save(character=character)
+            item.source = ManualCreation.objects.create(character=character)
+            item.save()
+
             new_item = MagicItemSerialiser(item)
             return Response(new_item.data, HTTP_201_CREATED)
         else:

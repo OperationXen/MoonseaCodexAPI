@@ -9,6 +9,7 @@ from django.urls.exceptions import NoReverseMatch
 
 from codex.models.character import Character
 from codex.models.items import MagicItem
+from codex.models.events import ManualCreation
 
 
 class TestMagicItemCRUDViews(TestCase):
@@ -77,6 +78,20 @@ class TestMagicItemCRUDViews(TestCase):
             self.assertIn(key, response.data)
             self.assertEqual(response.data[key], test_data[key])
         self.assertEqual(initial + 1, MagicItem.objects.count())
+
+    def test_user_item_source_manual_ok(self) -> None:
+        """ Ensure that when an item is created it has an origin event created too """
+        self.client.login(username="testuser1", password="testpassword")
+        test_data = copy(self.valid_data)
+        character = Character.objects.get(pk=2) 
+        test_data["character_uuid"] = character.uuid
+        
+        response = self.client.post(reverse("magicitem-list"), test_data)
+        self.assertEqual(response.status_code, HTTP_201_CREATED)
+        item = MagicItem.objects.get(uuid=response.data.get('uuid'))
+        self.assertIsInstance(item, MagicItem)
+        self.assertIsInstance(item.source, ManualCreation)
+        self.assertEqual(item.source.character, character)
 
     def test_anonymous_user_cannot_get_magicitem_by_pk(self) -> None:
         """ Check that a lookup by PK fails """
