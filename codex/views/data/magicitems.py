@@ -6,7 +6,7 @@ from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from codex.models.character import Character
 from codex.models.items import MagicItem
 from codex.models.events import ManualCreation
-from codex.serialisers.items import MagicItemSerialiser, MagicItemSummarySerialiser
+from codex.serialisers.items import MagicItemSerialiser
 
 
 class MagicItemViewSet(viewsets.GenericViewSet):
@@ -47,7 +47,7 @@ class MagicItemViewSet(viewsets.GenericViewSet):
     def retrieve(self, request, *args, **kwargs):
         """ get a single item """
         item = self.get_object()
-        serializer = MagicItemSerialiser(item)
+        serializer = MagicItemSerialiser(item, context={"user": request.user})
         return Response(serializer.data)
 
     def list(self, request):
@@ -57,7 +57,7 @@ class MagicItemViewSet(viewsets.GenericViewSet):
 
         queryset = self.get_queryset()
         queryset = queryset.filter(character__player = request.user)
-        serialiser = MagicItemSerialiser(queryset, many=True)
+        serialiser = MagicItemSerialiser(queryset, many=True, context={"user": request.user})
         return self.get_paginated_response(self.paginate_queryset(serialiser.data))
 
     def partial_update(self,request, *args, **kwargs):
@@ -65,7 +65,7 @@ class MagicItemViewSet(viewsets.GenericViewSet):
         existing_item = self.get_object()
         if existing_item.character.player != request.user:
             return Response({'message': 'This item does not belong to you'}, HTTP_403_FORBIDDEN)
-        serialiser = MagicItemSummarySerialiser(existing_item, data=request.data, partial=True)
+        serialiser = MagicItemSerialiser(existing_item, data=request.data, partial=True)
         if serialiser.is_valid():
             item = serialiser.save()
             new_item = MagicItemSerialiser(item)
