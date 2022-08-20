@@ -21,7 +21,7 @@ class MagicItemViewSet(viewsets.GenericViewSet):
     def create_manualedit_event(self, existing_item, data):
         """ Create a ManualEdit event to log the item update """
         name = data.get('name')
-        if name:
+        if name and name != existing_item.name:
             ManualEdit.objects.create(item=existing_item, character=existing_item.character, name='Item name changed', details=f"{existing_item.name} >> {name}")
 
     def get_queryset(self):
