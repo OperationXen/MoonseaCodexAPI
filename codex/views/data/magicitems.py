@@ -47,7 +47,7 @@ class MagicItemViewSet(viewsets.GenericViewSet):
     def retrieve(self, request, *args, **kwargs):
         """ get a single item """
         item = self.get_object()
-        serializer = MagicItemSerialiser(item)
+        serializer = MagicItemSerialiser(item, context={"user": request.user})
         return Response(serializer.data)
 
     def list(self, request):
@@ -57,7 +57,7 @@ class MagicItemViewSet(viewsets.GenericViewSet):
 
         queryset = self.get_queryset()
         queryset = queryset.filter(character__player = request.user)
-        serialiser = MagicItemSerialiser(queryset, many=True)
+        serialiser = MagicItemSerialiser(queryset, many=True, context={"user": request.user})
         return self.get_paginated_response(self.paginate_queryset(serialiser.data))
 
     def partial_update(self,request, *args, **kwargs):

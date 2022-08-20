@@ -6,7 +6,6 @@ from codex.serialisers.items import MagicItemSerialiser
 
 class CharacterDetailsSerialiser(serializers.ModelSerializer):
     """Serialiser to use for individual player characters, includes inventories"""
-
     editable = serializers.SerializerMethodField()
     items = MagicItemSerialiser(many=True, source="magicitems")
 

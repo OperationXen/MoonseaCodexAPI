@@ -188,3 +188,23 @@ class TestMagicItemCRUDViews(TestCase):
         self.assertEqual(response.status_code, HTTP_200_OK)
         with self.assertRaises(MagicItem.DoesNotExist):
             item = MagicItem.objects.get(pk=4)
+
+    def test_editable_flag_set_true(self) -> None:
+        """ Check that the editable flag is set true when you own the item """
+        self.client.login(username="testuser1", password="testpassword")
+        item = MagicItem.objects.get(pk=4)
+
+        response = self.client.get(reverse('magicitem-detail', kwargs={'uuid': item.uuid}))
+        self.assertEqual(response.status_code, HTTP_200_OK)
+        self.assertIn('editable', response.data)
+        self.assertTrue(response.data.get('editable'))
+
+    def test_editable_flag_set_false(self) -> None:
+        """ Check that the editable flag is set false when you do not own the item """
+        self.client.login(username="testuser2", password="testpassword")
+        item = MagicItem.objects.get(pk=4)
+
+        response = self.client.get(reverse('magicitem-detail', kwargs={'uuid': item.uuid}))
+        self.assertEqual(response.status_code, HTTP_200_OK)
+        self.assertIn('editable', response.data)
+        self.assertFalse(response.data.get('editable'))
