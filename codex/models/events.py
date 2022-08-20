@@ -51,8 +51,8 @@ class Trade(models.Model):
 
     def __str__(self):
         if(self.datetime):
-            return f"{self.datetime.strftime('%Y/%m/%d')} - {self.item.name}"
-        return f"UNKNOWN DATE - {self.item.name}"
+            return f"{self.datetime.strftime('%Y/%m/%d')} - {self.item.name if self.item else 'DELETED'}"
+        return f"UNKNOWN DATE - {self.item.name if self.item else 'DELETED'}"
 
 
 class DMReward(models.Model):

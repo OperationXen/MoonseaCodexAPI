@@ -6,7 +6,7 @@ from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from codex.models.character import Character
 from codex.models.items import MagicItem
 from codex.models.events import ManualCreation
-from codex.serialisers.items import MagicItemSerialiser, MagicItemSummarySerialiser
+from codex.serialisers.items import MagicItemSerialiser
 
 
 class MagicItemViewSet(viewsets.GenericViewSet):
@@ -65,7 +65,7 @@ class MagicItemViewSet(viewsets.GenericViewSet):
         existing_item = self.get_object()
         if existing_item.character.player != request.user:
             return Response({'message': 'This item does not belong to you'}, HTTP_403_FORBIDDEN)
-        serialiser = MagicItemSummarySerialiser(existing_item, data=request.data, partial=True)
+        serialiser = MagicItemSerialiser(existing_item, data=request.data, partial=True)
         if serialiser.is_valid():
             item = serialiser.save()
             new_item = MagicItemSerialiser(item)
