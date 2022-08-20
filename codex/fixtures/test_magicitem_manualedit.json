@@ -1,0 +1,14 @@
+[
+    {
+        "model": "codex.manualedit",
+        "pk": 1,
+        "fields": {
+            "datetime": "2022-08-19T17:05:00.490Z",
+            "character": 3,
+            "item": 5,
+            "name": "Item name changed",
+            "details": "Rod of Chickens >> The Hypnotoad"
+
+        }
+    }
+]
