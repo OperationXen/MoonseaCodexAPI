@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from codex.models.events import Game, DMReward, ManualCreation, Trade
+from codex.models.events import Game, DMReward, ManualCreation, Trade, ManualEdit
 
 
 class MagicItemOriginGameSerialiser(serializers.ModelSerializer):
@@ -40,3 +40,13 @@ class MagicItemTradeEventSerialiser(serializers.ModelSerializer):
     class Meta:
         model = Trade
         fields = ["uuid", "datetime", "sender_name", "recipient_name", "associated_trade", "exchanged_item", "event_type"]
+
+
+class MagicItemEditEventSerialiser(serializers.ModelSerializer):
+    """ Serialiser for an item edit audit event """
+    event_type = serializers.ReadOnlyField(default="edit")
+    item_uuid = serializers.ReadOnlyField(source='item.uuid')
+
+    class Meta:
+        model = ManualEdit
+        fields = ["uuid", "datetime", "name", "character", "details", "item_uuid", "event_type"]

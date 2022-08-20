@@ -5,7 +5,7 @@ from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
 from codex.models.character import Character
 from codex.models.items import MagicItem
-from codex.models.events import ManualCreation
+from codex.models.events import ManualCreation, ManualEdit
 from codex.serialisers.items import MagicItemSerialiser
 
 
@@ -17,6 +17,12 @@ class MagicItemViewSet(viewsets.GenericViewSet):
     lookup_value_regex = "[\-0-9a-f]{36}"
 
     permission_classes = [IsAuthenticatedOrReadOnly]
+
+    def create_manualedit_event(self, existing_item, data):
+        """ Create a ManualEdit event to log the item update """
+        name = data.get('name')
+        if name:
+            ManualEdit.objects.create(item=existing_item, character=existing_item.character, name='Item name changed', details=f"{existing_item.name} >> {name}")
 
     def get_queryset(self):
         """ Retrieve base queryset """
@@ -67,6 +73,7 @@ class MagicItemViewSet(viewsets.GenericViewSet):
             return Response({'message': 'This item does not belong to you'}, HTTP_403_FORBIDDEN)
         serialiser = MagicItemSerialiser(existing_item, data=request.data, partial=True)
         if serialiser.is_valid():
+            self.create_manualedit_event(existing_item, request.data)
             item = serialiser.save()
             new_item = MagicItemSerialiser(item)
             return Response(new_item.data, HTTP_200_OK)
