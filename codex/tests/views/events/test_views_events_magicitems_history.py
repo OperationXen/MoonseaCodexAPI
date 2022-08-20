@@ -10,7 +10,8 @@ from codex.models.items import MagicItem
 class TestMagicItemHistoryViews(TestCase):
     """Check magic item history list functionality """
 
-    fixtures = ['test_users', 'test_dungeonmaster_reward', 'test_character_games', 'test_characters', 'test_magicitems', 'test_magicitem_trades', 'test_magicitem_manualcreation']
+    fixtures = ['test_users', 'test_dungeonmaster_reward', 'test_character_games', 'test_characters', 'test_magicitems', 
+                'test_magicitem_trades', 'test_magicitem_manualcreation', 'test_magicitem_manualedit']
     
     def test_list_magicitem_history_valid_uuid(self) -> None:
         """ Given a valid magic item UUID the API should return all history events for it """
@@ -43,3 +44,16 @@ class TestMagicItemHistoryViews(TestCase):
         self.assertIn('name', response.data.get('origin'))
         self.assertEqual(response.data.get('origin').get('event_type'), 'manual')
         self.assertEqual(response.data.get('origin').get('character_name'), item.character.name)
+
+    def test_list_magicitem_history_manualedit(self) -> None:
+        """ Listing all history events should show you any edits """
+        item = MagicItem.objects.get(pk=5)
+        self.client.logout()
+
+        response = self.client.get(reverse('magicitem_events', kwargs={'magicitem_uuid': item.uuid}))
+        self.assertEqual(response.status_code, HTTP_200_OK)
+        edit_events = response.data.get('edits')
+        self.assertIsInstance(edit_events, list)
+        self.assertGreaterEqual(len(edit_events), 1)
+        self.assertIn('Rod of Chickens', edit_events[0].get('details'))
+        self.assertIn('The Hypnotoad', edit_events[0].get('details'))

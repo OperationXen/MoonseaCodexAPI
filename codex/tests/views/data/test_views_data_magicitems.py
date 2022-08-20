@@ -9,7 +9,7 @@ from django.urls.exceptions import NoReverseMatch
 
 from codex.models.character import Character
 from codex.models.items import MagicItem
-from codex.models.events import ManualCreation
+from codex.models.events import ManualCreation, ManualEdit
 
 
 class TestMagicItemCRUDViews(TestCase):
@@ -208,3 +208,19 @@ class TestMagicItemCRUDViews(TestCase):
         self.assertEqual(response.status_code, HTTP_200_OK)
         self.assertIn('editable', response.data)
         self.assertFalse(response.data.get('editable'))
+
+    def test_name_change_creates_manualedit_event(self) -> None:
+        """ Changing an items name should create an event which records this update """
+        self.client.login(username="testuser1", password="testpassword")
+        item = MagicItem.objects.get(pk=4)
+        initial_name = item.name
+        known_edits = ManualEdit.objects.count()
+        test_data = {'name': 'Hat of disguise'}
+
+        response = self.client.patch(reverse("magicitem-detail", kwargs={"uuid": item.uuid}), json.dumps(test_data), content_type="application/json")
+        self.assertEqual(response.status_code, HTTP_200_OK)
+        self.assertGreater(ManualEdit.objects.count(), known_edits)
+        edit_event = ManualEdit.objects.all().order_by('-pk').get()
+        self.assertIn('Hat of disguise', edit_event.details)
+        self.assertIn(initial_name, edit_event.details)
+        self.assertEqual(edit_event.item, item)

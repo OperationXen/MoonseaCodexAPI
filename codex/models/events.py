@@ -81,3 +81,19 @@ class ManualCreation(models.Model):
 
     name = models.CharField(max_length=32, blank=True, null=True, help_text="Type of manual creation", default="Created by user")
     character = models.ForeignKey(Character, on_delete=models.SET_NULL, null=True, blank=True, help_text='Character item was created for')
+
+
+class ManualEdit(models.Model):
+    """ An occassion where a user has changed an item """
+    uuid = models.UUIDField(default=uuid.uuid4, editable=False)
+    datetime = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+
+    name = models.CharField(max_length=64, blank=True, null=True, help_text="Type of edit undertaken", default="Item name changed")
+    item = models.ForeignKey(MagicItem, null=True, on_delete=models.SET_NULL)
+    character = models.ForeignKey(Character, null=True, on_delete=models.SET_NULL)
+    details = models.CharField(max_length=256, blank=True, null=True, help_text="Information about the edit operation")
+
+    def __str__(self):
+        if(self.datetime):
+            return f"{self.datetime.strftime('%Y/%m/%d')} - {self.name}"
+        return f"UNKNOWN DATE - {self.name}"
