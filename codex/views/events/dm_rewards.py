@@ -32,9 +32,12 @@ class DMRewardViewSet(viewsets.GenericViewSet):
         if not character:
             return None
 
-        character.gold = character.gold + int(gold)
-        character.downtime = character.downtime + int(downtime)
-        character.save()
+        if gold:
+            character.gold = character.gold + int(gold)
+        if downtime:
+            character.downtime = character.downtime + int(downtime)
+        if gold or downtime:
+            character.save()
         return True
 
     def get_queryset(self):
