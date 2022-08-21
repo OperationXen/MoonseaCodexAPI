@@ -15,7 +15,7 @@ class TestDMEventView(TestCase):
         response = self.client.get(reverse("dm_events", kwargs={'dm_uuid': self.dm2.uuid}))
         self.assertEqual(response.status_code, HTTP_200_OK)
         self.assertEqual(len(response.data), 2)
-        self.assertEqual(response.data[0].get('event_type'), 'reward' )
+        self.assertEqual(response.data[0].get('event_type'), 'dm_reward' )
         self.assertEqual(response.data[1].get('event_type'), 'game' )
 
     def test_anonymous_user_missing_uuid(self) -> None:
@@ -35,5 +35,5 @@ class TestDMEventView(TestCase):
         response = self.client.get(reverse("dm_events"))
         self.assertEqual(response.status_code, HTTP_200_OK)
         self.assertEqual(len(response.data), 2)
-        self.assertEqual(response.data[0].get('event_type'), 'reward' )
+        self.assertEqual(response.data[0].get('event_type'), 'dm_reward' )
         self.assertEqual(response.data[1].get('event_type'), 'game' )

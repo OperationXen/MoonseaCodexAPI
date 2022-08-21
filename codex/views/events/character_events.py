@@ -5,8 +5,10 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.status import *
 
+from codex.models.events import DMReward
 from codex.models.character import Character
 from codex.serialisers.character_events import CharacterGameSummarySerialiser
+from codex.serialisers.dm_events import DMRewardSummary
 
 
 class CharacterEventView(APIView, LimitOffsetPagination):
@@ -20,7 +22,7 @@ class CharacterEventView(APIView, LimitOffsetPagination):
 
         games = character.games.all()
         games_serialiser = CharacterGameSummarySerialiser(games, many=True)
-#        rewards = dm.rewards.all() 
-#        rewards_serialiser = DMRewardSummary(rewards, many=True)
-        data = games_serialiser.data # + rewards_serialiser.data 
+        rewards = DMReward.objects.filter(character_items_assigned=character) 
+        rewards_serialiser = DMRewardSummary(rewards, many=True)
+        data = games_serialiser.data + rewards_serialiser.data
         return Response(data, HTTP_200_OK)
