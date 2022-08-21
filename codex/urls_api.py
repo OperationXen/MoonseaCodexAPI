@@ -1,7 +1,5 @@
-from posixpath import basename
 from django.urls import path, re_path
 from rest_framework.routers import DefaultRouter
-from django.views.decorators.csrf import csrf_exempt
 
 from codex.views.data.magicitems import MagicItemViewSet
 from codex.views.data.dungeonmaster import DMLogViewSet
