@@ -34,6 +34,8 @@ class DMGameUpdateSerialiser(serializers.ModelSerializer):
 class DMRewardSummary(serializers.ModelSerializer):
     """ Sumamry of DM rewards - for use in list view """
     event_type = serializers.ReadOnlyField(default="reward")
+    character_level_assigned = serializers.ReadOnlyField(source='character_level_assigned.name')
+    character_items_assigned = serializers.ReadOnlyField(source='character_items_assigned.name')
 
     class Meta:
         model = DMReward

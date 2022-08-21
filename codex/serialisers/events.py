@@ -18,7 +18,7 @@ class MagicItemOriginDMRewardSerialiser(serializers.ModelSerializer):
 
     class Meta:
         model = DMReward
-        fields = ["uuid", "datetime", "name", "module", "event_type"]
+        fields = ["uuid", "datetime", "name", "event_type"]
 
 
 class MagicItemOriginManualSerialiser(serializers.ModelSerializer):
