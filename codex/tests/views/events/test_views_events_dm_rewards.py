@@ -4,21 +4,23 @@ from rest_framework.status import *
 from django.test import TestCase
 from django.urls import reverse
 
+from codex.models.items import MagicItem
 from codex.models.events import DMReward
+from codex.models.character import Character
 from codex.models.dungeonmaster import DungeonMasterInfo
 
 
 class TestDMRewardCRUDViews(TestCase):
     """Check dm_reward create / retrieve / update / delete functionality"""
 
-    fixtures = ["test_users", 'test_dungeonmaster_reward']
+    fixtures = ["test_users", 'test_dungeonmaster_reward', 'test_characters']
     valid_data = {
         "hours": 10,
         "name": "Tier 1 Adventure Reward",
         "gold": 250,
         "downtime": 0,
         "level": 1,
-        "item": "Wand of magic missiles"
+        "item": "Emerald Pen"
     }
 
     def test_anonymous_user_cannot_create_dm_rewards(self) -> None:
@@ -84,6 +86,42 @@ class TestDMRewardCRUDViews(TestCase):
         """ test that a dm reward can be used to grant a level to a character """
         pass
 
-    def test_can_award_items(self) -> None:
-        """ ensure that a dm reward can be applied to an arbitrary character """
-        pass
+    def test_reward_creates_items(self) -> None:
+        """ ensure that a dm reward creates an item for the character specified """
+        self.client.login(username="testuser1", password="testpassword")
+        character = Character.objects.get(pk=1)
+        test_data = copy(self.valid_data)
+        test_data['charItems'] = character.uuid
+
+        response = self.client.post(reverse("dm_reward-list"), test_data)
+        self.assertEqual(response.status_code, HTTP_201_CREATED)
+        character.refresh_from_db()
+        latest_item = MagicItem.objects.filter(character=character).order_by('-pk').get()
+        self.assertEqual(latest_item.name, test_data['item'])
+
+    def test_reward_grants_downtime(self) -> None:
+        """ Check that a dm reward automatically gives the character downtime """
+        self.client.login(username="testuser1", password="testpassword")
+        character = Character.objects.get(pk=1)
+        initial_downtime = character.downtime
+        test_data = copy(self.valid_data)
+        test_data['charItems'] = character.uuid
+        test_data['downtime'] = 10
+
+        response = self.client.post(reverse("dm_reward-list"), test_data)
+        self.assertEqual(response.status_code, HTTP_201_CREATED)
+        character.refresh_from_db()
+        self.assertGreater(character.downtime, initial_downtime)
+
+    def test_reward_grants_gold(self) -> None:
+        """ Check that a dm reward automatically gives the character downtime """
+        self.client.login(username="testuser1", password="testpassword")
+        character = Character.objects.get(pk=1)
+        initial_gold = character.gold
+        test_data = copy(self.valid_data)
+        test_data['charItems'] = character.uuid
+
+        response = self.client.post(reverse("dm_reward-list"), test_data)
+        self.assertEqual(response.status_code, HTTP_201_CREATED)
+        character.refresh_from_db()
+        self.assertGreater(character.gold, initial_gold)
