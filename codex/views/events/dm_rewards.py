@@ -27,6 +27,16 @@ class DMRewardViewSet(viewsets.GenericViewSet):
             return item
         return None
 
+    def assign_other_rewards(self, character, gold, downtime):
+        """ Assign misc rewards to character specified """
+        if not character:
+            return None
+
+        character.gold = character.gold + int(gold)
+        character.downtime = character.downtime + int(downtime)
+        character.save()
+        return True
+
     def get_queryset(self):
         """Retrieve base queryset"""
         return DMReward.objects.all()
@@ -46,7 +56,8 @@ class DMRewardViewSet(viewsets.GenericViewSet):
         serialiser = DMRewardSerialiser(data=request.data)
         if serialiser.is_valid():
             reward = serialiser.save(dm=dm, character_level_assigned=character_levels, character_items_assigned=character_items)
-            item = self.create_dm_reward_item(reward, character_items, request.data.get('name'))
+            item = self.create_dm_reward_item(reward, character_items, request.data.get('item'))
+            misc_rewards_done = self.assign_other_rewards(character_items, request.data.get('gold'), request.data.get('downtime'))
             hours = request.data.get('hours')
             if hours:
                 update_dm_hours(dm, -int(hours))
