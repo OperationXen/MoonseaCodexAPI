@@ -20,7 +20,7 @@ class TestDMRewardCRUDViews(TestCase):
         "gold": 250,
         "downtime": 0,
         "level": 1,
-        "item": "Emerald Pen"
+        "item": "Emerald pen"
     }
 
     def test_anonymous_user_cannot_create_dm_rewards(self) -> None:
@@ -98,6 +98,20 @@ class TestDMRewardCRUDViews(TestCase):
         character.refresh_from_db()
         latest_item = MagicItem.objects.filter(character=character).order_by('-pk').get()
         self.assertEqual(latest_item.name, test_data['item'])
+
+    def test_reward_creates_items_rarity_override(self) -> None:
+        """ ensure that a dm reward can have its rarity value overriden """
+        self.client.login(username="testuser1", password="testpassword")
+        character = Character.objects.get(pk=1)
+        test_data = copy(self.valid_data)
+        test_data['charItems'] = character.uuid
+        test_data['rarity'] = 'legendary'
+
+        response = self.client.post(reverse("dm_reward-list"), test_data)
+        self.assertEqual(response.status_code, HTTP_201_CREATED)
+        character.refresh_from_db()
+        latest_item = MagicItem.objects.filter(character=character).order_by('-pk').get()
+        self.assertEqual(latest_item.rarity, 'legendary')
 
     def test_reward_grants_downtime(self) -> None:
         """ Check that a dm reward automatically gives the character downtime """

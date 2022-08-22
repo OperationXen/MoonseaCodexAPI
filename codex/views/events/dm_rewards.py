@@ -10,7 +10,7 @@ from codex.models.dungeonmaster import DungeonMasterInfo
 from codex.models.items import MagicItem
 from codex.serialisers.dm_info import DMRewardSerialiser, DMRewardUpdateSerialiser, DMRewardDisplaySerialiser
 from codex.utils.dm_info import update_dm_hours
-from codex.utils.dm_rewards import find_reward_item
+from codex.utils.items import get_matching_item
 
 
 class DMRewardViewSet(viewsets.GenericViewSet):
@@ -19,9 +19,12 @@ class DMRewardViewSet(viewsets.GenericViewSet):
     serializer_class = DMRewardSerialiser
     permission_classes = [IsAuthenticatedOrReadOnly]
 
-    def create_dm_reward_item(self, event, character, reward_name):
+    def create_dm_reward_item(self, event, character, item_name, rarity=None):
         """ Create an item for the specified character from the dm reward data """
-        reward_item = find_reward_item(reward_name)
+        reward_item = get_matching_item(item_name)
+        if rarity:
+            reward_item['rarity'] = rarity
+
         if character and reward_item:
             item = MagicItem.objects.create(**reward_item, character=character, source=event)
             return item
@@ -59,7 +62,7 @@ class DMRewardViewSet(viewsets.GenericViewSet):
         serialiser = DMRewardSerialiser(data=request.data)
         if serialiser.is_valid():
             reward = serialiser.save(dm=dm, character_level_assigned=character_levels, character_items_assigned=character_items)
-            item = self.create_dm_reward_item(reward, character_items, request.data.get('item'))
+            item = self.create_dm_reward_item(reward, character_items, request.data.get('item'), request.data.get('rarity'))
             misc_rewards_done = self.assign_other_rewards(character_items, request.data.get('gold'), request.data.get('downtime'))
             hours = request.data.get('hours')
             if hours:
