@@ -5,10 +5,12 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
 from codex.models.events import Game
+from codex.models.items import MagicItem
 from codex.models.character import Character
 
 from codex.serialisers.character_events import CharacterGameSerialiser, CharacterGameSummarySerialiser
 from codex.utils.character import update_character_rewards
+from codex.utils.items import get_matching_item
 
 
 class CharacterGamesViewSet(viewsets.GenericViewSet):
@@ -19,6 +21,17 @@ class CharacterGamesViewSet(viewsets.GenericViewSet):
 
     serializer_class = CharacterGameSerialiser
     permission_classes = [IsAuthenticatedOrReadOnly]
+
+    def create_adventure_reward_item(self, event, character, item_name, rarity=None):
+        """ Create an item for the specified character from the dm reward data """
+        reward_item = get_matching_item(item_name)
+        if rarity:
+            reward_item['rarity'] = rarity
+
+        if character and reward_item:
+            item = MagicItem.objects.create(**reward_item, character=character, source=event)
+            return item
+        return None
 
     def get_queryset(self):
         """Retrieve base queryset"""
@@ -39,6 +52,7 @@ class CharacterGamesViewSet(viewsets.GenericViewSet):
         if serialiser.is_valid():          
             game = serialiser.save()
             game.characters.add(character)
+            item = self.create_adventure_reward_item(game, character, request.data.get('item'), request.data.get('rarity'))
             update_character_rewards(character, gold=float(request.data.get('gold')), downtime=int(request.data.get('downtime')))
             return Response(serialiser.data, HTTP_201_CREATED)
         else:
