@@ -25,13 +25,13 @@ class CharacterGamesViewSet(viewsets.GenericViewSet):
     def create_adventure_reward_item(self, event, character, item_name, rarity=None):
         """ Create an item for the specified character from the dm reward data """
         reward_item = get_matching_item(item_name)
-        if rarity:
-            reward_item['rarity'] = rarity
+        if not reward_item or not character:
+            return None
 
-        if character and reward_item:
-            item = MagicItem.objects.create(**reward_item, character=character, source=event)
-            return item
-        return None
+        if rarity:
+            reward_item['rarity'] = rarity        
+        item = MagicItem.objects.create(**reward_item, character=character, source=event)
+        return item
 
     def get_queryset(self):
         """Retrieve base queryset"""
