@@ -80,6 +80,22 @@ class TestCharacterGamesCRUDViews(TestCase):
         self.assertNotEqual(modified.downtime, character.downtime)
         self.assertEqual(character.downtime + test_data['downtime'], modified.downtime)
 
+    def test_character_item_rewards_automatically_added(self) -> None:
+        """ A character should get the item they enter in the game """
+        self.client.login(username="testuser1", password="testpassword")
+        test_data = copy(self.valid_data)
+        test_data['item'] = 'Magic Frog Hat'
+        test_data['rarity'] = 'legendary'
+        
+        character = Character.objects.get(pk=1)
+        test_data['character_uuid'] = character.uuid
+
+        response = self.client.post(reverse('game-list'), test_data)
+        self.assertEqual(response.status_code, HTTP_201_CREATED)
+        item = character.magicitems.all().order_by('-pk').first()
+        self.assertEqual(item.name, test_data['item'])
+        self.assertEqual(item.rarity, test_data['rarity'])
+
     def test_anonymous_user_can_retrieve_event_by_uuid(self) -> None:
         """ Anyone should be able to retrieve an event if they know the UUID """
         self.client.logout()

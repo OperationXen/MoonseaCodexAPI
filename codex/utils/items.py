@@ -27,6 +27,8 @@ reward_data = [
 
 def get_matching_item(name):
     """ Attempt to find a match for the given item name amongst known items """
+    if not name:
+        return None
     try:
         for item in reward_data:
             if item.get('name').casefold() == name.casefold():

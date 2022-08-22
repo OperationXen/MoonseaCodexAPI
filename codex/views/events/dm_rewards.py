@@ -22,14 +22,14 @@ class DMRewardViewSet(viewsets.GenericViewSet):
     def create_dm_reward_item(self, event, character, item_name, rarity=None):
         """ Create an item for the specified character from the dm reward data """
         reward_item = get_matching_item(item_name)
+        if not reward_item or not character:
+            return None
+        
         if rarity:
-            reward_item['rarity'] = rarity
-
-        if character and reward_item:
-            item = MagicItem.objects.create(**reward_item, character=character, source=event)
-            return item
-        return None
-
+            reward_item['rarity'] = rarity        
+        item = MagicItem.objects.create(**reward_item, character=character, source=event)
+        return item
+        
     def assign_other_rewards(self, character, gold, downtime):
         """ Assign misc rewards to character specified """
         if not character:
