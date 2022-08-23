@@ -127,11 +127,8 @@ class TestMagicItemCRUDViews(TestCase):
 
         response = self.client.get(reverse("magicitem-list"))
         self.assertEqual(response.status_code, HTTP_200_OK)
-        self.assertIn('results', response.data)
-        results = response.data.get('results')
-        self.assertEqual(len(results), response.data['count'])
-        self.assertIn('uuid', results[0])
-        for result in results:
+        self.assertIn('uuid', response.data[0])
+        for result in response.data:
             self.assertTrue(result['owner'])
             self.assertTrue(result['name'])
 
