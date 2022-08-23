@@ -6,7 +6,7 @@ from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from codex.models.character import Character
 from codex.models.items import MagicItem
 from codex.models.events import ManualCreation, ManualEdit
-from codex.serialisers.items import MagicItemSerialiser
+from codex.serialisers.items import MagicItemSerialiser, MagicItemDetailsSerialiser
 
 
 class MagicItemViewSet(viewsets.GenericViewSet):
@@ -63,7 +63,7 @@ class MagicItemViewSet(viewsets.GenericViewSet):
 
         queryset = self.get_queryset()
         queryset = queryset.filter(character__player = request.user)
-        serialiser = MagicItemSerialiser(queryset, many=True, context={"user": request.user})
+        serialiser = MagicItemDetailsSerialiser(queryset, many=True)
         return self.get_paginated_response(self.paginate_queryset(serialiser.data))
 
     def partial_update(self,request, *args, **kwargs):
