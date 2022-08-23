@@ -64,7 +64,7 @@ class MagicItemViewSet(viewsets.GenericViewSet):
         queryset = self.get_queryset()
         queryset = queryset.filter(character__player = request.user)
         serialiser = MagicItemDetailsSerialiser(queryset, many=True)
-        return self.get_paginated_response(self.paginate_queryset(serialiser.data))
+        return Response(serialiser.data, HTTP_200_OK)
 
     def partial_update(self,request, *args, **kwargs):
         """ Update an existing magic item - only allow name and rarity updates """
