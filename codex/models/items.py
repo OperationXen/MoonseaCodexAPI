@@ -28,7 +28,7 @@ class ConsumableTypes(models.TextChoices):
 class Consumable(models.Model):
     """Describes a consumable item such as a potion or a scroll"""
     uuid = models.UUIDField(default=uuid.uuid4, editable=False)
-    name = models.CharField(max_length=32, help_text="Item Name")
+    name = models.CharField(max_length=256, help_text="Item Name")
     character = models.ForeignKey(Character, on_delete=models.CASCADE, related_name='consumables')
     type = models.TextField(choices=ConsumableTypes.choices, default=ConsumableTypes.GEAR, help_text="Item type")
     count = models.IntegerField(null=True, help_text="Number of charges / items remaining")
@@ -49,7 +49,7 @@ class Consumable(models.Model):
 class MagicItem(models.Model):
     """A record of a permanant magical item"""
     uuid = models.UUIDField(default=uuid.uuid4, editable=False)
-    name = models.CharField(max_length=32, help_text="Item Name")
+    name = models.CharField(max_length=256, help_text="Item Name")
     character = models.ForeignKey(Character, on_delete=models.CASCADE, related_name='magicitems')
     equipped = models.BooleanField(default=False, help_text='Item is currently equipped by its owner')
     rarity = models.CharField(choices=Rarities.choices, max_length=16, default=Rarities.UNCOMMON, help_text="Item rarity")

@@ -26,14 +26,14 @@ class Character(models.Model):
         related_name="characters",
         help_text="The player who owns this character",
     )
-    name = models.CharField(max_length=64, blank=False, default="Unnamed character")
+    name = models.CharField(max_length=256, blank=False, default="Unnamed character")
     artwork = models.ImageField(upload_to=get_user_artwork_path, null=True, blank=True)
     token = models.ImageField(upload_to=get_user_token_path, null=True, blank=True)
     sheet = models.URLField(max_length=256, blank=True, null=True, help_text="Link to DND Beyond character sheet")
     public = models.BooleanField(default=True, help_text="Allow anyone to view this character")
-    season = models.CharField(max_length=32, blank=True, null=True, default="11", help_text="AL season that this character was created")
+    season = models.CharField(max_length=128, blank=True, null=True, default="11", help_text="AL season that this character was created")
     # More detailed information about the character
-    race = models.CharField(max_length=32, blank=True, null=True)
+    race = models.CharField(max_length=128, blank=True, null=True)
     level = models.IntegerField(default=1, help_text='Total level')
     classes = models.JSONField(default=dict, help_text="A JSON object detailing current classes")
     gold = models.FloatField(null=True, blank=True, help_text="Gold held by character (silver and copper in decimal)")
@@ -43,7 +43,8 @@ class Character(models.Model):
     hp = models.IntegerField(null=True, verbose_name='HP', help_text='Max HP')
     pp = models.IntegerField(null=True, verbose_name='PP', help_text='Passive perception')
     dc = models.IntegerField(null=True, verbose_name='DC', help_text='Spell Save DC')
-    vision = models.CharField(max_length=64, blank=True, null=True, help_text='Any special vision modes (eg darkvision)')
+    init = models.IntegerField(null=True, verbose_name='Initiative', help_text='Character initiative modifier')
+    vision = models.CharField(max_length=128, blank=True, null=True, help_text='Any special vision modes (eg darkvision)')
     # Biographical information
     biography = models.TextField(blank=True, null=True, help_text='Character biography')
     dm_text = models.TextField(blank=True, null=True, verbose_name='DM help text', help_text='Any information that may be useful for your DM to know ahead of time')

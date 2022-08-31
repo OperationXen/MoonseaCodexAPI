@@ -8,7 +8,7 @@ class CodexUser(AbstractUser):
     """Extended base user class"""
 
     discord_id = models.CharField(
-        max_length=32, blank=True, null=True, unique=True, help_text="Discord ID for bot integration"
+        max_length=128, blank=True, null=True, unique=True, help_text="Discord ID for bot integration"
     )
     email_verified = models.BooleanField(default=False, help_text="User has verified their email address")
 
