@@ -28,6 +28,7 @@ class ConsumableTypes(models.TextChoices):
 class Consumable(models.Model):
     """Describes a consumable item such as a potion or a scroll"""
     uuid = models.UUIDField(default=uuid.uuid4, editable=False)
+
     name = models.CharField(max_length=256, help_text="Item Name")
     character = models.ForeignKey(Character, on_delete=models.CASCADE, related_name='consumables')
     type = models.TextField(choices=ConsumableTypes.choices, default=ConsumableTypes.GEAR, help_text="Item type")
@@ -49,6 +50,7 @@ class Consumable(models.Model):
 class MagicItem(models.Model):
     """A record of a permanant magical item"""
     uuid = models.UUIDField(default=uuid.uuid4, editable=False)
+
     name = models.CharField(max_length=256, help_text="Item Name")
     character = models.ForeignKey(Character, on_delete=models.CASCADE, related_name='magicitems')
     equipped = models.BooleanField(default=False, help_text='Item is currently equipped by its owner')
@@ -56,6 +58,7 @@ class MagicItem(models.Model):
     attunement = models.BooleanField(default=False, help_text='Item requires attunement to be used')
     description = models.TextField(blank=True, null=True)
     flavour = models.TextField(help_text="Flavour text", null=True, blank=True)
+    tradable = models.BooleanField(default=False, help_text='Item is in trading post')
     # source information (game / shopping / dm service reward / trade)
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE, verbose_name='Origin Type', null=True, help_text='Type of event that resulted in this object coming to you')
     object_id = models.PositiveIntegerField(verbose_name='Event ID', null=True, help_text='ID of the specific source event')

@@ -1,0 +1,11 @@
+[
+    {
+        "model": "codex.advert",
+        "pk": 1,
+        "fields": {
+            "datetime": "2022-08-31T19:15:40.843Z",
+            "item": 3,
+            "description": "Will trade for silly hat"
+        }
+    }
+]

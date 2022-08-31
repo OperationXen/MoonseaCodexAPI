@@ -5,3 +5,4 @@ from . import dungeonmaster
 
 from .api_keys import APIKey
 from .users import CodexUser
+from .trade import Advert, Offer
