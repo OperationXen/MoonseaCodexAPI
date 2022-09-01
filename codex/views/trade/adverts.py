@@ -34,3 +34,32 @@ class TradeAdvertView(APIView):
             serialiser = AdvertSerialiser(queryset, many=True)
         
         return Response(serialiser.data, HTTP_200_OK)
+    
+    def post(self, request, uuid=None):
+        """ Create new advert """
+        if uuid:
+            return Response({'message': 'Advert exists'}, HTTP_400_BAD_REQUEST)
+
+        item_uuid = request.data.get('item_uuid')
+        description = request.data.get('description')
+        try:
+            item = MagicItem.objects.get(uuid=item_uuid)
+            if item.character.player != request.user:
+                raise PermissionError
+            if item.adverts.all().count():
+                raise ValueError
+            advert = Advert.objects.create(item=item, description=description)
+            serialiser = AdvertSerialiser(advert)
+            return Response(serialiser.data)
+
+        except MagicItem.DoesNotExist:
+            return Response({'message': 'Cannot find the item specified'}, HTTP_400_BAD_REQUEST)
+        except PermissionError:
+            return Response({'message': 'Item specified does not belong to you'}, HTTP_403_FORBIDDEN)
+        except ValueError:
+            return Response({'message': 'Item already has an advert'}, HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, uuid=None):
+        """ Delete an existing resource """
+        pass
+

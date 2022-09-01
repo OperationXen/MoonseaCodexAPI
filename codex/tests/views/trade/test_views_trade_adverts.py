@@ -60,3 +60,40 @@ class TestTradeAdvertViews(TestCase):
         response = self.client.get(reverse_querystring('advert', query_kwargs={'own': 'true'}))
         self.assertEqual(response.status_code, HTTP_200_OK)
         self.assertEqual(len(response.data), 2)
+
+    def test_create_valid_advert(self) -> None:
+        """ a user can create an advert for one of their own items """
+        self.client.login(username='testuser1', password='testpassword')
+        item = MagicItem.objects.get(pk=2)
+        test_data = {'item_uuid': item.uuid, 'description': 'WTT: Atlas of endless horizons'}
+
+        response = self.client.post(reverse('advert'), test_data)
+        self.assertEqual(response.status_code, HTTP_200_OK)
+        advert = Advert.objects.all().order_by('-pk').first()
+        self.assertEqual(advert.item, item)
+
+    def test_invalid_user_cannot_create_advert(self) -> None:
+        """ a user who does not own an item cannot create an advert for it """
+        self.client.login(username='testuser2', password='testpassword')
+        item = MagicItem.objects.get(pk=2)
+        test_data = {'item_uuid': item.uuid, 'description': 'WTT: Atlas of endless horizons'}
+
+        response = self.client.post(reverse('advert'), test_data)
+        self.assertEqual(response.status_code, HTTP_403_FORBIDDEN)
+
+    def test_cannot_create_duplicate_advert(self) -> None:
+        """ Only one advert can exist at a time for an item """
+        self.client.login(username='testuser1', password='testpassword')
+        item = MagicItem.objects.get(pk=1)
+        test_data = {'item_uuid': item.uuid, 'description': 'Duplicate advert'}
+
+        response = self.client.post(reverse('advert'), test_data)
+        self.assertEqual(response.status_code, HTTP_400_BAD_REQUEST)
+
+    def test_cannot_create_invalid_advert(self) -> None:
+        """ A user cannot create an advert for an invalid item uuid """
+        self.client.login(username='testuser1', password='testpassword')
+        test_data = {'item_uuid': '12345678-1234-1234-1234-12345678abcd', 'description': 'Invalid test data'}
+
+        response = self.client.post(reverse('advert'), test_data)
+        self.assertEqual(response.status_code, HTTP_400_BAD_REQUEST)
