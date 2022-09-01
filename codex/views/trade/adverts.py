@@ -61,5 +61,14 @@ class TradeAdvertView(APIView):
 
     def delete(self, request, uuid=None):
         """ Delete an existing resource """
-        pass
-
+        if uuid:
+            try:
+                advert = Advert.objects.get(uuid=uuid)
+                if advert.item.character.player != request.user:
+                    return Response({'message': 'This item does not belong to you'}, HTTP_403_FORBIDDEN)
+                advert.delete()
+                return Response({'message': 'Advert deleted'}, HTTP_200_OK)
+            except Advert.DoesNotExist:
+                return Response({'message': 'Cannot find the advert specified'}, HTTP_400_BAD_REQUEST)
+        else:
+            return Response({'message':'No advert specified'}, HTTP_400_BAD_REQUEST)

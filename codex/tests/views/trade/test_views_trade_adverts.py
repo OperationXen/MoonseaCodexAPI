@@ -97,3 +97,25 @@ class TestTradeAdvertViews(TestCase):
 
         response = self.client.post(reverse('advert'), test_data)
         self.assertEqual(response.status_code, HTTP_400_BAD_REQUEST)
+
+    def test_delete_valid_advert(self) -> None:
+        """ Test a user can delete their own advert """
+        self.client.login(username='testuser1', password='testpassword')
+        advert = Advert.objects.get(pk=1)
+
+        response = self.client.delete(reverse('advert', kwargs={'uuid': advert.uuid}))
+        self.assertEqual(response.status_code, HTTP_200_OK)
+        with self.assertRaises(Advert.DoesNotExist):
+            advert.refresh_from_db()
+
+    def test_delete_invalid_advert(self) -> None:
+        """ Test a user cannot delete other peoples adverts """
+        self.client.login(username='testuser1', password='testpassword')
+        advert = Advert.objects.get(pk=3)
+
+        response = self.client.delete(reverse('advert', kwargs={'uuid': advert.uuid}))
+        self.assertEqual(response.status_code, HTTP_403_FORBIDDEN)
+        try:
+            advert.refresh_from_db()
+        except Advert.DoesNotExist:
+            self.fail('Advert deletable by incorrect user')
