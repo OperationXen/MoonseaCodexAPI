@@ -2,6 +2,8 @@ import uuid
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
+from django.db.models.functions import Upper
+
 
 from .character import Character
 
@@ -67,3 +69,13 @@ class MagicItem(models.Model):
     def __str__(self):
         """ String representation """
         return f"{self.name} ({self.rarity})"
+
+    class Meta:
+        indexes = [
+            models.Index(fields=['uuid'], name='item_uuid_idx'),
+            models.Index(fields=['character'], name='item_character_idx'),
+            models.Index(fields=['name'], name='item_name_idx'),
+            models.Index(Upper('name'), name='item_name_upper_idx'),
+            models.Index(fields=['tradable'], name='item_tradable_idx'),
+            models.Index(fields=['content_type', 'object_id'], name='item_source_idx')
+        ]

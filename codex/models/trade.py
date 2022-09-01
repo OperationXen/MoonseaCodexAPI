@@ -22,7 +22,11 @@ class Advert(models.Model):
 
     class Meta:
         verbose_name = 'Trade advert'
-        
+        indexes = [
+            models.Index(fields=['uuid'], name='advert_uuid_idx'),
+            models.Index(fields=['item'], name='advert_item_idx')
+        ]
+
 
 class Offer(models.Model):
     """ Proposal of a trade """
@@ -38,3 +42,8 @@ class Offer(models.Model):
 
     class Meta:
         verbose_name = 'Trade offer'
+        indexes = [
+            models.Index(fields=['uuid'], name='offer_uuid_idx'),
+            models.Index(fields=['advert'], name='offer_advert_idx'),
+            models.Index(fields=['item'], name='offer_item_idx')
+        ]
