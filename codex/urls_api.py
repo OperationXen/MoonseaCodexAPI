@@ -16,6 +16,7 @@ from codex.views.events.dm_events import DMEventView
 
 from codex.views.trade.status import TradeStatusView
 from codex.views.trade.adverts import TradeAdvertView
+from codex.views.trade.offers import TradeOfferView
 
 
 router = DefaultRouter()
@@ -33,6 +34,7 @@ urlpatterns = [
     re_path('^magicitem/events/(?P<magicitem_uuid>[0-9a-f\-]{36})/?', MagicItemEventView.as_view(), name='magicitem_events'),
     re_path('^magicitem/trade/(?P<magicitem_uuid>[0-9a-f\-]{36})/?', TradeStatusView.as_view(), name='magicitem_trade_status'),
     re_path('^magicitem/advert/?(?P<uuid>[0-9a-f\-]{36})?/?', TradeAdvertView.as_view(), name='advert'),
+    re_path('^magicitem/offer/?(?P<uuid>[0-9a-f\-]{36})?/?', TradeOfferView.as_view(), name='offer'),
     re_path('^character/(?P<uuid>[0-9a-f\-]{36})/(?P<image_type>(artwork|token))/?', CharacterImageView.as_view(), name='character_artwork'),
     re_path('^discord_lookup/(?P<query_type>(character|items))/', DiscordBotQueryView.as_view(), name='discord_lookup')
 ]

@@ -20,8 +20,7 @@ class TestTradeAdvertViews(TestCase):
 
         response = self.client.get(reverse('advert', kwargs={'uuid': advert.uuid}))
         self.assertEqual(response.status_code, HTTP_200_OK)
-        self.assertIn('uuid', response.data)
-        self.assertIn('name', response.data)
+        self.assertIn('item', response.data)
         self.assertIn('owner', response.data)
         self.assertIn('description', response.data)
 
@@ -50,7 +49,7 @@ class TestTradeAdvertViews(TestCase):
         response = self.client.get(reverse_querystring('advert', query_kwargs={'search': 'winged'}))
         self.assertEqual(response.status_code, HTTP_200_OK)
         self.assertEqual(len(response.data), 1)
-        self.assertEqual(response.data[0].get('name'), 'Winged boots')
+        self.assertEqual(response.data[0].get('item').get('name'), 'Winged boots')
         self.assertEqual(response.data[0].get('owner'), 'Meepo')
 
     def test_list_adverts_for_player(self) -> None:
@@ -59,7 +58,7 @@ class TestTradeAdvertViews(TestCase):
 
         response = self.client.get(reverse_querystring('advert', query_kwargs={'own': 'true'}))
         self.assertEqual(response.status_code, HTTP_200_OK)
-        self.assertEqual(len(response.data), 2)
+        self.assertEqual(len(response.data), 3)
 
     def test_create_valid_advert(self) -> None:
         """ a user can create an advert for one of their own items """
@@ -110,7 +109,7 @@ class TestTradeAdvertViews(TestCase):
 
     def test_delete_invalid_advert(self) -> None:
         """ Test a user cannot delete other peoples adverts """
-        self.client.login(username='testuser1', password='testpassword')
+        self.client.login(username='testuser2', password='testpassword')
         advert = Advert.objects.get(pk=3)
 
         response = self.client.delete(reverse('advert', kwargs={'uuid': advert.uuid}))
@@ -119,3 +118,25 @@ class TestTradeAdvertViews(TestCase):
             advert.refresh_from_db()
         except Advert.DoesNotExist:
             self.fail('Advert deletable by incorrect user')
+
+    def test_update_valid_advert(self) -> None:
+        """ Test that a user can update their own advert """
+        self.client.login(username='testuser1', password='testpassword')
+        advert = Advert.objects.get(pk=1)
+        test_data = {'description': 'Updated description'}
+
+        response = self.client.patch(reverse('advert', kwargs={'uuid': advert.uuid}), json.dumps(test_data), content_type="application/json")
+        self.assertEqual(response.status_code, HTTP_200_OK)
+        advert.refresh_from_db()
+        self.assertEqual(advert.description, test_data['description'])
+
+    def test_invalid_user_cannot_update_advert(self) -> None:
+        """ Users cant update other users adverts """
+        self.client.login(username='testuser2', password='testpassword')
+        advert = Advert.objects.get(pk=1)
+        test_data = {'description': 'Updated description'}
+
+        response = self.client.patch(reverse('advert', kwargs={'uuid': advert.uuid}), json.dumps(test_data), content_type="application/json")
+        self.assertEqual(response.status_code, HTTP_403_FORBIDDEN)
+        advert.refresh_from_db()
+        self.assertNotEqual(advert.description, test_data['description'])

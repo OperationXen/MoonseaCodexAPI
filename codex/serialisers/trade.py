@@ -1,13 +1,25 @@
 from rest_framework import serializers
 
-from codex.models.trade import Advert
+from codex.models.trade import Advert, Offer
+from codex.serialisers.items import MagicItemSummarySerialiser
 
 
 class AdvertSerialiser(serializers.ModelSerializer):
     owner = serializers.ReadOnlyField(source='item.character.name')
-    name = serializers.ReadOnlyField(source='item.name')
+    item = MagicItemSummarySerialiser(read_only=True)
 
     class Meta:
         model = Advert
-        fields = ['uuid', 'datetime', 'name', 'description', 'owner']
-        read_only_fields = ['uuid']
+        fields = ['uuid', 'datetime', 'owner', 'description', 'item']
+        read_only_fields = ['uuid', 'datetime']
+
+
+class OfferSerialiser(serializers.ModelSerializer):
+    owner = serializers.ReadOnlyField(source='item.character.name')
+    advert = AdvertSerialiser(read_only=True)
+    item = MagicItemSummarySerialiser(read_only=True)
+
+    class Meta:
+        model = Offer
+        fields = ['uuid', 'datetime', 'item', 'advert', 'owner', 'description']
+        read_only_fields = ['uuid', 'datetime']

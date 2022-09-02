@@ -8,5 +8,16 @@
             "item": 4,
             "description": "Good trade this"
         }
+    },
+    {
+        "model": "codex.offer",
+        "pk": 2,
+        "fields": {
+            "datetime": "2022-08-31T19:40:42.000Z",
+            "advert": 3,
+            "item": 6,
+            "description": "Hat for toad"
+        }
     }
+
 ]
