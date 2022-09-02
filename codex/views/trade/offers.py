@@ -60,6 +60,8 @@ class TradeOfferView(APIView):
                 return Response({'message': 'These items belong to a single character'}, HTTP_400_BAD_REQUEST)
             if item.rarity != advert.item.rarity:
                 return Response({'message': 'Trades must be of the same rarity'}, HTTP_400_BAD_REQUEST)
+            if item.item_offers.all().count():
+                return Response({'message': 'This item is already offered to someone else'}, HTTP_400_BAD_REQUEST)
                        
             offer = Offer.objects.create(item=item, advert=advert, description=description)
             serialiser = OfferSerialiser(offer)

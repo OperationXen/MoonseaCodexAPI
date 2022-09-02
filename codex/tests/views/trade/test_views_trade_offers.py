@@ -68,9 +68,9 @@ class TestTradeAdvertViews(TestCase):
 
     def test_create_valid_offer(self) -> None:
         """ a user can create an offer for an item """
-        self.client.login(username='testuser1', password='testpassword')
+        self.client.login(username='testuser2', password='testpassword')
         advert = Advert.objects.get(pk=1)
-        item = MagicItem.objects.get(pk=4)
+        item = MagicItem.objects.get(pk=7)
         test_data = {'item_uuid': item.uuid, 'advert_uuid': advert.uuid, 'description': 'Lantern of revealing for Winged boots'}
 
         response = self.client.post(reverse('offer'), test_data)
@@ -78,6 +78,17 @@ class TestTradeAdvertViews(TestCase):
         offer = Offer.objects.all().order_by('-pk').first()
         self.assertEqual(offer.item, item)
         self.assertEqual(offer.advert, advert)
+
+    def test_cant_double_offer_item(self) -> None:
+        """ a user cant offer an item to more than one advert """
+        self.client.login(username='testuser1', password='testpassword')
+        advert = Advert.objects.get(pk=1)
+        item = MagicItem.objects.get(pk=4)
+        test_data = {'item_uuid': item.uuid, 'advert_uuid': advert.uuid, 'description': 'Lantern of revealing for Winged boots'}
+
+        response = self.client.post(reverse('offer'), test_data)
+        self.assertEqual(response.status_code, HTTP_400_BAD_REQUEST)
+        self.assertIn('offered to someone else', response.data.get('message'))
 
     def test_cant_create_invalid_offer(self) -> None:
         """ User must own the item being offered for trade """
