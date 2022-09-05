@@ -89,4 +89,3 @@ class TestTradeActionViews(TestCase):
         self.assertEqual(response.status_code, HTTP_200_OK)
         with self.assertRaises(Offer.DoesNotExist):
             offer.refresh_from_db()
-        
