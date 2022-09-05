@@ -27,7 +27,6 @@ class TestAPIKeyModel(TestCase):
         with self.assertRaises(APIKey.DoesNotExist):
             apikey = APIKey.objects.get(pk=1)
         
-
     def test_apikey_string_representation(self) -> None:
         """ Ensure that the string representation includes the username """
         apikey = APIKey.objects.get(pk=1)

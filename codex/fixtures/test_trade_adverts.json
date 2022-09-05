@@ -1,0 +1,29 @@
+[
+    {
+        "model": "codex.advert",
+        "pk": 1,
+        "fields": {
+            "datetime": "2022-08-31T19:15:40.843Z",
+            "item": 3,
+            "description": "Will trade for silly hat"
+        }
+    },
+    {
+        "model": "codex.advert",
+        "pk": 2,
+        "fields": {
+            "datetime": "2022-08-31T19:15:45.000Z",
+            "item": 1,
+            "description": "Wand of the warmage preferred"
+        }
+    },
+    {
+        "model": "codex.advert",
+        "pk": 3,
+        "fields": {
+            "datetime": "2022-08-31T19:17:00.843Z",
+            "item": 5,
+            "description": "All glory to the hypnotoad"
+        }
+    }
+]

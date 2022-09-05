@@ -60,7 +60,7 @@
     "pk": 5,
     "fields": {
       "name": "The Hypnotoad",
-      "character": 3,
+      "character": 2,
       "equipped": true,
       "rarity": "veryrare",
       "attunement": false,
@@ -68,5 +68,35 @@
       "flavour": "",
       "content_type": ["codex", "manualcreation"], "object_id": 1
     }
+  },
+  {
+    "model": "codex.magicitem",
+    "pk": 6,
+    "fields": {
+      "name": "Hat of Frogs",
+      "character": 3,
+      "equipped": true,
+      "rarity": "veryrare",
+      "attunement": false,
+      "description": "A hat that makes frogs",
+      "flavour": "",
+      "content_type": ["codex", "game"], "object_id": 2
+    }
+  },
+  {
+    "model": "codex.magicitem",
+    "pk": 7,
+    "fields": {
+      "name": "Trident of Fish Command",
+      "character": 3,
+      "equipped": false,
+      "rarity": "uncommon",
+      "attunement": false,
+      "description": "Can command fish",
+      "flavour": "",
+      "content_type": ["codex", "game"], "object_id": 2
+    }
   }
+
+
 ]
