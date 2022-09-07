@@ -16,6 +16,7 @@ class TradeAdvertView(APIView):
         own_only = bool(request.GET.get('own'))
         character_uuid = request.GET.get('character')
         search_term = request.GET.get('search')
+        rarity = request.GET.get('rarity')
 
         if uuid:
             try:
@@ -31,8 +32,9 @@ class TradeAdvertView(APIView):
                 queryset = queryset.filter(item__character__uuid=character_uuid)
             if search_term:
                 queryset = queryset.filter(item__name__istartswith=search_term.upper())
-            serialiser = AdvertSerialiser(queryset, many=True)
-        
+            if rarity:
+                queryset = queryset.filter(item__rarity=rarity)
+            serialiser = AdvertSerialiser(queryset, many=True)        
         return Response(serialiser.data, HTTP_200_OK)
     
     def post(self, request, uuid=None):

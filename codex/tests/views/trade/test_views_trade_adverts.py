@@ -60,6 +60,16 @@ class TestTradeAdvertViews(TestCase):
         self.assertEqual(response.status_code, HTTP_200_OK)
         self.assertEqual(len(response.data), 3)
 
+    def test_list_advertsby_rarity(self) -> None:
+        """ List adverts only for a specific rarity """
+        self.client.login(username='testuser1', password='testpassword')
+
+        response = self.client.get(reverse_querystring('advert', query_kwargs={'rarity': 'uncommon'}))
+        self.assertEqual(response.status_code, HTTP_200_OK)
+        self.assertEqual(len(response.data), 2)
+        for advert in response.data:
+            self.assertEqual(advert.get('item').get('rarity'), 'uncommon')
+
     def test_create_valid_advert(self) -> None:
         """ a user can create an advert for one of their own items """
         self.client.login(username='testuser1', password='testpassword')
