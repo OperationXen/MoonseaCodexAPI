@@ -56,9 +56,9 @@ class TradeActionView(APIView):
 
         if action == 'accept':
             if offer.item.character.downtime < 5:
-                return Response({'message': 'Offering character does not have enough downtime to trade'}, )
+                return Response({'message': 'Offering character does not have enough downtime to trade'}, HTTP_400_BAD_REQUEST )
             elif offer.advert.item.character.downtime < 5:
-                return Response({'message': 'Receiving character does not have enough downtime to trade'}, )
+                return Response({'message': 'Receiving character does not have enough downtime to trade'}, HTTP_400_BAD_REQUEST)
             else:
                 (item1, item2) = self._accept_offer(offer)
                 self._clear_trade(item1)
