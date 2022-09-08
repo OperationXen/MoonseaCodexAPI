@@ -49,6 +49,13 @@ class Trade(models.Model):
         "self", null=True, blank=True, on_delete=models.SET_NULL, help_text="The other half of the trade"
     )
 
+    def save(self, *args, **kwargs):
+        if not self.sender_name:
+            self.sender_name = self.sender.name
+        if not self.recipient_name:
+            self.recipient_name = self.recipient.name
+        super(Trade, self).save(*args, **kwargs)
+
     def __str__(self):
         if(self.datetime):
             return f"{self.datetime.strftime('%Y/%m/%d')} - {self.item.name if self.item else 'DELETED'}"

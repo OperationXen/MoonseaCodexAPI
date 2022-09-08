@@ -8,11 +8,19 @@ class MagicItemSerialiser(serializers.ModelSerializer):
     """Serialiser for a magic item"""
     owner = serializers.ReadOnlyField(source="character.name", read_only=True)
     editable = serializers.SerializerMethodField()
+    market = serializers.SerializerMethodField()
 
     class Meta:
         model = MagicItem
-        fields = ["uuid", "owner", "name", "rarity", "attunement", "equipped", "description", "flavour", "editable"]
+        fields = ["uuid", "owner", "name", "rarity", "attunement", "equipped", "description", "flavour", "editable", "market"]
         read_only_fields = ["uuid", "editable"]
+
+    def get_market(self, obj):
+        try:
+            cnt = obj.adverts.count()
+            return bool(cnt)
+        except:
+            return False
 
     def get_editable(self, obj):
         try:
@@ -26,23 +34,14 @@ class MagicItemSerialiser(serializers.ModelSerializer):
 
 class MagicItemDetailsSerialiser(serializers.ModelSerializer):
     """ An in depth view of the magic item and related fields """
-    owner = serializers.ReadOnlyField(source="character.name", read_only=True)
+    owner_name = serializers.ReadOnlyField(source="character.name", read_only=True)
     owner_uuid = serializers.ReadOnlyField(source="character.uuid", read_only=True)
     datetime_obtained = serializers.ReadOnlyField(source="source.datetime", read_only=True)
     source_event_type = serializers.SerializerMethodField()
 
     class Meta:
         model = MagicItem
-        fields = ["uuid", "owner", "owner_uuid", "name", "rarity", "datetime_obtained", "source_event_type", "attunement", "equipped", "description", "flavour"]
+        fields = ["uuid", "owner_name", "owner_uuid", "name", "rarity", "datetime_obtained", "source_event_type", "attunement", "equipped", "description", "flavour"]
 
     def get_source_event_type(self, obj):
         return get_event_type(obj.source)
-
-
-class MagicItemSummarySerialiser(serializers.ModelSerializer):
-    """Basic serialiser for a magic item """
-
-    class Meta:
-        model = MagicItem
-        fields = ["uuid", "rarity", "name", "equipped"]
-        read_only_fields = ["uuid"]

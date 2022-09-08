@@ -22,7 +22,6 @@ class TestTradeAdvertViews(TestCase):
         self.assertEqual(response.status_code, HTTP_200_OK)
         self.assertIn('advert', response.data)
         self.assertIn('item', response.data)
-        self.assertIn('owner', response.data)
         self.assertIn('description', response.data)
 
     def test_get_invalid_offer(self) -> None:

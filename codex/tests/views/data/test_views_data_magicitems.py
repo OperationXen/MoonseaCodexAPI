@@ -129,7 +129,7 @@ class TestMagicItemCRUDViews(TestCase):
         self.assertEqual(response.status_code, HTTP_200_OK)
         self.assertIn('uuid', response.data[0])
         for result in response.data:
-            self.assertTrue(result['owner'])
+            self.assertTrue(result['owner_name'])
             self.assertTrue(result['name'])
 
     def test_anyone_cannot_update_item(self) -> None:

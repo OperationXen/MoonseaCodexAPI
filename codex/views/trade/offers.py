@@ -22,7 +22,7 @@ class TradeOfferView(APIView):
                 offer = Offer.objects.get(uuid=uuid)
             except Offer.DoesNotExist:
                 return Response({'message': 'Could not find matching offer'}, HTTP_404_NOT_FOUND)
-            serialiser = OfferSerialiser(offer)
+            serialiser = OfferSerialiser(offer, context={"user": request.user})
         elif not request.user.is_authenticated:
             return Response({'message': 'You are not authenticated'}, HTTP_401_UNAUTHORIZED)   
         else:
@@ -40,7 +40,7 @@ class TradeOfferView(APIView):
             if advert_uuid:
                 queryset = queryset.filter(advert__uuid = advert_uuid)
             
-            serialiser = OfferSerialiser(queryset, many=True)
+            serialiser = OfferSerialiser(queryset, many=True, context={"user": request.user})
         return Response(serialiser.data, HTTP_200_OK)
 
     def post(self, request, uuid=None):

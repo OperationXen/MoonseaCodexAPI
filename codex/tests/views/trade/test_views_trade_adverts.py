@@ -21,7 +21,6 @@ class TestTradeAdvertViews(TestCase):
         response = self.client.get(reverse('advert', kwargs={'uuid': advert.uuid}))
         self.assertEqual(response.status_code, HTTP_200_OK)
         self.assertIn('item', response.data)
-        self.assertIn('owner', response.data)
         self.assertIn('description', response.data)
 
     def test_get_invalid_advert(self) -> None:
@@ -40,7 +39,7 @@ class TestTradeAdvertViews(TestCase):
         self.assertEqual(response.status_code, HTTP_200_OK)
         self.assertEqual(len(response.data), 2)
         for advert in response.data:
-            self.assertEqual(advert.get('owner'), character.name)
+            self.assertEqual(advert.get('item').get('owner_name'), character.name)
     
     def test_list_adverts_by_keyword(self) -> None:
         """ List all item adverts that start with a specific string """
@@ -50,7 +49,7 @@ class TestTradeAdvertViews(TestCase):
         self.assertEqual(response.status_code, HTTP_200_OK)
         self.assertEqual(len(response.data), 1)
         self.assertEqual(response.data[0].get('item').get('name'), 'Winged boots')
-        self.assertEqual(response.data[0].get('owner'), 'Meepo')
+        self.assertEqual(response.data[0].get('item').get('owner_name'), 'Meepo')
 
     def test_list_adverts_for_player(self) -> None:
         """ List all adverts for the current user """
