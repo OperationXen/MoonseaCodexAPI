@@ -16,7 +16,7 @@ class Game(models.Model):
     datetime = models.DateTimeField(default=timezone.now, null=True, blank=True)
 
     name = models.CharField(max_length=128, blank=True, null=True, help_text="Module name")
-    dm = models.ForeignKey(DungeonMasterInfo, null=True, on_delete=models.SET_NULL, related_name='games', help_text='Moonsea Codex DM (optional)')
+    dm = models.ForeignKey(DungeonMasterInfo, null=True, blank=True, on_delete=models.SET_NULL, related_name='games', help_text='Moonsea Codex DM (optional)')
     dm_name = models.CharField(max_length=128, default='', help_text='Name of DM')
     notes = models.TextField(blank=True, null=True, help_text='Public DM notes for game')
     module = models.CharField(max_length=128, help_text="Module code")
