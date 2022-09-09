@@ -38,10 +38,18 @@ class MagicItemDetailsSerialiser(serializers.ModelSerializer):
     owner_uuid = serializers.ReadOnlyField(source="character.uuid", read_only=True)
     datetime_obtained = serializers.ReadOnlyField(source="source.datetime", read_only=True)
     source_event_type = serializers.SerializerMethodField()
+    market = serializers.SerializerMethodField()
 
     class Meta:
         model = MagicItem
-        fields = ["uuid", "owner_name", "owner_uuid", "name", "rarity", "datetime_obtained", "source_event_type", "attunement", "equipped", "description", "flavour"]
+        fields = ["uuid", "owner_name", "owner_uuid", "name", "rarity", "datetime_obtained", "source_event_type", "attunement", "equipped", "description", "flavour", "market"]
 
     def get_source_event_type(self, obj):
         return get_event_type(obj.source)
+
+    def get_market(self, obj):
+        try:
+            cnt = obj.adverts.count()
+            return bool(cnt)
+        except:
+            return False
