@@ -24,6 +24,9 @@ class CodexUserRegistrationSerialiser(serializers.ModelSerializer):
 
     def create(self, validated_data):
         """ Create a new user object """
+        if 'discord_id' not in validated_data or not validated_data['discord_id'].strip():
+            validated_data['discord_id'] = None
+
         user = CodexUser.objects.create_user(validated_data['username'], validated_data['email'], validated_data['password'], discord_id=validated_data['discord_id'])
         return user
 
