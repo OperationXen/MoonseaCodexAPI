@@ -10,6 +10,7 @@ from codex.views.data.discord import DiscordBotQueryView
 from codex.views.events.magicitem_events import MagicItemEventView
 from codex.views.events.character_events import CharacterEventView
 from codex.views.events.character_games import CharacterGamesViewSet
+from codex.views.events.events_downtime import EventDowntimeCatchingUpView
 from codex.views.events.dm_rewards import DMRewardViewSet
 from codex.views.events.dm_games import DMGamesViewSet
 from codex.views.events.dm_events import DMEventView
@@ -27,6 +28,7 @@ router.register(r'game', CharacterGamesViewSet, basename='game')
 router.register(r'dm_log', DMLogViewSet, basename='dm_log')
 router.register(r'dm_reward', DMRewardViewSet, basename='dm_reward')
 router.register(r'dm_game', DMGamesViewSet, basename='dm_game')
+router.register(r'catchingup', EventDowntimeCatchingUpView, basename='catchingup')
 
 urlpatterns = [
     path('dm_events/<uuid:dm_uuid>', DMEventView.as_view(), name='dm_events'),
