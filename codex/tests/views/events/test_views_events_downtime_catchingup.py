@@ -21,6 +21,34 @@ class TestEventDowntimeCatchingUpCRUDViews(TestCase):
 
         response = self.client.post(reverse('catchingup-list'), {'character_uuid': character.uuid})
         self.assertEqual(response.status_code, HTTP_201_CREATED)
+    
+    def test_user_downtime_subtracted_automatically(self) -> None:
+        """ A character's downtime should be automatically adjusted when the event is created """
+        self.client.login(username="testuser1", password="testpassword")
+        character = Character.objects.get(pk=1)
+        initial = character.downtime
+
+        response = self.client.post(reverse('catchingup-list'), {'character_uuid': character.uuid})
+        self.assertEqual(response.status_code, HTTP_201_CREATED)
+        character.refresh_from_db()
+        self.assertEqual(character.downtime, initial - 10)
+    
+    def test_sufficient_downtime_required(self) -> None:
+        """ If the character lacks sufficient downtime, creating the event should fail """
+        self.client.login(username="testuser1", password="testpassword")
+        character = Character.objects.get(pk=1)
+        initial = 9
+        character.downtime = initial
+        character.save()
+
+        response = self.client.post(reverse('catchingup-list'), {'character_uuid': character.uuid})
+        self.assertEqual(response.status_code, HTTP_400_BAD_REQUEST)
+        self.assertIn('message', response.data)
+        self.assertIn('downtime', response.data.get('message'))
+        character.refresh_from_db()
+        # check downtime hasn't be decremented
+        self.assertEqual(character.downtime, initial)
+
 
     def test_incorrect_user_cant_create_event(self) -> None:
         """ Cannot create a catching up event if you don't own the character """
