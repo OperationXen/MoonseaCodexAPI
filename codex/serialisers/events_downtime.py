@@ -9,3 +9,4 @@ class CatchingUpSerialiser(serializers.ModelSerializer):
     class Meta:
         model = CatchingUp
         fields = ["uuid", "datetime", "character", "levels", "details"]
+        read_only_fields = ['character']
