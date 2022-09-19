@@ -43,8 +43,13 @@ class EventDowntimeCatchingUpView(viewsets.GenericViewSet):
             return Response({"message": "No character specified"}, HTTP_400_BAD_REQUEST)
 
         serialiser = CatchingUpSerialiser(data = request.data)
+        if char.downtime < 10:
+            return Response({'message': 'This character does not have enough downtime for this activity'}, HTTP_400_BAD_REQUEST)
         if serialiser.is_valid():
             event = serialiser.save(character=char)
+            # Subtract the downtime from the character
+            char.downtime = char.downtime - 10
+            char.save()
             return Response(serialiser.data, HTTP_201_CREATED)
         else:
             return Response({'message': 'Invalid request data'}, HTTP_400_BAD_REQUEST)
