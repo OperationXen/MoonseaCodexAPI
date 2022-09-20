@@ -24,3 +24,26 @@ class CatchingUp(models.Model):
             models.Index(fields=["uuid"], name="event_catchup_uuid_idx"),
             models.Index(fields=["character"], name="event_catchup_character_idx"),
         ]
+
+
+class MundaneTrade(models.Model):
+    """Downtime activity for buying mundane equipment, scrolls and potions"""
+
+    uuid = models.UUIDField(default=uuid.uuid4, editable=False)
+    datetime = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+
+    character = models.ForeignKey(Character, null=True, on_delete=models.CASCADE)
+    gold_change = models.FloatField(default=0, help_text="Gold change from this trade")
+    sold = models.TextField(blank=True, null=True, help_text="Items sold")
+    purchased = models.TextField(blank=True, null=True, help_text="Items purchased")
+
+    def __str__(self):
+        if self.datetime:
+            return f"{self.datetime.strftime('%Y/%m/%d')} - {self.character.name}"
+        return f"UNKNOWN DATE - {self.character.name}"
+
+    class Meta:
+        indexes = [
+            models.Index(fields=["uuid"], name="event_mtrade_uuid_idx"),
+            models.Index(fields=["character"], name="event_mtrade_character_idx"),
+        ]
