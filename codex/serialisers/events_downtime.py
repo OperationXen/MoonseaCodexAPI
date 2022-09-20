@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from codex.models.events_downtime import CatchingUp
+from codex.models.events_downtime import CatchingUp, MundaneTrade
 
 
 class CatchingUpSerialiser(serializers.ModelSerializer):
@@ -20,6 +20,6 @@ class MundaneTradeSerialiser(serializers.ModelSerializer):
     event_type = serializers.ReadOnlyField(default="dt_mtrade")
 
     class Meta:
-        model = CatchingUp
+        model = MundaneTrade
         fields = ["uuid", "datetime", "character", "gold_change", "sold", "purchased", "event_type"]
         read_only_fields = ["character"]
