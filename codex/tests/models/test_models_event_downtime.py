@@ -7,7 +7,7 @@ from codex.models.events_downtime import CatchingUp, MundaneTrade
 class TestCatchUpModel(TestCase):
     """Tests for the CatchingUp downtime event model"""
 
-    fixtures = ["test_users", "test_characters", "test_events_catchingup"]
+    fixtures = ["test_users", "test_characters", "test_events_dt_catchingup"]
 
     def test_create_catchingup(self) -> None:
         """Test that a valid catchingup event can be created"""
@@ -39,7 +39,7 @@ class TestCatchUpModel(TestCase):
 class TestMundaneTrade(TestCase):
     """Tests for the mundate trade"""
 
-    fixtures = ["test_users", "test_characters", "test_events_mundanetrade"]
+    fixtures = ["test_users", "test_characters", "test_events_dt_mundanetrade"]
 
     def test_create(self):
         """Test that an instance of the model can be created"""
