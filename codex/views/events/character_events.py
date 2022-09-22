@@ -5,8 +5,8 @@ from rest_framework.status import *
 
 from codex.models.events import DMReward
 from codex.models.character import Character
-from codex.models.events_downtime import CatchingUp
-from codex.serialisers.events_downtime import CatchingUpSerialiser
+from codex.models.events_downtime import CatchingUp, MundaneTrade
+from codex.serialisers.events_downtime import CatchingUpSerialiser, MundaneTradeSerialiser
 from codex.serialisers.character_events import CharacterGameSummarySerialiser
 from codex.serialisers.dm_events import DMRewardSummary
 
@@ -27,6 +27,9 @@ class CharacterEventView(APIView, LimitOffsetPagination):
         rewards_serialiser = DMRewardSummary(rewards, many=True)
         catchingup = CatchingUp.objects.filter(character=character)
         catchingup_serialiser = CatchingUpSerialiser(catchingup, many=True)
+        mundanetrade = MundaneTrade.objects.filter(character=character)
+        mundanetrade_serialiser = MundaneTradeSerialiser(mundanetrade, many=True)
 
         data = games_serialiser.data + rewards_serialiser.data + catchingup_serialiser.data
+        data = data + mundanetrade_serialiser.data
         return Response(data, HTTP_200_OK)
