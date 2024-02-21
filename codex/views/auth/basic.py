@@ -57,7 +57,7 @@ class RegisterCodexUser(APIView):
                     return Response({"message": "Unable to register your account"}, HTTP_500_INTERNAL_SERVER_ERROR)
                 return Response(new_user.data, status=HTTP_200_OK)
         except RFValidationError as ve:
-            return Response({"message": "Invalid details", "errors": ve.args}, HTTP_400_BAD_REQUEST)
+            return Response({"message": "Invalid details", "errors": ve.args[0]}, HTTP_400_BAD_REQUEST)
         except Exception as e:
             return Response({"message": "Invalid details"}, HTTP_400_BAD_REQUEST)
 
