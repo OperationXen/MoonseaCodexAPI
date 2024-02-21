@@ -1,6 +1,6 @@
 from django.contrib.auth.password_validation import validate_password
 from django.contrib.auth import authenticate, logout, login
-from django.core.exceptions import ValidationError
+from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView, Response
 from rest_framework.status import *
@@ -55,8 +55,10 @@ class RegisterCodexUser(APIView):
                     user.delete()
                     return Response({"message": "Unable to register your account"}, HTTP_500_INTERNAL_SERVER_ERROR)
                 return Response(new_user.data, status=HTTP_200_OK)
+        except ValidationError as ve:
+            return Response({"message": "Invalid details", "errors": ve.args}, HTTP_400_BAD_REQUEST)
         except Exception as e:
-            return Response({'message': 'Invalid details'}, HTTP_400_BAD_REQUEST)
+            return Response({"message": "Invalid details"}, HTTP_400_BAD_REQUEST)
 
 
 class ChangeCodexUserPassword(APIView):
