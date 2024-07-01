@@ -47,3 +47,26 @@ class MundaneTrade(models.Model):
             models.Index(fields=["uuid"], name="event_mtrade_uuid_idx"),
             models.Index(fields=["character"], name="event_mtrade_character_idx"),
         ]
+
+
+class SpellbookUpdate(models.Model):
+    """Downtime activity for updating a spellbook"""
+
+    uuid = models.UUIDField(default=uuid.uuid4, editable=False)
+    datetime = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+
+    character = models.ForeignKey(Character, null=True, on_delete=models.CASCADE)
+    gold = models.IntegerField(default=0, help_text="Gold spent on reagents")
+    downtime = models.IntegerField(default=0, help_text="Downtime days spent copying")
+    spells = models.TextField(blank=True, null=True, help_text="Spells added to spellbook")
+
+    def __str__(self):
+        if self.datetime:
+            return f"{self.datetime.strftime('%Y/%m/%d')} - {self.character.name}"
+        return f"UNKNOWN DATE - {self.character.name}"
+
+    class Meta:
+        indexes = [
+            models.Index(fields=["uuid"], name="event_sbookupd_uuid_idx"),
+            models.Index(fields=["character"], name="event_sbookupd_character_idx"),
+        ]
