@@ -1,0 +1,13 @@
+[
+    {
+        "model": "codex.spellbookupdate",
+        "pk": 1,
+        "fields": {
+            "datetime": "2022-08-19T17:04:30.490Z",
+            "character": 1,
+            "gold": -150,
+            "downtime": 3,
+            "spells": "Magic Missile, Shield, Mage Armour"
+        }
+    }
+]

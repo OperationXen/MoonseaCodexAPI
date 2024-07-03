@@ -7,7 +7,7 @@ from codex.models.events_downtime import SpellbookUpdate
 class TestSpellbookUpdate(TestCase):
     """Tests for a spellbook update model"""
 
-    fixtures = ["test_users", "test_characters", "test_events_dt_mundanetrade"]
+    fixtures = ["test_users", "test_characters", "test_events_dt_spellbook_update"]
 
     def test_create(self):
         """Test that an instance of the model can be created"""
