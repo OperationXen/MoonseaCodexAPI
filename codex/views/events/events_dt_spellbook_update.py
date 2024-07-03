@@ -43,8 +43,10 @@ class EventDowntimeSpellbookUpdateView(viewsets.GenericViewSet):
         except ValueError as ve:
             return Response({"message": "No character specified"}, HTTP_400_BAD_REQUEST)
 
-        gold_change = request.data.get("gold") or 0.0
-        downtime_change = request.data.get("downtime") or 0.0
+        gold_change = float(request.data.get("gold") or 0.0)
+        downtime_change = float(request.data.get("downtime") or 0.0)
+        if downtime_change > char.downtime:
+            return Response({"message": "Insufficient downtime to perform this activity"}, HTTP_400_BAD_REQUEST)
         serialiser = SpellbookUpdateSerialiser(data=request.data)
         if serialiser.is_valid():
             event = serialiser.save(character=char)

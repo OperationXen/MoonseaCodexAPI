@@ -37,11 +37,14 @@ class TestEventDowntimeSpellbookUpdateCRUDViews(TestCase):
         """If the character lacks sufficient downtime, creating the event should fail"""
         self.client.login(username="testuser1", password="testpassword")
         character = Character.objects.get(pk=1)
-        initial = 9
+        initial = 4
         character.downtime = initial
         character.save()
 
-        response = self.client.post(reverse("spellbook_update-list"), {"character_uuid": character.uuid})
+        response = self.client.post(
+            reverse("spellbook_update-list"),
+            {"character_uuid": character.uuid, "downtime": 5.0, "gold": 250, "spells": "Izgimmers Last Word"},
+        )
         self.assertEqual(response.status_code, HTTP_400_BAD_REQUEST)
         self.assertIn("message", response.data)
         self.assertIn("downtime", response.data.get("message"))
