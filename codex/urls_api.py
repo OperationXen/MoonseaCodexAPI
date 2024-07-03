@@ -12,6 +12,7 @@ from codex.views.events.character_events import CharacterEventView
 from codex.views.events.character_games import CharacterGamesViewSet
 from codex.views.events.events_dt_catchingup import EventDowntimeCatchingUpView
 from codex.views.events.events_dt_mundanetrade import EventDowntimeMundateTradeView
+from codex.views.events.events_dt_spellbook_update import EventDowntimeSpellbookUpdateView
 from codex.views.events.dm_rewards import DMRewardViewSet
 from codex.views.events.dm_games import DMGamesViewSet
 from codex.views.events.dm_events import DMEventView
@@ -31,6 +32,7 @@ router.register(r"dm_reward", DMRewardViewSet, basename="dm_reward")
 router.register(r"dm_game", DMGamesViewSet, basename="dm_game")
 router.register(r"catchingup", EventDowntimeCatchingUpView, basename="catchingup")
 router.register(r"mundanetrade", EventDowntimeMundateTradeView, basename="mundanetrade")
+router.register(r"spellbook", EventDowntimeSpellbookUpdateView, basename="spellbook_update")
 
 urlpatterns = [
     path("dm_events/<uuid:dm_uuid>", DMEventView.as_view(), name="dm_events"),
@@ -54,7 +56,9 @@ urlpatterns = [
         CharacterImageView.as_view(),
         name="character_artwork",
     ),
-    re_path("^discord_lookup/(?P<query_type>(character|items))/", DiscordBotQueryView.as_view(), name="discord_lookup"),
+    re_path(
+        "^discord_lookup/(?P<query_type>(character|items))/", DiscordBotQueryView.as_view(), name="discord_lookup"
+    ),
 ]
 
 urlpatterns += router.urls

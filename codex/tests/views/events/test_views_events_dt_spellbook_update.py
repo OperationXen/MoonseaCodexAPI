@@ -16,19 +16,22 @@ class TestEventDowntimeSpellbookUpdateCRUDViews(TestCase):
         self.client.login(username="testuser1", password="testpassword")
         character = Character.objects.get(pk=1)
 
-        response = self.client.post(reverse("spellbook-update-list"), {"character_uuid": character.uuid})
+        response = self.client.post(reverse("spellbook_update-list"), {"character_uuid": character.uuid})
         self.assertEqual(response.status_code, HTTP_201_CREATED)
 
     def test_user_downtime_subtracted_automatically(self) -> None:
         """A character's downtime should be automatically adjusted when the event is created"""
         self.client.login(username="testuser1", password="testpassword")
         character = Character.objects.get(pk=1)
-        initial = character.downtime
+        initial_downtime = character.downtime
 
-        response = self.client.post(reverse("spellbook-update-list"), {"character_uuid": character.uuid})
+        response = self.client.post(
+            reverse("spellbook_update-list"),
+            {"character_uuid": character.uuid, "downtime": 5.0, "gold": 250, "spells": "Izgimmers Last Word"},
+        )
         self.assertEqual(response.status_code, HTTP_201_CREATED)
         character.refresh_from_db()
-        self.assertEqual(character.downtime, initial - 10)
+        self.assertEqual(character.downtime, initial_downtime - 5.0)
 
     def test_sufficient_downtime_required(self) -> None:
         """If the character lacks sufficient downtime, creating the event should fail"""
@@ -38,7 +41,7 @@ class TestEventDowntimeSpellbookUpdateCRUDViews(TestCase):
         character.downtime = initial
         character.save()
 
-        response = self.client.post(reverse("spellbook-update-list"), {"character_uuid": character.uuid})
+        response = self.client.post(reverse("spellbook_update-list"), {"character_uuid": character.uuid})
         self.assertEqual(response.status_code, HTTP_400_BAD_REQUEST)
         self.assertIn("message", response.data)
         self.assertIn("downtime", response.data.get("message"))
@@ -51,7 +54,7 @@ class TestEventDowntimeSpellbookUpdateCRUDViews(TestCase):
         self.client.login(username="testuser2", password="testpassword")
         character = Character.objects.get(pk=1)
 
-        response = self.client.post(reverse("spellbook-update-list"), {"character_uuid": character.uuid})
+        response = self.client.post(reverse("spellbook_update-list"), {"character_uuid": character.uuid})
         self.assertEqual(response.status_code, HTTP_403_FORBIDDEN)
 
     def test_user_must_supply_valid_character_for_create(self) -> None:
@@ -59,7 +62,7 @@ class TestEventDowntimeSpellbookUpdateCRUDViews(TestCase):
         self.client.login(username="testuser1", password="testpassword")
 
         response = self.client.post(
-            reverse("spellbook-update-list"), {"character_uuid": "12341234-1234-1234-1234-123456789ABC"}
+            reverse("spellbook_update-list"), {"character_uuid": "12341234-1234-1234-1234-123456789ABC"}
         )
         self.assertEqual(response.status_code, HTTP_400_BAD_REQUEST)
         self.assertIn("message", response.data)
@@ -69,7 +72,7 @@ class TestEventDowntimeSpellbookUpdateCRUDViews(TestCase):
         self.client.logout()
 
         event = SpellbookUpdate.objects.get(pk=1)
-        response = self.client.get(reverse("spellbook-update-detail", kwargs={"uuid": event.uuid}))
+        response = self.client.get(reverse("spellbook_update-detail", kwargs={"uuid": event.uuid}))
         self.assertEqual(response.status_code, HTTP_200_OK)
         self.assertIn("character", response.data)
 
@@ -78,7 +81,7 @@ class TestEventDowntimeSpellbookUpdateCRUDViews(TestCase):
         self.client.logout()
 
         response = self.client.get(
-            reverse("spellbook-update-detail", kwargs={"uuid": "12341234-1234-1234-1234-123456789abc"})
+            reverse("spellbook_update-detail", kwargs={"uuid": "12341234-1234-1234-1234-123456789abc"})
         )
         self.assertEqual(response.status_code, HTTP_404_NOT_FOUND)
 
@@ -87,7 +90,7 @@ class TestEventDowntimeSpellbookUpdateCRUDViews(TestCase):
         self.client.login(username="testuser1", password="testpassword")
         event = SpellbookUpdate.objects.get(pk=1)
 
-        response = self.client.delete(reverse("spellbook-update-detail", kwargs={"uuid": event.uuid}))
+        response = self.client.delete(reverse("spellbook_update-detail", kwargs={"uuid": event.uuid}))
         self.assertEqual(response.status_code, HTTP_200_OK)
         self.assertIn("message", response.data)
         with self.assertRaises(SpellbookUpdate.DoesNotExist):
@@ -98,5 +101,5 @@ class TestEventDowntimeSpellbookUpdateCRUDViews(TestCase):
         self.client.login(username="testuser2", password="testpassword")
         event = SpellbookUpdate.objects.get(pk=1)
 
-        response = self.client.delete(reverse("spellbook-update-detail", kwargs={"uuid": event.uuid}))
+        response = self.client.delete(reverse("spellbook_update-detail", kwargs={"uuid": event.uuid}))
         self.assertEqual(response.status_code, HTTP_403_FORBIDDEN)

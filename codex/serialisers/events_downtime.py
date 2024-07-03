@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from codex.models.events_downtime import CatchingUp, MundaneTrade
+from codex.models.events_downtime import CatchingUp, MundaneTrade, SpellbookUpdate
 
 
 class CatchingUpSerialiser(serializers.ModelSerializer):
@@ -22,4 +22,15 @@ class MundaneTradeSerialiser(serializers.ModelSerializer):
     class Meta:
         model = MundaneTrade
         fields = ["uuid", "datetime", "character", "gold_change", "sold", "purchased", "event_type"]
+        read_only_fields = ["character"]
+
+
+class SpellbookUpdateSerialiser(serializers.ModelSerializer):
+    """Serialiser for a spellbook update event"""
+
+    event_type = serializers.ReadOnlyField(default="dt_sbookupd")
+
+    class Meta:
+        model = SpellbookUpdate
+        fields = ["uuid", "datetime", "character", "gold", "downtime", "dm", "spells", "event_type"]
         read_only_fields = ["character"]

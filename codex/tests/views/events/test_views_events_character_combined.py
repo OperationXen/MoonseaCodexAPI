@@ -14,6 +14,7 @@ class TestCharacterEventView(TestCase):
         "test_character_games",
         "test_events_dt_mundanetrade",
         "test_events_dt_catchingup",
+        "test_events_dt_spellbook_update",
     ]
 
     def test_anonymous_user_query_by_uuid(self) -> None:
@@ -67,3 +68,17 @@ class TestCharacterEventView(TestCase):
             if event["event_type"] == "dt_mtrade":
                 return True
         self.fail("Expected mundane trade event not returned")
+
+    def test_downtime_activity_spellbook_update(self) -> None:
+        """Ensure that the spellbook update activity is correctly represented"""
+        self.client.logout()
+        character = Character.objects.get(pk=1)
+
+        response = self.client.get(reverse("character_events", kwargs={"character_uuid": character.uuid}))
+        self.assertEqual(response.status_code, HTTP_200_OK)
+        events = response.data
+        self.assertIsInstance(events, list)
+        for event in events:
+            if event["event_type"] == "dt_sbookupd":
+                return True
+        self.fail("Expected spellbook update event not returned")

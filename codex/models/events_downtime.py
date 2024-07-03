@@ -56,8 +56,9 @@ class SpellbookUpdate(models.Model):
     datetime = models.DateTimeField(auto_now_add=True, null=True, blank=True)
 
     character = models.ForeignKey(Character, null=True, on_delete=models.CASCADE)
-    gold = models.IntegerField(default=0, help_text="Gold spent on reagents")
-    downtime = models.IntegerField(default=0, help_text="Downtime days spent copying")
+    gold = models.FloatField(default=0, help_text="Gold spent on reagents")
+    downtime = models.FloatField(default=0, help_text="Downtime days spent copying")
+    dm = models.CharField(max_length=128, null=True, blank=True, help_text="DM associated with update event")
     spells = models.TextField(blank=True, null=True, help_text="Spells added to spellbook")
 
     def __str__(self):
