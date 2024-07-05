@@ -32,5 +32,5 @@ class SpellbookUpdateSerialiser(serializers.ModelSerializer):
 
     class Meta:
         model = SpellbookUpdate
-        fields = ["uuid", "datetime", "character", "gold", "downtime", "dm", "spells", "event_type"]
+        fields = ["uuid", "datetime", "character", "gold", "downtime", "dm", "source", "spells", "event_type"]
         read_only_fields = ["character"]

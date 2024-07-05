@@ -47,11 +47,13 @@ class EventDowntimeSpellbookUpdateView(viewsets.GenericViewSet):
         downtime_change = float(request.data.get("downtime") or 0.0)
         if downtime_change > char.downtime:
             return Response({"message": "Insufficient downtime to perform this activity"}, HTTP_400_BAD_REQUEST)
+        if gold_change > char.gold:
+            return Response({"message": "Insufficient gold to perform this activity"}, HTTP_400_BAD_REQUEST)
         serialiser = SpellbookUpdateSerialiser(data=request.data)
         if serialiser.is_valid():
             event = serialiser.save(character=char)
             # Subtract the gold and downtime from the character
-            char.gold = char.gold + float(gold_change)
+            char.gold = char.gold - float(gold_change)
             char.downtime = char.downtime - float(downtime_change)
             char.save()
             return Response(serialiser.data, HTTP_201_CREATED)
