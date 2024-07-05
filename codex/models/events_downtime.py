@@ -59,6 +59,7 @@ class SpellbookUpdate(models.Model):
     gold = models.FloatField(default=0, help_text="Gold spent on reagents")
     downtime = models.FloatField(default=0, help_text="Downtime days spent copying")
     dm = models.CharField(max_length=128, null=True, blank=True, help_text="DM associated with update event")
+    source = models.CharField(max_length=128, null=True, blank=True, help_text="Source character for spells")
     spells = models.TextField(blank=True, null=True, help_text="Spells added to spellbook")
 
     def __str__(self):
