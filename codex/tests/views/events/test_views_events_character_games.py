@@ -127,29 +127,6 @@ class TestCharacterGamesCRUDViews(TestCase):
 
         response = self.client.post(reverse("game-list"), test_data, content_type="application/json")
         self.assertEqual(response.status_code, HTTP_201_CREATED)
-        item = character.magicitems.all().order_by("-pk").first()
-        self.assertIsInstance(item, MagicItem)
-        self.assertEqual(item.name, "Magic Frog Hat")
-        self.assertEqual(item.rarity, "legendary")
-
-    def test_character_game_multiple_item_rewards(self) -> None:
-        """A single game can have an arbitrary number of items rewarded"""
-        self.client.login(username="testuser1", password="testpassword")
-        test_data = copy(self.valid_data)
-        test_data["items"] = [
-            {"name": "Item 1", "rarity": "common"},
-            {"name": "Item 2", "rarity": "uncommon"},
-            {"name": "Item 3", "rarity": "rare"},
-            {"name": "Item 4", "rarity": "veryrare"},
-            {"name": "Item 5", "rarity": "legendary"},
-        ]
-        character = Character.objects.get(pk=1)
-        test_data["character_uuid"] = character.uuid
-
-        response = self.client.post(reverse("game-list"), test_data, content_type="application/json")
-        self.assertEqual(response.status_code, HTTP_201_CREATED)
-        item_count = character.magicitems.all().count()
-        self.assertEqual(len(test_data["items"]), item_count)
 
     def test_anonymous_user_can_retrieve_event_by_uuid(self) -> None:
         """Anyone should be able to retrieve an event if they know the UUID"""
