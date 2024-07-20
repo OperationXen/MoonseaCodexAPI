@@ -1,3 +1,5 @@
+import json
+
 from rest_framework import viewsets
 from rest_framework.status import *
 from rest_framework.response import Response
@@ -52,12 +54,17 @@ class CharacterGamesViewSet(viewsets.GenericViewSet):
         if serialiser.is_valid():
             game = serialiser.save()
             game.characters.add(character)
-            item = self.create_adventure_reward_item(
-                game, character, request.data.get("item"), request.data.get("rarity")
-            )
-            update_character_rewards(
-                character, gold=float(request.data.get("gold")), downtime=int(request.data.get("downtime"))
-            )
+
+            try:
+                for item in request.data.get("items", []):
+                    new_item = self.create_adventure_reward_item(game, character, item["name"], item["rarity"])
+            except Exception as e:
+                pass
+
+            # Update downtime and gold counts
+            awarded_gold = float(request.data.get("gold"))
+            awarded_downtime = int(request.data.get("downtime"))
+            update_character_rewards(character, gold=awarded_gold, downtime=awarded_downtime)
             return Response(serialiser.data, HTTP_201_CREATED)
         else:
             return Response({"message": "Game creation failed, invalid data"}, HTTP_400_BAD_REQUEST)
