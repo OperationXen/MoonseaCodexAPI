@@ -76,11 +76,11 @@ class ConsumableItemViewSet(viewsets.GenericViewSet):
         existing_item = self.get_object()
         if existing_item.character.player != request.user:
             return Response({"message": "This item does not belong to you"}, HTTP_403_FORBIDDEN)
-        serialiser = MagicItemSerialiser(existing_item, data=request.data, partial=True)
+        serialiser = ConsumableItemSerialiser(existing_item, data=request.data, partial=True)
         if serialiser.is_valid():
             self.create_manualedit_event(existing_item, request.data)
             item = serialiser.save()
-            new_item = MagicItemSerialiser(item)
+            new_item = ConsumableItemSerialiser(item)
             return Response(new_item.data, HTTP_200_OK)
         else:
             return Response({"message": "Invalid data in item update"}, HTTP_400_BAD_REQUEST)
