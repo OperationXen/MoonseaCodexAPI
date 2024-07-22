@@ -102,7 +102,7 @@ class MagicItemSerialiser(ItemSerialiser):
 class MagicItemDetailsSerialiser(ItemDetailsSerialiser):
     """An in depth view of the magic item and related fields"""
 
-    market = serializers.SerializerMethodField(ItemDetailsSerialiser)
+    market = serializers.SerializerMethodField()
 
     class Meta:
         model = MagicItem
