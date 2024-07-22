@@ -1,19 +1,18 @@
 from rest_framework import serializers
 
-from codex.models.items import MagicItem
+from codex.models.items import MagicItem, Consumable
 from codex.utils.events import get_event_type
 
 
-class MagicItemSerialiser(serializers.ModelSerializer):
-    """Serialiser for a magic item"""
+### ################################################################### ###
+###                 Base classes for shared behaviours                  ###
+### ################################################################### ###
+class ItemSerialiser(serializers.ModelSerializer):
+    """Base class containing useful functions"""
+
     owner = serializers.ReadOnlyField(source="character.name", read_only=True)
     editable = serializers.SerializerMethodField()
     market = serializers.SerializerMethodField()
-
-    class Meta:
-        model = MagicItem
-        fields = ["uuid", "owner", "name", "rarity", "attunement", "equipped", "description", "flavour", "editable", "market"]
-        read_only_fields = ["uuid", "editable"]
 
     def get_market(self, obj):
         try:
@@ -31,21 +30,96 @@ class MagicItemSerialiser(serializers.ModelSerializer):
         except Exception:
             return False
 
+    def to_representation(self, instance):
+        return super().to_representation(instance)
 
-class MagicItemDetailsSerialiser(serializers.ModelSerializer):
-    """ An in depth view of the magic item and related fields """
+
+class ItemDetailsSerialiser(serializers.ModelSerializer):
+    """Seraliser for details of a single item"""
+
     owner_name = serializers.ReadOnlyField(source="character.name", read_only=True)
     owner_uuid = serializers.ReadOnlyField(source="character.uuid", read_only=True)
     datetime_obtained = serializers.ReadOnlyField(source="source.datetime", read_only=True)
     source_event_type = serializers.SerializerMethodField()
-    market = serializers.SerializerMethodField()
-
-    class Meta:
-        model = MagicItem
-        fields = ["uuid", "owner_name", "owner_uuid", "name", "rarity", "datetime_obtained", "source_event_type", "attunement", "equipped", "description", "flavour", "market"]
 
     def get_source_event_type(self, obj):
         return get_event_type(obj.source)
+
+
+### ################################################################### ###
+###         Specific serialisers for consumable and magic items         ###
+### ################################################################### ###
+class ConsumableItemSerialiser(ItemSerialiser):
+    """Serialiser for a consumable item, eg potions"""
+
+    class Meta:
+        model = Consumable
+        fields = ["uuid", "editable", "owner", "equipped", "name", "type", "charges", "rarity", "description"]
+        read_only_fields = ["uuid", "editable"]
+
+
+class ConsumableItemDetailsSerialiser(ItemDetailsSerialiser):
+    """details seraliser"""
+
+    class Meta:
+        model = MagicItem
+        fields = [
+            "uuid",
+            "owner_name",
+            "owner_uuid",
+            "name",
+            "type",
+            "charges",
+            "rarity",
+            "datetime_obtained",
+            "source_event_type",
+            "equipped",
+            "description",
+        ]
+
+
+### ################################################################### ###
+class MagicItemSerialiser(ItemSerialiser):
+    """Serialiser for a magic item"""
+
+    class Meta:
+        model = MagicItem
+        fields = [
+            "uuid",
+            "owner",
+            "name",
+            "rarity",
+            "attunement",
+            "equipped",
+            "description",
+            "flavour",
+            "editable",
+            "market",
+        ]
+        read_only_fields = ["uuid", "editable"]
+
+
+class MagicItemDetailsSerialiser(ItemDetailsSerialiser):
+    """An in depth view of the magic item and related fields"""
+
+    market = serializers.SerializerMethodField(ItemDetailsSerialiser)
+
+    class Meta:
+        model = MagicItem
+        fields = [
+            "uuid",
+            "owner_name",
+            "owner_uuid",
+            "name",
+            "rarity",
+            "datetime_obtained",
+            "source_event_type",
+            "attunement",
+            "equipped",
+            "description",
+            "flavour",
+            "market",
+        ]
 
     def get_market(self, obj):
         try:
