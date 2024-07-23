@@ -1,6 +1,6 @@
 [
     {
-      "model": "codex.consumableitem",
+      "model": "codex.consumable",
       "pk": 1,
       "fields": {
         "name": "Potion of healing",
@@ -14,7 +14,7 @@
       }
     },
     {
-        "model": "codex.consumableitem",
+        "model": "codex.consumable",
         "pk": 2,
         "fields": {
           "name": "Scroll of Mage Armour",
@@ -28,7 +28,7 @@
         }
     },
     {
-        "model": "codex.consumableitem",
+        "model": "codex.consumable",
         "pk": 3,
         "fields": {
           "name": "Arrows +1",
