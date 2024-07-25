@@ -74,8 +74,6 @@ class ConsumableItemDetailsSerialiser(ItemDetailsSerialiser):
             "type",
             "charges",
             "rarity",
-            "datetime_obtained",
-            "source_event_type",
             "equipped",
             "description",
         ]

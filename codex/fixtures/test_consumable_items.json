@@ -9,8 +9,7 @@
         "equipped": true,
         "rarity": "uncommon",
         "charges": null,
-        "description": "Heals 1d8+4",
-        "content_type": ["codex", "game"], "object_id": null
+        "description": "Heals 1d8+4"
       }
     },
     {
@@ -23,8 +22,7 @@
           "equipped": true,
           "rarity": "uncommon",
           "charges": null,
-          "description": "Mage armour. Armours a mage.",
-          "content_type": ["codex", "mundanetrade"], "object_id": null
+          "description": "Mage armour. Armours a mage."
         }
     },
     {
@@ -37,8 +35,7 @@
           "equipped": true,
           "rarity": "uncommon",
           "charges": 10,
-          "description": "+1 bonus to attack and damage rolls",
-          "content_type": ["codex", "dmreward"], "object_id": null
+          "description": "+1 bonus to attack and damage rolls"
         }
     }
 ]

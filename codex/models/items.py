@@ -41,23 +41,11 @@ class Consumable(models.Model):
         choices=Rarities.choices, max_length=16, default=Rarities.UNCOMMON, help_text="Item rarity"
     )
     description = models.TextField(blank=True, null=True)
-    # source information (game / shopping / dm service reward / trade)
-    content_type = models.ForeignKey(
-        ContentType,
-        on_delete=models.CASCADE,
-        verbose_name="Origin Type",
-        null=True,
-        help_text="Type of event that resulted in this object coming to you",
-    )
-    object_id = models.PositiveIntegerField(
-        verbose_name="Event ID", null=True, help_text="ID of the specific source event"
-    )
-    source = GenericForeignKey("content_type", "object_id")
 
     def __str__(self):
         """String representation"""
-        if self.count:
-            return f"{self.name} X {self.count}"
+        if self.charges:
+            return f"{self.name} [{self.charges}]"
         return f"{self.name}"
 
 

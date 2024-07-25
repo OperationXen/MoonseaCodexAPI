@@ -5,7 +5,6 @@ from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
 from codex.models.character import Character
 from codex.models.items import Consumable
-from codex.models.events import ManualCreation, ManualEdit
 from codex.serialisers.items import ConsumableItemSerialiser, ConsumableItemDetailsSerialiser
 
 
@@ -17,17 +16,6 @@ class ConsumableItemViewSet(viewsets.GenericViewSet):
     lookup_value_regex = "[\-0-9a-f]{36}"
 
     permission_classes = [IsAuthenticatedOrReadOnly]
-
-    def create_manualedit_event(self, existing_item, data):
-        """Create a ManualEdit event to log the item update"""
-        name = data.get("name")
-        if name and name != existing_item.name:
-            ManualEdit.objects.create(
-                item=existing_item,
-                character=existing_item.character,
-                name="Item name changed",
-                details=f"{existing_item.name} >> {name}",
-            )
 
     def get_queryset(self):
         """Retrieve base queryset"""
@@ -47,7 +35,6 @@ class ConsumableItemViewSet(viewsets.GenericViewSet):
         serialiser = ConsumableItemSerialiser(data=request.data)
         if serialiser.is_valid():
             item = serialiser.save(character=character)
-            item.source = ManualCreation.objects.create(character=character)
             item.save()
 
             new_item = ConsumableItemSerialiser(item)
@@ -78,7 +65,6 @@ class ConsumableItemViewSet(viewsets.GenericViewSet):
             return Response({"message": "This item does not belong to you"}, HTTP_403_FORBIDDEN)
         serialiser = ConsumableItemSerialiser(existing_item, data=request.data, partial=True)
         if serialiser.is_valid():
-            self.create_manualedit_event(existing_item, request.data)
             item = serialiser.save()
             new_item = ConsumableItemSerialiser(item)
             return Response(new_item.data, HTTP_200_OK)

@@ -8,7 +8,6 @@ from django.urls.exceptions import NoReverseMatch
 
 from codex.models.character import Character
 from codex.models.items import Consumable
-from codex.models.events import ManualCreation, ManualEdit
 
 
 class TestConsumableItemCRUDViews(TestCase):
@@ -91,20 +90,6 @@ class TestConsumableItemCRUDViews(TestCase):
         self.assertIn("charges", response.data)
         self.assertEqual(response.data["charges"], test_data["charges"])
 
-    def test_user_item_source_manual_ok(self) -> None:
-        """Ensure that when an item is created it has an origin event created too"""
-        self.client.login(username="testuser1", password="testpassword")
-        test_data = copy(self.valid_data)
-        character = Character.objects.get(pk=2)
-        test_data["character_uuid"] = character.uuid
-
-        response = self.client.post(reverse("consumable-list"), test_data)
-        self.assertEqual(response.status_code, HTTP_201_CREATED)
-        item = Consumable.objects.get(uuid=response.data.get("uuid"))
-        self.assertIsInstance(item, Consumable)
-        self.assertIsInstance(item.source, ManualCreation)
-        self.assertEqual(item.source.character, character)
-
     def test_anonymous_user_cannot_get_consumable_by_pk(self) -> None:
         """Check that a lookup by PK fails"""
         with self.assertRaises(NoReverseMatch):
@@ -149,10 +134,10 @@ class TestConsumableItemCRUDViews(TestCase):
     def test_anyone_cannot_update_item(self) -> None:
         """someone who doesn't own an item cannot change it"""
         self.client.login(username="testuser2", password="testpassword")
-        initial = Consumable.objects.get(pk=4)
+        initial = Consumable.objects.get(pk=1)
         self.assertNotEqual(initial.character.player.username, "testuser2")
 
-        test_data = {"name": "Hat of disguise"}
+        test_data = {"name": "Scroll of Wish"}
 
         response = self.client.patch(
             reverse("consumable-detail", kwargs={"uuid": initial.uuid}),
@@ -160,7 +145,7 @@ class TestConsumableItemCRUDViews(TestCase):
             content_type="application/json",
         )
         self.assertEqual(response.status_code, HTTP_403_FORBIDDEN)
-        item = Consumable.objects.get(pk=4)
+        item = Consumable.objects.get(pk=1)
         self.assertEqual(item.name, initial.name)
         self.assertEqual(item.uuid, initial.uuid)
         self.assertEqual(item.description, initial.description)
@@ -168,10 +153,10 @@ class TestConsumableItemCRUDViews(TestCase):
     def test_owner_can_update_item(self) -> None:
         """The owner of an item can change it"""
         self.client.login(username="testuser1", password="testpassword")
-        initial = Consumable.objects.get(pk=4)
+        initial = Consumable.objects.get(pk=1)
         self.assertEqual(initial.character.player.username, "testuser1")
 
-        test_data = {"name": "Hat of disguise"}
+        test_data = {"name": "Scroll of Wish"}
 
         response = self.client.patch(
             reverse("consumable-detail", kwargs={"uuid": initial.uuid}),
@@ -181,7 +166,7 @@ class TestConsumableItemCRUDViews(TestCase):
         self.assertEqual(response.status_code, HTTP_200_OK)
         self.assertEqual(response.data["name"], test_data["name"])
         self.assertEqual(response.data["description"], initial.description)
-        item = Consumable.objects.get(pk=4)
+        item = Consumable.objects.get(pk=1)
         self.assertEqual(item.name, test_data["name"])
         self.assertEqual(item.description, initial.description)
         self.assertEqual(item.uuid, initial.uuid)
@@ -189,29 +174,29 @@ class TestConsumableItemCRUDViews(TestCase):
     def test_anyone_cannot_delete_item(self) -> None:
         """someone who doesn't own an item cannot delete it"""
         self.client.login(username="testuser2", password="testpassword")
-        item = Consumable.objects.get(pk=4)
+        item = Consumable.objects.get(pk=1)
         self.assertNotEqual(item.character.player.username, "testuser2")
 
         response = self.client.delete(reverse("consumable-detail", kwargs={"uuid": item.uuid}))
         self.assertEqual(response.status_code, HTTP_403_FORBIDDEN)
-        item = Consumable.objects.get(pk=4)
+        item = Consumable.objects.get(pk=1)
         self.assertIsInstance(item, Consumable)
 
     def test_owner_can_delete_item(self) -> None:
         """The owner of an item can delete it"""
         self.client.login(username="testuser1", password="testpassword")
-        item = Consumable.objects.get(pk=4)
+        item = Consumable.objects.get(pk=1)
         self.assertEqual(item.character.player.username, "testuser1")
 
         response = self.client.delete(reverse("consumable-detail", kwargs={"uuid": item.uuid}))
         self.assertEqual(response.status_code, HTTP_200_OK)
         with self.assertRaises(Consumable.DoesNotExist):
-            item = Consumable.objects.get(pk=4)
+            item = Consumable.objects.get(pk=1)
 
     def test_editable_flag_set_true(self) -> None:
         """Check that the editable flag is set true when you own the item"""
         self.client.login(username="testuser1", password="testpassword")
-        item = Consumable.objects.get(pk=4)
+        item = Consumable.objects.get(pk=1)
 
         response = self.client.get(reverse("consumable-detail", kwargs={"uuid": item.uuid}))
         self.assertEqual(response.status_code, HTTP_200_OK)
@@ -221,29 +206,9 @@ class TestConsumableItemCRUDViews(TestCase):
     def test_editable_flag_set_false(self) -> None:
         """Check that the editable flag is set false when you do not own the item"""
         self.client.login(username="testuser2", password="testpassword")
-        item = Consumable.objects.get(pk=4)
+        item = Consumable.objects.get(pk=1)
 
         response = self.client.get(reverse("consumable-detail", kwargs={"uuid": item.uuid}))
         self.assertEqual(response.status_code, HTTP_200_OK)
         self.assertIn("editable", response.data)
         self.assertFalse(response.data.get("editable"))
-
-    def test_name_change_creates_manualedit_event(self) -> None:
-        """Changing an items name should create an event which records this update"""
-        self.client.login(username="testuser1", password="testpassword")
-        item = Consumable.objects.get(pk=4)
-        initial_name = item.name
-        known_edits = ManualEdit.objects.count()
-        test_data = {"name": "Hat of disguise"}
-
-        response = self.client.patch(
-            reverse("consumable-detail", kwargs={"uuid": item.uuid}),
-            json.dumps(test_data),
-            content_type="application/json",
-        )
-        self.assertEqual(response.status_code, HTTP_200_OK)
-        self.assertGreater(ManualEdit.objects.count(), known_edits)
-        edit_event = ManualEdit.objects.all().order_by("-pk").get()
-        self.assertIn("Hat of disguise", edit_event.details)
-        self.assertIn(initial_name, edit_event.details)
-        self.assertEqual(edit_event.item, item)
