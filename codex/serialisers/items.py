@@ -7,11 +7,7 @@ from codex.utils.events import get_event_type
 ### ################################################################### ###
 ###                 Base classes for shared behaviours                  ###
 ### ################################################################### ###
-class ItemSerialiser(serializers.ModelSerializer):
-    """Base class containing useful functions"""
-
-    owner = serializers.ReadOnlyField(source="character.name", read_only=True)
-    editable = serializers.SerializerMethodField()
+class TradableSerialiser(serializers.ModelSerializer):
     market = serializers.SerializerMethodField()
 
     def get_market(self, obj):
@@ -20,6 +16,13 @@ class ItemSerialiser(serializers.ModelSerializer):
             return bool(cnt)
         except:
             return False
+
+
+class ItemSerialiser(serializers.ModelSerializer):
+    """Base class containing useful functions"""
+
+    owner = serializers.ReadOnlyField(source="character.name", read_only=True)
+    editable = serializers.SerializerMethodField()
 
     def get_editable(self, obj):
         try:
@@ -62,7 +65,7 @@ class ConsumableItemDetailsSerialiser(ItemDetailsSerialiser):
     """details seraliser"""
 
     class Meta:
-        model = MagicItem
+        model = Consumable
         fields = [
             "uuid",
             "owner_name",
@@ -79,7 +82,7 @@ class ConsumableItemDetailsSerialiser(ItemDetailsSerialiser):
 
 
 ### ################################################################### ###
-class MagicItemSerialiser(ItemSerialiser):
+class MagicItemSerialiser(ItemSerialiser, TradableSerialiser):
     """Serialiser for a magic item"""
 
     class Meta:
@@ -99,10 +102,8 @@ class MagicItemSerialiser(ItemSerialiser):
         read_only_fields = ["uuid", "editable"]
 
 
-class MagicItemDetailsSerialiser(ItemDetailsSerialiser):
+class MagicItemDetailsSerialiser(ItemDetailsSerialiser, TradableSerialiser):
     """An in depth view of the magic item and related fields"""
-
-    market = serializers.SerializerMethodField()
 
     class Meta:
         model = MagicItem
@@ -120,10 +121,3 @@ class MagicItemDetailsSerialiser(ItemDetailsSerialiser):
             "flavour",
             "market",
         ]
-
-    def get_market(self, obj):
-        try:
-            cnt = obj.adverts.count()
-            return bool(cnt)
-        except:
-            return False
