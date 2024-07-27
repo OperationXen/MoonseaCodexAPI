@@ -9,7 +9,7 @@ class CharacterDetailsSerialiser(serializers.ModelSerializer):
 
     editable = serializers.SerializerMethodField()
     items = MagicItemSerialiser(many=True, source="magicitems")
-    consumables = ConsumableItemSerialiser(many=True, source="consumables")
+    consumables = ConsumableItemSerialiser(many=True)
 
     class Meta:
         model = Character
