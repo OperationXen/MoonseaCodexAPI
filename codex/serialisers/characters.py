@@ -1,13 +1,15 @@
 from rest_framework import serializers
 
 from codex.models.character import Character
-from codex.serialisers.items import MagicItemSerialiser
+from codex.serialisers.items import MagicItemSerialiser, ConsumableItemSerialiser
 
 
 class CharacterDetailsSerialiser(serializers.ModelSerializer):
     """Serialiser to use for individual player characters, includes inventories"""
+
     editable = serializers.SerializerMethodField()
     items = MagicItemSerialiser(many=True, source="magicitems")
+    consumables = ConsumableItemSerialiser(many=True, source="consumables")
 
     class Meta:
         model = Character
