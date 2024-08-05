@@ -23,7 +23,7 @@ from codex.views.trade.offers import TradeOfferView
 from codex.views.trade.action import TradeActionView
 
 
-router = DefaultRouter()
+router = DefaultRouter(trailing_slash=False)
 router.register(r"character", CharacterViewSet, basename="character")
 router.register(r"magicitem", MagicItemViewSet, basename="magicitem")
 router.register(r"consumable", ConsumableItemViewSet, basename="consumable")
