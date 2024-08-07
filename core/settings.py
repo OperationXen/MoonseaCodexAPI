@@ -6,24 +6,32 @@ from string import ascii_letters
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-DOMAIN = getenv("DOMAIN", "127.0.0.1:8000")
-EMAIL_API_KEY = getenv("EMAIL_API_KEY")
-DEFAULT_EMAIL_SENDER = getenv("DEFAULT_EMAIL_SENDER")
+LIVE_DEBUG = getenv("LIVE_DEBUG", False)
+DOMAIN = getenv("DOMAIN", None)
+SECRET_KEY = getenv("DJANGO_SECRET", "".join(choices(ascii_letters, k=128)))
 
-RANDOM_KEY = "".join(choices(ascii_letters, k=128))
-DJANGO_SECRET = getenv("DJANGO_SECRET")
-SECRET_KEY = DJANGO_SECRET or RANDOM_KEY
-
-if DJANGO_SECRET:
-    DEBUG = False
-    FORCE_SCRIPT_NAME = "/moonseacodex/"
+if DOMAIN:
+    DEBUG = LIVE_DEBUG
+    ALLOWED_HOSTS = [DOMAIN]
     ADMIN_URL = "/moonseacodex/admin"
 else:
     DEBUG = True
+    ALLOWED_HOSTS = ["127.0.0.1"]
 
-SERVER = getenv("SERVER")
-ALLOWED_HOSTS = ["127.0.0.1"] if SERVER else []
-CSRF_TRUSTED_ORIGINS = [f"https://{SERVER}"] if SERVER else []
+# Database env vars - postgres
+DB_HOST = getenv("DB_HOST", None)
+DB_PORT = getenv("DB_PORT", "5432")
+DB_USER = getenv("DB_USER", "")
+DB_PASS = getenv("DB_PASS", "")
+DB_NAME = getenv("DB_NAME", "")
+
+# Database env vars - sqlite
+DB_PATH = getenv("DB_PATH", BASE_DIR)
+
+# EMail env vars
+EMAIL_API_KEY = getenv("EMAIL_API_KEY")
+DEFAULT_EMAIL_SENDER = getenv("DEFAULT_EMAIL_SENDER")
+
 
 # Application definition
 INSTALLED_APPS = [
@@ -52,7 +60,7 @@ ROOT_URLCONF = "core.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [BASE_DIR / 'templates'],
+        "DIRS": [BASE_DIR / "templates"],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -67,23 +75,23 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "core.wsgi.application"
 
-if DEBUG:
+if DB_HOST:
     DATABASES = {
         "default": {
-            "ENGINE": "django.db.backends.sqlite3",
-            "NAME": BASE_DIR / "db.sqlite3",
-        },
+            "ENGINE": "django.db.backends.postgresql_psycopg2",
+            "NAME": DB_NAME,
+            "USER": DB_USER,
+            "PASSWORD": DB_PASS,
+            "HOST": DB_HOST,
+            "PORT": DB_PORT,
+        }
     }
 else:
     DATABASES = {
         "default": {
-            "ENGINE": "django.db.backends.postgresql_psycopg2",
-            "NAME": "postgres",
-            "USER": getenv("DB_USER"),
-            "PASSWORD": getenv("DB_PASS"),
-            "HOST": getenv("DB_HOST"),
-            "PORT": "5432",
-        }
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": DB_PATH / "msc-db.sqlite3",
+        },
     }
 
 AUTH_USER_MODEL = "codex.CodexUser"
