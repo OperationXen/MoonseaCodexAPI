@@ -14,6 +14,7 @@ if DOMAIN:
     DEBUG = LIVE_DEBUG
     ALLOWED_HOSTS = [DOMAIN]
     ADMIN_URL = "/moonseacodex/admin"
+    CSRF_TRUSTED_ORIGINS = [f"https://{DOMAIN}"]
 else:
     DEBUG = True
     ALLOWED_HOSTS = ["127.0.0.1"]
