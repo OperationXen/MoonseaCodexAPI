@@ -26,7 +26,7 @@ DB_PASS = getenv("DB_PASS", "")
 DB_NAME = getenv("DB_NAME", "")
 
 # Database env vars - sqlite
-DB_PATH = getenv("DB_PATH", BASE_DIR)
+DB_PATH = Path(getenv("DB_PATH", BASE_DIR))
 
 # EMail env vars
 EMAIL_API_KEY = getenv("EMAIL_API_KEY")
