@@ -8,6 +8,6 @@ from django.urls import re_path, include
 
 urlpatterns = [
     re_path("^admin/", admin.site.urls),
-    re_path("^auth/", include("codex.urls_auth")),
-    re_path("^data/", include("codex.urls_api")),
+    re_path("^api/auth/", include("codex.urls_auth")),
+    re_path("^api/data/", include("codex.urls_api")),
 ] + static("media/", document_root=settings.MEDIA_ROOT)
