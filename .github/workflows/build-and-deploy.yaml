@@ -33,7 +33,7 @@ jobs:
     needs: Build-Docker-Container
 
     steps:
-      -name: Create database backup
+      - name: Create database backup
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ vars.SERVER }}
