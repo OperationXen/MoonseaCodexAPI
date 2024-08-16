@@ -23,4 +23,6 @@ RUN python manage.py collectstatic --no-input
 # Enable site
 RUN mv /moonseacodex_api/deploy/api.conf /etc/apache2/sites-available/000-default.conf && a2ensite 000-default
 
+EXPOSE 4000
+
 CMD ["apachectl", "-D",  "FOREGROUND"]
