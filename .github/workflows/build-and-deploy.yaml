@@ -40,7 +40,7 @@ jobs:
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSH_KEY }}
           script: |
-            docker exec -it {{ secrets.DB_HOST }} pg_dumpall -U {{ secrets.DB_USER }} > {{ vars.DB_BACKUP_PATH }}
+            docker exec -it ${{ secrets.DB_HOST }} pg_dumpall -U ${{ secrets.DB_USER }} > ${{ vars.DB_BACKUP_PATH }}
 
       - name: Deploy new container
         uses: appleboy/ssh-action@v1.0.3
