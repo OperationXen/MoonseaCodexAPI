@@ -12,7 +12,7 @@ SECRET_KEY = getenv("DJANGO_SECRET", "".join(choices(ascii_letters, k=128)))
 
 if DOMAIN:
     DEBUG = LIVE_DEBUG
-    ALLOWED_HOSTS = [DOMAIN]
+    ALLOWED_HOSTS = [f"{DOMAIN}", "127.0.0.1", "localhost"]
     ADMIN_URL = "/api/admin"
     CSRF_TRUSTED_ORIGINS = [f"https://{DOMAIN}"]
 else:
