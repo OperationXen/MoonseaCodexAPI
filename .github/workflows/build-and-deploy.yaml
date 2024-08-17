@@ -52,7 +52,7 @@ jobs:
             docker pull ${{ vars.DOCKERHUB_USERNAME }}/moonseacodex-api:live
             docker stop api || true
             docker rm  api || true
-            docker run -d --name api --network=moonseacodex-net -p 127.0.0.1:4000:4000 \
+            docker run -d --name api --network=moonseacodex-net -p 127.0.0.1:4000:80 \
               -e DJANGO_SECRET=${{ secrets.DJANGO_SECRET }} -e DB_HOST=${{ secrets.DB_HOST }} \
               -e DB_USER=${{ secrets.DB_USER }} -e DB_PASS=${{ secrets.DB_PASS }} \
               -e SERVER=${{ vars.SERVER }} -e DOMAIN=${{ vars.SERVER }} \
