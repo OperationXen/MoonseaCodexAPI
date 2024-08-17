@@ -24,7 +24,7 @@ DB_HOST = getenv("DB_HOST", None)
 DB_PORT = getenv("DB_PORT", "5432")
 DB_USER = getenv("DB_USER", "")
 DB_PASS = getenv("DB_PASS", "")
-DB_NAME = getenv("DB_NAME", "")
+DB_NAME = getenv("DB_NAME", "moonseacodex")
 
 # Database env vars - sqlite
 DB_PATH = Path(getenv("DB_PATH", BASE_DIR))
