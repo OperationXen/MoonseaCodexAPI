@@ -6,9 +6,11 @@ from django.urls import reverse
 
 from codex.models.items import MagicItem
 
+
 class TestTradeStatusViews(TestCase):
-    """ Check view for handling items in the trading post """
-    fixtures = ["test_users", "test_characters", "test_magicitems"]
+    """Check view for handling items in the trading post"""
+
+    fixtures = ["test_users", "test_characters", "test_magic_items"]
 
     def test_anonymous_user_cant_move_items(self) -> None:
         pass
