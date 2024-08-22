@@ -131,3 +131,4 @@ dmypy.json
 /media/character/artwork/
 /static_files/
 /media/
+*.sqlite3
