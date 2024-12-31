@@ -21,5 +21,5 @@ class ActivateCodexUser(APIView):
             user.email_verified = True
             user.save()
             login(request, user)
-            return redirect('/moonseacodex/')
-        return render(request, 'codex/account_activation_failed.html')
+            return redirect("/")
+        return render(request, "codex/account_activation_failed.html")
