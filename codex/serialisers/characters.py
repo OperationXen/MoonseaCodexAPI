@@ -14,7 +14,7 @@ class CharacterDetailsSerialiser(serializers.ModelSerializer):
     class Meta:
         model = Character
         exclude = ["id", "player", "public"]
-        read_only_fields = ["uuid"]
+        read_only_fields = ["uuid", "artwork", "token"]
 
     def get_editable(self, obj):
         try:
@@ -32,4 +32,4 @@ class CharacterSerialiser(serializers.ModelSerializer):
     class Meta:
         model = Character
         exclude = ["player"]
-        read_only_fields = ["uuid"]
+        read_only_fields = ["uuid", "artwork", "token"]
