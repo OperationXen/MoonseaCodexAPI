@@ -80,7 +80,7 @@ class ConsumableItemDetailsSerialiser(ItemDetailsSerialiser):
 
 
 ### ################################################################### ###
-class MagicItemSerialiser(ItemSerialiser, TradableSerialiser):
+class MagicItemSerialiser(ItemSerialiser):
     """Serialiser for a magic item"""
 
     class Meta:
@@ -100,7 +100,7 @@ class MagicItemSerialiser(ItemSerialiser, TradableSerialiser):
         read_only_fields = ["uuid", "editable"]
 
 
-class MagicItemDetailsSerialiser(ItemDetailsSerialiser, TradableSerialiser):
+class MagicItemDetailsSerialiser(ItemDetailsSerialiser):
     """An in depth view of the magic item and related fields"""
 
     class Meta:
