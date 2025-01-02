@@ -17,7 +17,7 @@ if DOMAIN:
     CSRF_TRUSTED_ORIGINS = [f"https://{DOMAIN}"]
 else:
     DEBUG = True
-    ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
+    ALLOWED_HOSTS = ["127.0.0.1", "localhost", "host.docker.internal"]
 
 # Database env vars - postgres
 DB_HOST = getenv("DB_HOST", None)
