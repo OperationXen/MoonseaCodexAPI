@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "rest_framework",
+    "discord_auth",
     "codex",
 ]
 
@@ -121,6 +122,22 @@ REST_FRAMEWORK = {
     "PAGE_SIZE": 100,
 }
 
+# ############################################################################### #
+#                          Settings for discord authentication
+# ############################################################################### #
+
+DISCORD_CLIENT_ID = getenv("DISCORD_CLIENT_ID", "")
+DISCORD_CLIENT_SECRET = getenv("DISCORD_CLIENT_SECRET", "")
+AUTH_COMPLETE_URL = getenv("OAUTH_COMPLETE_URL", "")
+
+AUTH_FAIL_URL = getenv("OAUTH_FAIL_URL", "")
+AUTH_REDIRECT_URL = getenv("OAUTH_REDIRECT_URL", "")
+
+
+# # Discord OAUTH config
+# AUTH_REDIRECT_URL =
+# AUTH_COMPLETE_URL =
+# AUTH_FAIL_URL =
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.0/topics/i18n/
