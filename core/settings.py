@@ -97,8 +97,10 @@ else:
     }
 
 AUTH_USER_MODEL = "codex.CodexUser"
-AUTHENTICATION_BACKENDS = ["codex.utils.backends.CustomUserModelBackend"]
-
+AUTHENTICATION_BACKENDS = [
+    "discord_auth.auth.DiscordAuthenticationBackend",
+    "core.auth.CustomUserModelBackend",
+]
 AUTH_PASSWORD_VALIDATORS = [
     {
         "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
@@ -133,11 +135,6 @@ AUTH_COMPLETE_URL = getenv("OAUTH_COMPLETE_URL", "")
 AUTH_FAIL_URL = getenv("OAUTH_FAIL_URL", "")
 AUTH_REDIRECT_URL = getenv("OAUTH_REDIRECT_URL", "")
 
-
-# # Discord OAUTH config
-# AUTH_REDIRECT_URL =
-# AUTH_COMPLETE_URL =
-# AUTH_FAIL_URL =
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.0/topics/i18n/
