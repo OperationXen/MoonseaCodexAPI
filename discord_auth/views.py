@@ -12,7 +12,7 @@ from rest_framework.views import Request
 from core.settings import DISCORD_CLIENT_ID, DISCORD_CLIENT_SECRET
 from core.settings import AUTH_COMPLETE_URL, AUTH_FAIL_URL, AUTH_REDIRECT_URL
 
-auth_url_discord = f"https://discord.com/oauth2/authorize?client_id={DISCORD_CLIENT_ID}&redirect_uri={AUTH_REDIRECT_URL}&response_type=code&scope=email"
+auth_url_discord = f"https://discord.com/oauth2/authorize?client_id={DISCORD_CLIENT_ID}&redirect_uri={AUTH_REDIRECT_URL}&response_type=code&scope=email+identify"
 
 
 def discord_login(request: Request) -> redirect:
@@ -34,7 +34,7 @@ def exchange_code(code: str):
         "grant_type": "authorization_code",
         "code": code,
         "redirect_uri": AUTH_REDIRECT_URL,
-        "scope": "identify",
+        "scope": "email+identify",
     }
     headers = {"Content-Type": "application/x-www-form-urlencoded"}
 
@@ -72,7 +72,7 @@ def discord_auth_done(request: Request) -> JsonResponse:
             if code:
                 user_data = exchange_code(code)
                 if user_data:
-                    discord_user = authenticate(request, user_data=user_data["user"])
+                    discord_user = authenticate(request, user_data=user_data)
                     if discord_user:
                         login(request, discord_user)
                         webapp_redirect = state_dict.get("referer", AUTH_COMPLETE_URL)

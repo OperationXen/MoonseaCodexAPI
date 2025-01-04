@@ -1,8 +1,11 @@
+from dotenv import load_dotenv
+
 from os import getenv
 from pathlib import Path
 from random import choices
 from string import ascii_letters
 
+load_dotenv()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
