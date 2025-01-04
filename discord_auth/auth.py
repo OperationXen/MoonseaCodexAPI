@@ -19,6 +19,7 @@ class DiscordAuthenticationBackend(BaseBackend):
                 )
                 new_user.set_unusable_password()
                 return new_user
+            return existing_user
         except Exception as e:
             return False
 
