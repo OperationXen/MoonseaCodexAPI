@@ -102,7 +102,7 @@ else:
 AUTH_USER_MODEL = "codex.CodexUser"
 AUTHENTICATION_BACKENDS = [
     "discord_auth.auth.DiscordAuthenticationBackend",
-    "core.auth.CustomUserModelBackend",
+    "codex.utils.backends.CustomUserModelBackend",
 ]
 AUTH_PASSWORD_VALIDATORS = [
     {
