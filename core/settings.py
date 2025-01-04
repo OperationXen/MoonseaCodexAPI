@@ -1,8 +1,11 @@
+from dotenv import load_dotenv
+
 from os import getenv
 from pathlib import Path
 from random import choices
 from string import ascii_letters
 
+load_dotenv()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -17,7 +20,7 @@ if DOMAIN:
     CSRF_TRUSTED_ORIGINS = [f"https://{DOMAIN}"]
 else:
     DEBUG = True
-    ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
+    ALLOWED_HOSTS = ["127.0.0.1", "localhost", "host.docker.internal"]
 
 # Database env vars - postgres
 DB_HOST = getenv("DB_HOST", None)
@@ -43,6 +46,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "rest_framework",
+    "discord_auth",
     "codex",
 ]
 
@@ -96,8 +100,10 @@ else:
     }
 
 AUTH_USER_MODEL = "codex.CodexUser"
-AUTHENTICATION_BACKENDS = ["codex.utils.backends.CustomUserModelBackend"]
-
+AUTHENTICATION_BACKENDS = [
+    "discord_auth.auth.DiscordAuthenticationBackend",
+    "codex.utils.backends.CustomUserModelBackend",
+]
 AUTH_PASSWORD_VALIDATORS = [
     {
         "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
@@ -120,6 +126,17 @@ REST_FRAMEWORK = {
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.LimitOffsetPagination",
     "PAGE_SIZE": 100,
 }
+
+# ############################################################################### #
+#                          Settings for discord authentication
+# ############################################################################### #
+
+DISCORD_CLIENT_ID = getenv("DISCORD_CLIENT_ID", "")
+DISCORD_CLIENT_SECRET = getenv("DISCORD_CLIENT_SECRET", "")
+AUTH_COMPLETE_URL = getenv("OAUTH_COMPLETE_URL", "")
+
+AUTH_FAIL_URL = getenv("OAUTH_FAIL_URL", "")
+AUTH_REDIRECT_URL = getenv("OAUTH_REDIRECT_URL", "")
 
 
 # Internationalization

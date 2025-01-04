@@ -56,7 +56,10 @@ jobs:
               -e DJANGO_SECRET=${{ secrets.DJANGO_SECRET }} -e DB_HOST=${{ secrets.DB_HOST }} \
               -e DB_USER=${{ secrets.DB_USER }} -e DB_PASS=${{ secrets.DB_PASS }} \
               -e SERVER=${{ vars.SERVER }} -e DOMAIN=${{ vars.SERVER }} \
-              -e EMAIL_API_KEY=${{secrets.EMAIL_API_KEY}} -e DEFAULT_EMAIL_SENDER=${{ secrets.DEFAULT_EMAIL_SENDER }} \
+              -e EMAIL_API_KEY=${{secrets.EMAIL_API_KEY}} -e DEFAULT_EMAIL_SENDER=${{ vars.DEFAULT_EMAIL_SENDER }} \
+              -e DISCORD_CLIENT_ID=${{secrets.DISCORD_CLIENT_ID}} -e DISCORD_CLIENT_SECRET={{secrets.DISCORD_CLIENT_SECRET}} \
+              -e OAUTH_REDIRECT_URL=${{ vars.OAUTH_REDIRECT_URL }} -e OAUTH_COMPLETE_URL=${{ vars.OAUTH_COMPLETE_URL }} \
+              -e OAUTH_FAIL_URL=${{ vars.OAUTH_FAIL_URL }} \
               -v /moonseacodex/media:/moonseacodex_api/media \
               --restart=always ${{ vars.DOCKERHUB_USERNAME }}/moonseacodex-api:live
       
