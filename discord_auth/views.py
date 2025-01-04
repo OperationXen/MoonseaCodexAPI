@@ -78,14 +78,13 @@ def discord_auth_done(request: Request) -> JsonResponse:
                         webapp_redirect = state_dict.get("referer", AUTH_COMPLETE_URL)
                         return redirect(webapp_redirect)
                     else:
-                        pass  # User failed authentication
+                        return JsonResponse({"message": "Could not authenticate discord user against MSC database"})
                 else:
-                    pass  # Unable to exchange supplied code for token
+                    return JsonResponse({"message": "Could not get user data from discord"})
             else:
-                pass  # Unable to get code from request
+                return JsonResponse({"message": "Could not get code in response from discord"})
     else:
-        pass  # No state in discord return, possible hijack
-    return redirect(AUTH_FAIL_URL)
+        return JsonResponse({"message": "Unable to find state in return object - security warning"})
 
 
 def discord_auth_complete(request: Request) -> JsonResponse:
