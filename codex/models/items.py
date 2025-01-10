@@ -65,7 +65,7 @@ class MagicItem(models.Model):
     flavour = models.TextField(help_text="Flavour text", null=True, blank=True)
     rp_name = models.TextField(help_text="Roleplay name", null=True, blank=True)
     url = models.URLField(help_text="Link to item details", null=True, blank=True)
-    tradable = models.BooleanField(default=False, help_text="Item is in trading post")
+    market = models.BooleanField(default=False, help_text="Item is in trading post")
     # source information (game / shopping / dm service reward / trade)
     content_type = models.ForeignKey(
         ContentType,
@@ -91,6 +91,6 @@ class MagicItem(models.Model):
             models.Index(fields=["rp_name"], name="item_rp_name_idx"),
             models.Index(Upper("name"), name="item_name_upper_idx"),
             models.Index(Upper("rp_name"), name="item_rp_name_upper_idx"),
-            models.Index(fields=["tradable"], name="item_tradable_idx"),
+            models.Index(fields=["market"], name="item_tradable_idx"),
             models.Index(fields=["content_type", "object_id"], name="item_source_idx"),
         ]

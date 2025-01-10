@@ -10,4 +10,5 @@ urlpatterns = [
     re_path("^admin/", admin.site.urls),
     re_path("^api/auth/", include("codex.urls_auth")),
     re_path("^api/data/", include("codex.urls_api")),
+    re_path("^api/discord_auth/", include("discord_auth.urls")),
 ] + static("media/", document_root=settings.MEDIA_ROOT)
