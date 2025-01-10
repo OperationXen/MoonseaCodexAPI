@@ -21,7 +21,8 @@ class TradableSerialiser(serializers.ModelSerializer):
 class ItemSerialiser(serializers.ModelSerializer):
     """Base class containing useful functions"""
 
-    owner = serializers.ReadOnlyField(source="character.name", read_only=True)
+    owner_name = serializers.ReadOnlyField(source="character.name", read_only=True)
+    owner_uuid = serializers.ReadOnlyField(source="character.uuid", read_only=True)
     editable = serializers.SerializerMethodField()
 
     def get_editable(self, obj):
@@ -86,36 +87,15 @@ class MagicItemSerialiser(ItemSerialiser):
     class Meta:
         model = MagicItem
         fields = [
-            "uuid",
-            "owner",
             "name",
+            "rp_name",
             "rarity",
+            "url",
             "attunement",
             "equipped",
+            "minor_properties",
             "description",
             "flavour",
-            "editable",
             "market",
         ]
         read_only_fields = ["uuid", "editable"]
-
-
-class MagicItemDetailsSerialiser(ItemDetailsSerialiser):
-    """An in depth view of the magic item and related fields"""
-
-    class Meta:
-        model = MagicItem
-        fields = [
-            "uuid",
-            "owner_name",
-            "owner_uuid",
-            "name",
-            "rarity",
-            "datetime_obtained",
-            "source_event_type",
-            "attunement",
-            "equipped",
-            "description",
-            "flavour",
-            "market",
-        ]

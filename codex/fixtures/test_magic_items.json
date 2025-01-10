@@ -4,6 +4,9 @@
     "pk": 1,
     "fields": {
       "name": "Arcane Grimore +1",
+      "rp_name": "Dark grimore",
+      "minor_properties": "sentient",
+      "url": "http://example.com",
       "character": 1,
       "equipped": true,
       "rarity": "uncommon",
@@ -18,6 +21,9 @@
     "pk": 2,
     "fields": {
       "name": "Atlas of Endless Horizons",
+      "rp_name": "",
+      "minor_properties": "",
+      "url": "",
       "character": 1,
       "equipped": true,
       "rarity": "rare",
@@ -32,6 +38,9 @@
     "pk": 3,
     "fields": {
       "name": "Winged boots",
+      "rp_name": "",
+      "minor_properties": "",
+      "url": "",
       "character": 1,
       "equipped": true,
       "rarity": "uncommon",
@@ -46,6 +55,9 @@
     "pk": 4,
     "fields": {
       "name": "Lantern of Revealing",
+      "rp_name": "",
+      "minor_properties": "",
+      "url": "",
       "character": 2,
       "equipped": true,
       "rarity": "uncommon",
@@ -60,6 +72,9 @@
     "pk": 5,
     "fields": {
       "name": "The Hypnotoad",
+      "rp_name": "",
+      "minor_properties": "",
+      "url": "",
       "character": 2,
       "equipped": true,
       "rarity": "veryrare",
@@ -74,6 +89,9 @@
     "pk": 6,
     "fields": {
       "name": "Hat of Frogs",
+      "rp_name": "",
+      "minor_properties": "",
+      "url": "",
       "character": 3,
       "equipped": true,
       "rarity": "veryrare",
@@ -88,6 +106,9 @@
     "pk": 7,
     "fields": {
       "name": "Trident of Fish Command",
+      "rp_name": "",
+      "minor_properties": "",
+      "url": "",
       "character": 3,
       "equipped": false,
       "rarity": "uncommon",

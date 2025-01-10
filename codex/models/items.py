@@ -54,17 +54,19 @@ class MagicItem(models.Model):
 
     uuid = models.UUIDField(default=uuid.uuid4, editable=False)
 
-    name = models.CharField(max_length=256, help_text="Item name")
-    character = models.ForeignKey(Character, on_delete=models.CASCADE, related_name="magicitems")
-    equipped = models.BooleanField(default=False, help_text="Item is currently equipped by its owner")
+    name = models.CharField(max_length=256, help_text="Base item name")
+    description = models.TextField(blank=True, null=True)
+    flavour = models.TextField(help_text="Flavour text", null=True, blank=True)
+    rp_name = models.TextField(help_text="Roleplay name", null=True, blank=True)
+    minor_properties = models.TextField(help_text="Minor properties - guardian, etc", null=True, blank=True)
+    url = models.URLField(help_text="Link to item details", null=True, blank=True)
     rarity = models.CharField(
         choices=Rarities.choices, max_length=16, default=Rarities.UNCOMMON, help_text="Item rarity"
     )
     attunement = models.BooleanField(default=False, help_text="Item requires attunement to be used")
-    description = models.TextField(blank=True, null=True)
-    flavour = models.TextField(help_text="Flavour text", null=True, blank=True)
-    rp_name = models.TextField(help_text="Roleplay name", null=True, blank=True)
-    url = models.URLField(help_text="Link to item details", null=True, blank=True)
+
+    character = models.ForeignKey(Character, on_delete=models.CASCADE, related_name="magicitems")
+    equipped = models.BooleanField(default=False, help_text="Item is currently equipped by its owner")
     market = models.BooleanField(default=False, help_text="Item is in trading post")
     # source information (game / shopping / dm service reward / trade)
     content_type = models.ForeignKey(
@@ -81,6 +83,8 @@ class MagicItem(models.Model):
 
     def __str__(self):
         """String representation"""
+        if self.rp_name:
+            return f"{self.rp_name} ({self.rarity})"
         return f"{self.name} ({self.rarity})"
 
     class Meta:
