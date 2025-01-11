@@ -5,7 +5,7 @@ from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
 from codex.models.character import Character
 from codex.models.items import Consumable
-from codex.serialisers.items import ConsumableItemSerialiser, ConsumableItemDetailsSerialiser
+from codex.serialisers.items import ConsumableItemSerialiser
 
 
 class ConsumableItemViewSet(viewsets.GenericViewSet):
@@ -32,15 +32,18 @@ class ConsumableItemViewSet(viewsets.GenericViewSet):
         except Character.DoesNotExist:
             return Response({"message": "Invalid character"}, HTTP_400_BAD_REQUEST)
 
-        serialiser = ConsumableItemSerialiser(data=request.data)
-        if serialiser.is_valid():
-            item = serialiser.save(character=character)
-            item.save()
+        try:
+            serialiser = ConsumableItemSerialiser(data=request.data)
+            if serialiser.is_valid():
+                item = serialiser.save(character=character)
+                item.save()
 
-            new_item = ConsumableItemSerialiser(item)
-            return Response(new_item.data, HTTP_201_CREATED)
-        else:
-            return Response({"message": "Item creation failed"}, HTTP_400_BAD_REQUEST)
+                new_item = ConsumableItemSerialiser(item)
+                return Response(new_item.data, HTTP_201_CREATED)
+            else:
+                return Response({"message": "Item creation failed"}, HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response({"message": "A server error occurred"}, HTTP_500_INTERNAL_SERVER_ERROR)
 
     def retrieve(self, request, *args, **kwargs):
         """get a single item"""
@@ -55,7 +58,7 @@ class ConsumableItemViewSet(viewsets.GenericViewSet):
 
         queryset = self.get_queryset()
         queryset = queryset.filter(character__player=request.user)
-        serialiser = ConsumableItemDetailsSerialiser(queryset, many=True)
+        serialiser = ConsumableItemSerialiser(queryset, many=True)
         return Response(serialiser.data, HTTP_200_OK)
 
     def partial_update(self, request, *args, **kwargs):

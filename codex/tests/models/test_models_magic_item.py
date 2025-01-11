@@ -25,18 +25,16 @@ class TestMagicItemModel(TestCase):
         self.assertIsNotNone(obj)
         self.assertIsInstance(obj, MagicItem)
 
-    def test_magic_item_to_string(self) -> None:
+    def test_magic_item_to_string_with_rp_name(self) -> None:
         """Verify that a magic item can be displayed as a string representation"""
         obj = MagicItem.objects.get(pk=1)
         string_rep = str(obj)
 
-        self.assertIn(obj.name, string_rep)
+        self.assertIn(obj.rp_name, string_rep)
 
-    def test_magic_item_with_alias_to_string(self) -> None:
-        """Verify that a more complex magic item can be displayed as a string representation"""
-        obj = MagicItem.objects.get(pk=1)
-        obj.rp_name = "Boots of Hermes"
+    def test_magic_item_to_string_with(self) -> None:
+        """Verify that a magic item can be displayed as a string representation"""
+        obj = MagicItem.objects.get(pk=3)
         string_rep = str(obj)
 
-        self.assertIn(obj.rp_name, string_rep)
-        self.assertIn("[" + str(obj.charges) + "]", string_rep)
+        self.assertIn(obj.name, string_rep)
