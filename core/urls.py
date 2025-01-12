@@ -7,8 +7,8 @@ from django.urls import re_path, include
 # For local development where debug is set, serve the media root via debug server
 
 urlpatterns = [
-    re_path("^admin/", admin.site.urls),
-    re_path("^api/auth/", include("codex.urls_auth")),
-    re_path("^api/data/", include("codex.urls_api")),
-    re_path("^api/discord_auth/", include("discord_auth.urls")),
+    re_path(r"^admin/", admin.site.urls),
+    re_path(r"^api/auth/", include("codex.urls_auth")),
+    re_path(r"^api/data/", include("codex.urls_api")),
+    re_path(r"^api/discord_auth/", include("discord_auth.urls")),
 ] + static("media/", document_root=settings.MEDIA_ROOT)
