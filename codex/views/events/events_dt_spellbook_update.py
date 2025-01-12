@@ -13,7 +13,7 @@ class EventDowntimeSpellbookUpdateView(viewsets.GenericViewSet):
 
     lookup_field = "uuid"
     lookup_url_kwarg = "uuid"
-    lookup_value_regex = "[\-0-9a-f]{36}"
+    lookup_value_regex = r"[\-0-9a-f]{36}"
 
     serializer_class = SpellbookUpdateSerialiser
     permission_classes = [IsAuthenticatedOrReadOnly]
