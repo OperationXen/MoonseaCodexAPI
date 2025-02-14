@@ -18,3 +18,15 @@ class TestPlayerGamesCRUDViews(TestCase):
 
         response = self.client.get(reverse("games-list"))
         self.assertEqual(response.status_code, HTTP_200_OK)
+        self.assertGreaterEqual(len(response.data), 3)
+
+    def test_list_no_games(self) -> None:
+        self.client.login(username="testuser3", password="testpassword")
+
+        response = self.client.get(reverse("games-list"))
+        self.assertEqual(response.status_code, HTTP_200_OK)
+        self.assertEqual(response.data, [])
+
+    def test_anonymous_access_fails(self) -> None:
+        response = self.client.get(reverse("games-list"))
+        self.assertEqual(response.status_code, HTTP_403_FORBIDDEN)
