@@ -52,7 +52,7 @@ class TestCharacterEventView(TestCase):
         self.assertIsInstance(events, list)
         for event in events:
             if event["event_type"] == "dt_catchingup":
-                return True
+                return None
         self.fail("Expected catching up event not returned")
 
     def test_downtime_activity_mundanetrade(self) -> None:
@@ -66,7 +66,7 @@ class TestCharacterEventView(TestCase):
         self.assertIsInstance(events, list)
         for event in events:
             if event["event_type"] == "dt_mtrade":
-                return True
+                return None
         self.fail("Expected mundane trade event not returned")
 
     def test_downtime_activity_spellbook_update(self) -> None:
@@ -80,5 +80,5 @@ class TestCharacterEventView(TestCase):
         self.assertIsInstance(events, list)
         for event in events:
             if event["event_type"] == "dt_sbookupd":
-                return True
+                return None
         self.fail("Expected spellbook update event not returned")
