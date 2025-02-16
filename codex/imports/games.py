@@ -1,4 +1,5 @@
 import re
+import dateparser
 
 from codex.models.events import Game
 
@@ -21,20 +22,26 @@ def create_msc_games(games, character):
     created = []
 
     for game in games:
-        (code, name) = get_code_and_name(game.adventure_title)
+        try:
+            (code, name) = get_code_and_name(game.adventure_title)
 
-        msc_game = Game.objects.create(
-            character=character,
-            module=code,
-            name=name,
-            datetime=game.date_played,
-            hours=game.session_length_hours,
-            levels=1,
-            downtime=game.downtime_gained,
-            gold=game.gp_gained,
-            notes=game.notes,
-            dm_name=game.dm_name,
-            location=game.location_played,
-        )
-        created.append(msc_game)
+            msc_game = Game.objects.create(
+                module=code,
+                name=name,
+                datetime=dateparser.parse(game.date_played),
+                hours=int(game.session_length_hours or 0),
+                levels=1,
+                downtime=int(float(game.downtime_gained or 0)),
+                gold=int(float(game.gp_gained or 0)),
+                notes=game.notes,
+                dm_name=game.dm_name,
+                location=game.location_played,
+            )
+            msc_game.characters.set([character])
+            msc_game.save()
+
+            created.append(msc_game)
+        except Exception as e:
+            print(e)
+            continue
     return created
