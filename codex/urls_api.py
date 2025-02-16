@@ -7,6 +7,7 @@ from codex.views.data.dungeonmaster import DMLogViewSet
 from codex.views.data.character import CharacterViewSet
 from codex.views.data.character_images import CharacterImageView
 from codex.views.data.discord import DiscordBotQueryView
+from codex.views.imports.character import CharacterImportView
 
 from codex.views.events.magicitem_events import MagicItemEventView
 from codex.views.events.character_events import CharacterEventView
@@ -64,6 +65,7 @@ urlpatterns = [
     re_path(
         r"^discord_lookup/(?P<query_type>(character|items))/", DiscordBotQueryView.as_view(), name="discord_lookup"
     ),
+    re_path(r"^character_import/?", CharacterImportView.as_view(), name="character_import"),
 ]
 
 urlpatterns += router.urls
