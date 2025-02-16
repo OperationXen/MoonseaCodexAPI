@@ -4,9 +4,9 @@ import re
 def parse_class(data: str):
     c = {"name": "", "subclass": "", "value": 1}
 
-    re_class = "(wizard)|(fighter)|(rogue)|(artificer)|(barbarian)(bard)|(cleric)|(druid)|(monk)|(paladin)|(ranger)|(sorcerer)|(warlock)"
-    re_level = "\d+"
-    re_subclass = "(\w+)"
+    re_class = r"(wizard)|(fighter)|(rogue)|(artificer)|(barbarian)(bard)|(cleric)|(druid)|(monk)|(paladin)|(ranger)|(sorcerer)|(warlock)"
+    re_level = r"\d+"
+    re_subclass = r"(\w+)"
 
     # find and remove class names
     match = re.search(re_class, data, re.IGNORECASE)

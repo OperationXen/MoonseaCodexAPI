@@ -8,7 +8,7 @@ def get_code_and_name(data):
     code = None
     name = ""
 
-    match = re.search("^[A-Z\-\d]+", data)
+    match = re.search(r"^[A-Z\-\d]+", data)
     if match:
         code = match.group(0)
         data = data.replace(code, "")
