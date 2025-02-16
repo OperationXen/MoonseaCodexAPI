@@ -6,7 +6,9 @@ from codex.imports.adventurersleaguelogs import ALLGameEvent
 from codex.imports.parse_classes import parse_classes
 from codex.imports.parse_events import parse_events
 from codex.imports.parse_items import get_magic_items_from_events, get_traded_items_from_events
+from codex.imports.parse_games import get_games_from_events
 from codex.imports.items import remove_traded_items, create_msc_items
+from codex.imports.games import create_msc_games
 
 expected_character_header = "name,race,class_and_levels,faction,background,lifestyle,portrait_url,publicly_visible"
 expected_event_header = "type,adventure_title,session_num,date_played,session_length_hours,player_level,xp_gained,gp_gained,downtime_gained,renown_gained,num_secret_missions,location_played,dm_name,dm_dci_number,notes,date_dmed,campaign_id"
@@ -57,7 +59,8 @@ def parse_csv_import(csv_data, user):
     gained_items = get_magic_items_from_events(events)
     lost_items = get_traded_items_from_events(events)
     current_items = remove_traded_items(gained_items, lost_items)
-    items = create_msc_items(current_items, character)
+    msc_items = create_msc_items(current_items, character)
 
-    # games = create_games_from_events(events, character)
+    games = get_games_from_events(events)
+    msc_games = create_msc_games(games, character)
     return character

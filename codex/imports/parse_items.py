@@ -1,6 +1,3 @@
-from codex.imports.adventurersleaguelogs import ALLItemEvent, ALLItemTradeEvent
-
-
 def get_magic_items_from_events(event_data):
     items = []
 
