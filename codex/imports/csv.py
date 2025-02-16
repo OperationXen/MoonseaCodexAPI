@@ -1,4 +1,5 @@
 from typing import List
+import re
 
 from codex.models.character import Character
 from codex.models.events import Game
@@ -68,13 +69,47 @@ def get_level_up_events(events: List[ALLGameEvent]):
     return total
 
 
+def parse_class(data: str):
+    c = {"class": "", "subclass": "", "level": 1}
+
+    re_class = "(wizard)|(fighter)|(rogue)|(artificer)|(barbarian)(bard)|(cleric)|(druid)|(monk)|(paladin)|(ranger)|(sorcerer)|(warlock)"
+    re_level = "\d+"
+    re_subclass = "(\w+)"
+
+    # find and remove class names
+    match = re.search(re_class, data, re.IGNORECASE)
+    if match:
+        name = match.group(0)
+        data = data.replace(name, "")
+        c["class"] = name.title()
+
+    # find and remove numbers
+    match = re.search(re_level, data)
+    if match:
+        level = match.group(0)
+        data = data.replace(level, "")
+        c["level"] = int(level or 1)
+
+    # whatever is left (excluding special chars) must be the subclass
+    data = data.strip()
+    matches = re.findall(re_subclass, data)
+    if matches:
+        subclass = " ".join(matches)
+        c["subclass"] = subclass.strip().title()
+
+    return c
+
+
 def parse_classes(data: str):
     """Attempt to identify a character's classes, subclasses and levels from a string"""
     data = data.translate(str.maketrans({",": ";", ",": ";", "/": ";", "\\": ";"}))
     classes = data.split(";")
-    print(classes)
 
-    return {"class": "Wizard", "subclass": "Abjuration", "level": 11}
+    results = []
+    for c in classes:
+        parsed = parse_class(c)
+        results.append(parsed)
+    return results
 
 
 def create_character_from_csv_data(char_data, event_data, user):
