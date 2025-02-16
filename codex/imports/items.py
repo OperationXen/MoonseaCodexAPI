@@ -12,21 +12,28 @@ def remove_traded_items(items, traded):
 
 def create_msc_items(items, character):
     """for each item create an entry in MSC"""
+    created = []
+
     for item in items:
         attunement = False
         description = ""
 
         try:
-            existing_item = MagicItem.objects.get(name=item.name)
-            attunement = existing_item.attunement
-            description = existing_item.description
+            existing_item = MagicItem.objects.filter(name=item.name).first()
+            if existing_item:
+                attunement = existing_item.attunement
+                description = existing_item.description
         except MagicItem.DoesNotExist:
             pass
+        except Exception as e:
+            print(e)
 
-        MagicItem.objects.create(
+        msc_item = MagicItem.objects.create(
             character=character,
             name=item.name,
             rarity=item.rarity,
             attunement=attunement,
             description=description,
         )
+        created.append(msc_item)
+    return created
