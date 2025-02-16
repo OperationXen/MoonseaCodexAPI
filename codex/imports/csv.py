@@ -68,10 +68,20 @@ def get_level_up_events(events: List[ALLGameEvent]):
     return total
 
 
+def parse_classes(data: str):
+    """Attempt to identify a character's classes, subclasses and levels from a string"""
+    data = data.translate(str.maketrans({",": ";", ",": ";", "/": ";", "\\": ";"}))
+    classes = data.split(";")
+    print(classes)
+
+    return {"class": "Wizard", "subclass": "Abjuration", "level": 11}
+
+
 def create_character_from_csv_data(char_data, event_data, user):
     """convert raw data to a new character object"""
     [name, race, char_class, _faction, _background, _lifestyle, artwork_url, public] = char_data.split(",")
     levels = get_level_up_events(event_data)
+    classes = parse_classes(char_class)
 
     character = Character.objects.create(player=user, name=name, race=race, public=bool(public), level=levels)
     # TODO match classes to listed subclasses
