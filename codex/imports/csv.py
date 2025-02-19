@@ -56,11 +56,18 @@ def parse_csv_import(csv_data, user):
     character = create_character_from_csv_data(char_data, events, user)
 
     # Handle item logic
-    gained_items = get_magic_items_from_events(events)
-    lost_items = get_traded_items_from_events(events)
-    current_items = remove_traded_items(gained_items, lost_items)
-    msc_items = create_msc_items(current_items, character)
+    try:
+        gained_items = get_magic_items_from_events(events)
+        lost_items = get_traded_items_from_events(events)
+        current_items = remove_traded_items(gained_items, lost_items)
+        msc_items = create_msc_items(current_items, character)
+    except Exception as e:
+        print(f"[!] Error parsing items: {e}")
 
-    games = get_games_from_events(events)
-    msc_games = create_msc_games(games, character)
+    try:
+        games = get_games_from_events(events)
+        msc_games = create_msc_games(games, character)
+    except Exception as e:
+        print(f"[!] Error parsing games: {e}")
+
     return character
