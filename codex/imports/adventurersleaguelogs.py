@@ -50,6 +50,9 @@ class ALLItemEvent:
         self.rarity = fields[2]
         self.notes = fields[6]
 
+        if not self.name:
+            raise ValueError("Item has no name")
+
 
 class ALLItemTradeEvent:
     event_type = ""
