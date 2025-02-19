@@ -8,7 +8,7 @@ def get_code_and_name(data):
     code = None
     name = ""
 
-    match = re.search(r"^[A-Z\-\d]+", data)
+    match = re.search(r"((DDAL|DDEX|DDEP|DDHC|DC|PO|SJ|PS|FR|DL|EB|MCX|RMH|RV|WBW|DRW|BMG|CCC)[\-\w]+)", data)
     if match:
         code = match.group(0)
         data = data.replace(code, "")
@@ -26,7 +26,7 @@ def create_msc_games(games, character):
             (code, name) = get_code_and_name(game.adventure_title)
 
             msc_game = Game.objects.create(
-                module=code,
+                module=code or "?",
                 name=name,
                 datetime=dateparser.parse(game.date_played),
                 hours=int(game.session_length_hours or 0),
