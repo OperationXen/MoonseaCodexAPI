@@ -34,12 +34,16 @@ def create_msc_items(items, character):
         except Exception as e:
             print(e)
 
-        msc_item = MagicItem.objects.create(
-            character=character,
-            name=item.name,
-            rarity=rarity,
-            attunement=attunement,
-            description=description,
-        )
-        created.append(msc_item)
+        try:
+            msc_item = MagicItem.objects.create(
+                character=character,
+                name=item.name,
+                rarity=rarity,
+                attunement=attunement,
+                description=description,
+            )
+            created.append(msc_item)
+        except Exception as e:
+            print(e)
+
     return created
