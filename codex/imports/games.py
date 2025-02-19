@@ -8,7 +8,7 @@ def get_code_and_name(data):
     code = None
     name = ""
 
-    match = re.search(r"((DDAL|DDEX|DDEP|DDHC|DC|CCC)[\-\w]+)", data)
+    match = re.search(r"((DDAL|DDEX|DDEP|DDHC|DC|PO|SJ|PS|DRW|BMG|CCC)[\-\w]+)", data)
     if match:
         code = match.group(0)
         data = data.replace(code, "")
