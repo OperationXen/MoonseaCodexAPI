@@ -17,12 +17,18 @@ def create_msc_items(items, character):
     for item in items:
         attunement = False
         description = ""
+        rarity = item.rarity or "common"
 
         try:
             existing_item = MagicItem.objects.filter(name=item.name).first()
             if existing_item:
                 attunement = existing_item.attunement
                 description = existing_item.description
+
+                # double check item rarities for items marked as common
+                if rarity == "common" and existing_item.rarity:
+                    rarity = existing_item.rarity
+
         except MagicItem.DoesNotExist:
             pass
         except Exception as e:
@@ -31,7 +37,7 @@ def create_msc_items(items, character):
         msc_item = MagicItem.objects.create(
             character=character,
             name=item.name,
-            rarity=item.rarity,
+            rarity=rarity,
             attunement=attunement,
             description=description,
         )
