@@ -104,6 +104,8 @@ class TestConsumableItemCRUDViews(TestCase):
         self.assertEqual(response.status_code, HTTP_200_OK)
         self.assertIn("name", response.data)
         self.assertEqual(response.data.get("name"), "Potion of healing")
+        self.assertIn("editable", response.data)
+        self.assertFalse(response.data.get("editable"))
 
     def test_retrieve_by_incorrect_uuid(self) -> None:
         """attempting to retrieve an item by invalid uuid should 404"""
@@ -130,6 +132,8 @@ class TestConsumableItemCRUDViews(TestCase):
         for result in response.data:
             self.assertTrue(result["owner_name"])
             self.assertTrue(result["name"])
+            self.assertIn("editable", result)
+            self.assertTrue(result.get("editable"))
 
     def test_anyone_cannot_update_item(self) -> None:
         """someone who doesn't own an item cannot change it"""
