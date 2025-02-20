@@ -58,7 +58,7 @@ class ConsumableItemViewSet(viewsets.GenericViewSet):
 
         queryset = self.get_queryset()
         queryset = queryset.filter(character__player=request.user)
-        serialiser = ConsumableItemSerialiser(queryset, many=True)
+        serialiser = ConsumableItemSerialiser(queryset, many=True, context={"user": request.user})
         return Response(serialiser.data, HTTP_200_OK)
 
     def partial_update(self, request, *args, **kwargs):

@@ -9,8 +9,8 @@ class AdvertSerialiser(serializers.ModelSerializer):
 
     class Meta:
         model = Advert
-        fields = ["uuid", "datetime", "description", "item"]
         read_only_fields = ["uuid", "datetime"]
+        fields = ["uuid", "datetime", "description", "item", *read_only_fields]
 
 
 class OfferSerialiser(serializers.ModelSerializer):
