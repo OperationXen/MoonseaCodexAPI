@@ -24,6 +24,8 @@ class TestTradeAdvertViews(TestCase):
         self.assertEqual(response.status_code, HTTP_200_OK)
         self.assertIn("item", response.data)
         self.assertIn("description", response.data)
+        self.assertIn("editable", response.data.get("item"))
+        self.assertFalse(response.data.get("item").get("editable"))
 
     def test_get_invalid_advert(self) -> None:
         """a request for an invalid advert should fail"""
@@ -60,6 +62,9 @@ class TestTradeAdvertViews(TestCase):
         response = self.client.get(reverse_querystring("advert", query_kwargs={"own": "true"}))
         self.assertEqual(response.status_code, HTTP_200_OK)
         self.assertEqual(len(response.data), 3)
+        for advert in response.data:
+            self.assertIn("editable", advert.get("item"))
+            self.assertTrue(advert.get("item").get("editable"))
 
     def test_list_advertsby_rarity(self) -> None:
         """List adverts only for a specific rarity"""
