@@ -7,7 +7,7 @@ from codex.models.events import DMReward
 from codex.models.character import Character
 from codex.models.events_downtime import CatchingUp, MundaneTrade, SpellbookUpdate
 from codex.serialisers.events_downtime import CatchingUpSerialiser, MundaneTradeSerialiser, SpellbookUpdateSerialiser
-from codex.serialisers.character_events import CharacterGameSummarySerialiser
+from codex.serialisers.character_events import CharacterGameSerialiser
 from codex.serialisers.dm_events import DMRewardSummary
 
 
@@ -22,7 +22,7 @@ class CharacterEventView(APIView, LimitOffsetPagination):
             return Response({"message": "Specified character could not be found"}, status=HTTP_404_NOT_FOUND)
 
         games = character.games.all()
-        games_serialiser = CharacterGameSummarySerialiser(games, many=True)
+        games_serialiser = CharacterGameSerialiser(games, many=True)
         rewards = DMReward.objects.filter(character_items_assigned=character)
         rewards_serialiser = DMRewardSummary(rewards, many=True)
         catchingup = CatchingUp.objects.filter(character=character)
