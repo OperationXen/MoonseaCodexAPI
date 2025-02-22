@@ -227,7 +227,7 @@ class TestCharacterGamesCRUDViews(TestCase):
         self.assertIn(game, list(character.games.all()))
 
         response = self.client.delete(
-            reverse("game-detail", kwargs={"uuid": game.uuid}), test_data, content_type="application/json"
+            reverse("game-remove-character", kwargs={"uuid": game.uuid}), test_data, content_type="application/json"
         )
         self.assertEqual(response.status_code, HTTP_200_OK)
         self.assertIn("message", response.data)
@@ -243,7 +243,7 @@ class TestCharacterGamesCRUDViews(TestCase):
         self.assertIn(game, list(character.games.all()))
 
         response = self.client.delete(
-            reverse("game-detail", kwargs={"uuid": game.uuid}), test_data, content_type="application/json"
+            reverse("game-remove-character", kwargs={"uuid": game.uuid}), test_data, content_type="application/json"
         )
         self.assertEqual(response.status_code, HTTP_403_FORBIDDEN)
         self.assertIn("message", response.data)

@@ -1,7 +1,6 @@
-import json
-
 from rest_framework import viewsets
 from rest_framework.status import *
+from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
@@ -104,7 +103,15 @@ class CharacterGamesViewSet(viewsets.GenericViewSet):
         return Response(serialiser.data, HTTP_200_OK)
 
     def destroy(self, request, *args, **kwargs):
-        """Remove the specified char from game, delete it if empty"""
+        """Delete the specified game if it is empty of players"""
+        game = self.get_object()
+        if not game.characters.all().exists():
+            game.delete()
+            return Response({"message": "Game deleted OK"}, HTTP_200_OK)
+        return Response({"message": "Game has players outstanding and so cannot be deleted"}, HTTP_200_OK)
+
+    @action(detail=True, methods=["post"])
+    def remove_character(self, request, *args, **kwargs):
         try:
             character_uuid = request.data["character_uuid"]
             character = Character.objects.get(uuid=character_uuid)
@@ -120,3 +127,18 @@ class CharacterGamesViewSet(viewsets.GenericViewSet):
             game.delete()
             return Response({"message": "Game has no players left, deleted"}, HTTP_200_OK)
         return Response({"message": "Game has players outstanding and so cannot be deleted"}, HTTP_200_OK)
+
+    @action(detail=True, methods=["post"])
+    def add_character(self, request, *args, **kwargs):
+        try:
+            character_uuid = request.data["character_uuid"]
+            character = Character.objects.get(uuid=character_uuid)
+            if character.player != request.user:
+                return Response({"message": "This character does not belong to you"}, HTTP_403_FORBIDDEN)
+        except (KeyError, Character.DoesNotExist) as e:
+            character = None
+            return Response({"message": "Character could not be found"}, HTTP_400_BAD_REQUEST)
+
+        game = self.get_object()
+        game.characters.add(character)
+        return Response({"message": "Added character to an existing game"}, HTTP_200_OK)
