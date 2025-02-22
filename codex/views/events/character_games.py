@@ -96,11 +96,17 @@ class CharacterGamesViewSet(viewsets.GenericViewSet):
             character = Character.objects.get(uuid=character_uuid)
             if character.player != request.user:
                 return Response({"message": "This character does not belong to you"}, HTTP_403_FORBIDDEN)
+            if not game.characters.filter(uuid=character_uuid).exists():
+                return Response({"message": "This game does not belong to you"}, HTTP_403_FORBIDDEN)
         except (KeyError, Character.DoesNotExist):
             return Response({"message": "Character UUID not set or invalid"}, HTTP_400_BAD_REQUEST)
-        game.characters.add(character)
-        serialiser = CharacterGameSerialiser(game)
-        return Response(serialiser.data, HTTP_200_OK)
+
+        serialiser = CharacterGameSerialiser(game, data=request.data, partial=True)
+        if serialiser.is_valid():
+            new_game = serialiser.save()
+            return Response(serialiser.data, HTTP_200_OK)
+        else:
+            return Response({"message": "Invalid data in update request"}, HTTP_400_BAD_REQUEST)
 
     def destroy(self, request, *args, **kwargs):
         """Delete the specified game if it is empty of players"""
