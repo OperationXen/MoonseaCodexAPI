@@ -193,13 +193,12 @@ class TestCharacterGamesCRUDViews(TestCase):
         test_data = {"character_uuid": character.uuid}
         self.assertNotIn(game, list(character.games.all()))
 
-        response = self.client.patch(
-            reverse("game-detail", kwargs={"uuid": game.uuid}), test_data, content_type="application/json"
+        response = self.client.post(
+            reverse("game-add-character", kwargs={"uuid": game.uuid}), test_data, content_type="application/json"
         )
         self.assertEqual(response.status_code, HTTP_200_OK)
         self.assertIn(game, list(character.games.all()))
-        self.assertIn("name", response.data)
-        self.assertIn("module", response.data)
+        self.assertIn("message", response.data)
 
     def test_user_cannot_add_unowned_character_to_game(self) -> None:
         """a user cannot add a character they do not own to a game"""
@@ -210,8 +209,8 @@ class TestCharacterGamesCRUDViews(TestCase):
         test_data = {"character_uuid": character.uuid}
         self.assertNotIn(game, list(character.games.all()))
 
-        response = self.client.patch(
-            reverse("game-detail", kwargs={"uuid": game.uuid}), test_data, content_type="application/json"
+        response = self.client.post(
+            reverse("game-add-character", kwargs={"uuid": game.uuid}), test_data, content_type="application/json"
         )
         self.assertEqual(response.status_code, HTTP_403_FORBIDDEN)
         self.assertIn("message", response.data)
@@ -248,3 +247,36 @@ class TestCharacterGamesCRUDViews(TestCase):
         self.assertEqual(response.status_code, HTTP_403_FORBIDDEN)
         self.assertIn("message", response.data)
         self.assertIn(game, list(character.games.all()))
+
+    def test_user_can_edit_game(self) -> None:
+        """Test that a user who is in the game can edit it"""
+        self.client.login(username="testuser1", password="testpassword")
+
+        game = Game.objects.get(pk=1)
+        character = Character.objects.get(pk=2)
+
+        self.assertNotEqual(game.name, "Updated")
+        response = self.client.patch(
+            reverse("game-detail", kwargs={"uuid": game.uuid}),
+            json.dumps({"name": "Updated", "character_uuid": str(character.uuid)}),
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 200)
+        game.refresh_from_db()
+        self.assertEqual(game.name, "Updated")
+
+    def test_anonymous_user_cant_edit_game(self) -> None:
+        self.client.logout()
+
+        game = Game.objects.get(pk=1)
+        character = Character.objects.get(pk=2)
+
+        self.assertNotEqual(game.name, "Updated")
+        response = self.client.patch(
+            reverse("game-detail", kwargs={"uuid": game.uuid}),
+            json.dumps({"name": "Updated", "character_uuid": str(character.uuid)}),
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 403)
+        game.refresh_from_db()
+        self.assertNotEqual(game.name, "Updated")
