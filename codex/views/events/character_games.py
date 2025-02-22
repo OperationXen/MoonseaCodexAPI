@@ -110,8 +110,9 @@ class CharacterGamesViewSet(viewsets.GenericViewSet):
             character = Character.objects.get(uuid=character_uuid)
             if character.player != request.user:
                 return Response({"message": "This character does not belong to you"}, HTTP_403_FORBIDDEN)
-        except (KeyError, Character.DoesNotExist):
+        except (KeyError, Character.DoesNotExist) as e:
             character = None
+            return Response({"message": "Character could not be found"}, HTTP_400_BAD_REQUEST)
 
         game = self.get_object()
         game.characters.remove(character)
