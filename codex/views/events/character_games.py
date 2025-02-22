@@ -9,7 +9,7 @@ from codex.models.events import Game
 from codex.models.items import MagicItem
 from codex.models.character import Character
 
-from codex.serialisers.character_events import CharacterGameSerialiser, CharacterGameSummarySerialiser
+from codex.serialisers.character_events import CharacterGameSerialiser
 from codex.utils.character import update_character_rewards
 from codex.utils.items import get_matching_item
 
@@ -86,7 +86,7 @@ class CharacterGamesViewSet(viewsets.GenericViewSet):
                 return Response({"message": "Character UUID not set or invalid"}, HTTP_400_BAD_REQUEST)
             queryset = Game.objects.filter(characters__player=request.user)
 
-        serialiser = CharacterGameSummarySerialiser(queryset, many=True)
+        serialiser = CharacterGameSerialiser(queryset, many=True)
         return self.get_paginated_response(self.paginate_queryset(serialiser.data))
 
     def partial_update(self, request, *args, **kwargs):
