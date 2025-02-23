@@ -1,5 +1,7 @@
 import uuid
+
 from django.db import models
+from django.utils import timezone
 
 from codex.models.character import Character
 
@@ -8,7 +10,7 @@ class CatchingUp(models.Model):
     """A downtime activity where a character can gain a level by training"""
 
     uuid = models.UUIDField(default=uuid.uuid4, editable=False)
-    datetime = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+    datetime = models.DateTimeField(default=timezone.now, null=True, blank=True)
 
     character = models.ForeignKey(Character, null=True, on_delete=models.CASCADE)
     levels = models.IntegerField(default=1)  # added for flexibiltiy with future changes
@@ -30,7 +32,7 @@ class MundaneTrade(models.Model):
     """Downtime activity for buying mundane equipment, scrolls and potions"""
 
     uuid = models.UUIDField(default=uuid.uuid4, editable=False)
-    datetime = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+    datetime = models.DateTimeField(default=timezone.now, null=True, blank=True)
 
     character = models.ForeignKey(Character, null=True, on_delete=models.CASCADE)
     gold_change = models.FloatField(default=0, help_text="Gold change from this trade")
@@ -53,7 +55,7 @@ class SpellbookUpdate(models.Model):
     """Downtime activity for updating a spellbook"""
 
     uuid = models.UUIDField(default=uuid.uuid4, editable=False)
-    datetime = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+    datetime = models.DateTimeField(default=timezone.now, null=True, blank=True)
 
     character = models.ForeignKey(Character, null=True, on_delete=models.CASCADE)
     gold = models.FloatField(default=0, help_text="Gold spent on reagents")
