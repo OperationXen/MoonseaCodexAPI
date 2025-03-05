@@ -3,6 +3,7 @@ from django.db import models
 from django.utils import timezone
 from django.contrib.auth import get_user_model
 
+from codex.models.users import CodexUser
 from codex.models.items import MagicItem
 from codex.models.character import Character
 from codex.models.dungeonmaster import DungeonMasterInfo
@@ -14,6 +15,7 @@ class Game(models.Model):
     """Record of a game of D&D"""
 
     uuid = models.UUIDField(default=uuid.uuid4, editable=False)
+    owner = models.ForeignKey(CodexUser, blank=True, null=True, on_delete=models.SET_NULL)
     datetime = models.DateTimeField(default=timezone.now, null=True, blank=True)
 
     name = models.CharField(max_length=128, blank=True, null=True, help_text="Module name")
