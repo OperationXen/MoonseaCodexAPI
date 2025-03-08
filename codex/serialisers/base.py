@@ -9,8 +9,15 @@ class MoonseaCodexSerialiser(serializers.ModelSerializer):
     def get_editable(self, obj):
         try:
             user = self.context.get("user")
-            if user and obj.owner == user:
+            if not user:
+                return False
+
+            if hasattr(obj, "owner") and obj.owner == user:
                 return True
+
+            if hasattr(obj, "character") and obj.character.player == user:
+                return True
+
             return False
         except Exception:
             return False

@@ -75,7 +75,7 @@ class TestEventDowntimeCatchingUpCRUDViews(TestCase):
         response = self.client.get(reverse("catchingup-detail", kwargs={"uuid": event.uuid}))
         self.assertEqual(response.status_code, HTTP_200_OK)
         self.assertIn("editable", response.data)
-        self.assertTrue(response.data.get("editable"))
+        self.assertTrue(response.data["editable"])
 
     def test_anonymous_user_can_retrieve_event_by_uuid(self) -> None:
         """Anyone should be able to retrieve an event if they know the UUID"""

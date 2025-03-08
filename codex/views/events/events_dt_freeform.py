@@ -43,17 +43,17 @@ class EventDowntimeFreeFormView(viewsets.GenericViewSet):
         except ValueError as ve:
             return Response({"message": "No character specified"}, HTTP_400_BAD_REQUEST)
 
-        serialiser = FreeFormSerialiser(data=request.data)
+        serialiser = FreeFormSerialiser(data=request.data, context={"user": request.user})
         if serialiser.is_valid():
             event = serialiser.save(character=char)
             return Response(serialiser.data, HTTP_201_CREATED)
         else:
             return Response({"message": "Invalid request data"}, HTTP_400_BAD_REQUEST)
 
-    def retrieve(self, response, *args, **kwargs):
+    def retrieve(self, request, *args, **kwargs):
         """Retrieve a specific mundane trade event"""
         event = self.get_object()
-        serialiser = FreeFormSerialiser(event)
+        serialiser = FreeFormSerialiser(event, context={"user": request.user})
         return Response(serialiser.data)
 
     def partial_update(self, request, *args, **kwargs):
@@ -62,7 +62,7 @@ class EventDowntimeFreeFormView(viewsets.GenericViewSet):
         try:
             if event.character.player is not request.user:
                 raise PermissionError
-            serialiser = FreeFormSerialiser(event, request.data, partial=True)
+            serialiser = FreeFormSerialiser(event, request.data, partial=True, context={"user": request.user})
             if serialiser.is_valid():
                 serialiser.save()
                 return Response({"message": "Event updated"}, HTTP_200_OK)

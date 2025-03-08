@@ -44,7 +44,7 @@ class EventDowntimeMundateTradeView(viewsets.GenericViewSet):
             return Response({"message": "No character specified"}, HTTP_400_BAD_REQUEST)
 
         gold_change = request.data.get("gold_change") or 0.0
-        serialiser = MundaneTradeSerialiser(data=request.data)
+        serialiser = MundaneTradeSerialiser(data=request.data, context={"user": request.user})
         if serialiser.is_valid():
             event = serialiser.save(character=char)
             # Subtract the downtime from the character
@@ -54,10 +54,10 @@ class EventDowntimeMundateTradeView(viewsets.GenericViewSet):
         else:
             return Response({"message": "Invalid request data"}, HTTP_400_BAD_REQUEST)
 
-    def retrieve(self, response, *args, **kwargs):
+    def retrieve(self, request, *args, **kwargs):
         """Retrieve a specific mundane trade event"""
         event = self.get_object()
-        serialiser = MundaneTradeSerialiser(event)
+        serialiser = MundaneTradeSerialiser(event, context={"user": request.user})
         return Response(serialiser.data)
 
     def partial_update(self, request, *args, **kwargs):
@@ -66,7 +66,7 @@ class EventDowntimeMundateTradeView(viewsets.GenericViewSet):
         try:
             if event.character.player is not request.user:
                 raise PermissionError
-            serialiser = MundaneTradeSerialiser(event, request.data, partial=True)
+            serialiser = MundaneTradeSerialiser(event, request.data, partial=True, context={"user": request.user})
             if serialiser.is_valid():
                 serialiser.save()
                 return Response({"message": "Event updated"}, HTTP_200_OK)
