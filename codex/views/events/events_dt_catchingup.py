@@ -10,6 +10,7 @@ from codex.serialisers.events_downtime import CatchingUpSerialiser
 
 class EventDowntimeCatchingUpView(viewsets.GenericViewSet):
     """CRUD views for catching up events"""
+
     lookup_field = "uuid"
     lookup_url_kwarg = "uuid"
     lookup_value_regex = r"[\-0-9a-f]{36}"
@@ -18,7 +19,7 @@ class EventDowntimeCatchingUpView(viewsets.GenericViewSet):
     permission_classes = [IsAuthenticatedOrReadOnly]
 
     def get_queryset(self):
-        """ Base queryset for building on"""
+        """Base queryset for building on"""
         return CatchingUp.objects.all()
 
     def lookup_character(self, request):
@@ -42,9 +43,11 @@ class EventDowntimeCatchingUpView(viewsets.GenericViewSet):
         except ValueError as ve:
             return Response({"message": "No character specified"}, HTTP_400_BAD_REQUEST)
 
-        serialiser = CatchingUpSerialiser(data = request.data)
+        serialiser = CatchingUpSerialiser(data=request.data, context={"user": request.user})
         if char.downtime < 10:
-            return Response({'message': 'This character does not have enough downtime for this activity'}, HTTP_400_BAD_REQUEST)
+            return Response(
+                {"message": "This character does not have enough downtime for this activity"}, HTTP_400_BAD_REQUEST
+            )
         if serialiser.is_valid():
             event = serialiser.save(character=char)
             # Subtract the downtime from the character
@@ -52,12 +55,12 @@ class EventDowntimeCatchingUpView(viewsets.GenericViewSet):
             char.save()
             return Response(serialiser.data, HTTP_201_CREATED)
         else:
-            return Response({'message': 'Invalid request data'}, HTTP_400_BAD_REQUEST)
+            return Response({"message": "Invalid request data"}, HTTP_400_BAD_REQUEST)
 
-    def retrieve(self, response, *args, **kwargs):
+    def retrieve(self, request, *args, **kwargs):
         """Retrieve a specific catchingup event"""
         event = self.get_object()
-        serialiser = CatchingUpSerialiser(event)
+        serialiser = CatchingUpSerialiser(event, context={"user": request.user})
         return Response(serialiser.data)
 
     def partial_update(self, request, *args, **kwargs):
@@ -66,7 +69,7 @@ class EventDowntimeCatchingUpView(viewsets.GenericViewSet):
         try:
             if event.character.player is not request.user:
                 raise PermissionError
-            serialiser = CatchingUpSerialiser(event, request.data, partial=True)
+            serialiser = CatchingUpSerialiser(event, request.data, partial=True, context={"user": request.user})
             if serialiser.is_valid():
                 serialiser.save()
                 return Response({"message": "Event updated"}, HTTP_200_OK)

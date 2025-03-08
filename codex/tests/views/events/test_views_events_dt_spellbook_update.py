@@ -117,6 +117,16 @@ class TestEventDowntimeSpellbookUpdateCRUDViews(TestCase):
         self.assertEqual(response.status_code, HTTP_400_BAD_REQUEST)
         self.assertIn("message", response.data)
 
+    def test_editable_field_set_for_owner(self) -> None:
+        """The owner should see a flag saying that the item is editable"""
+        self.client.login(username="testuser1", password="testpassword")
+        event = SpellbookUpdate.objects.get(pk=1)
+
+        response = self.client.get(reverse("spellbook_update-detail", kwargs={"uuid": event.uuid}))
+        self.assertEqual(response.status_code, HTTP_200_OK)
+        self.assertIn("editable", response.data)
+        self.assertTrue(response.data.get("editable"))
+
     def test_anonymous_user_can_retrieve_event_by_uuid(self) -> None:
         """Anyone should be able to retrieve an event if they know the UUID"""
         self.client.logout()
@@ -124,6 +134,8 @@ class TestEventDowntimeSpellbookUpdateCRUDViews(TestCase):
         event = SpellbookUpdate.objects.get(pk=1)
         response = self.client.get(reverse("spellbook_update-detail", kwargs={"uuid": event.uuid}))
         self.assertEqual(response.status_code, HTTP_200_OK)
+        self.assertIn("editable", response.data)
+        self.assertFalse(response.data["editable"])
         self.assertIn("character", response.data)
         self.assertEqual(response.data["source"], "Khelben Blackstaff")
         self.assertEqual(response.data["gold"], 150)

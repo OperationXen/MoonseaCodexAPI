@@ -49,7 +49,7 @@ class EventDowntimeSpellbookUpdateView(viewsets.GenericViewSet):
             return Response({"message": "Insufficient downtime to perform this activity"}, HTTP_400_BAD_REQUEST)
         if gold_change > char.gold:
             return Response({"message": "Insufficient gold to perform this activity"}, HTTP_400_BAD_REQUEST)
-        serialiser = SpellbookUpdateSerialiser(data=request.data)
+        serialiser = SpellbookUpdateSerialiser(data=request.data, context={"user": request.user})
         if serialiser.is_valid():
             event = serialiser.save(character=char)
             # Subtract the gold and downtime from the character
@@ -60,10 +60,10 @@ class EventDowntimeSpellbookUpdateView(viewsets.GenericViewSet):
         else:
             return Response({"message": "Invalid request data"}, HTTP_400_BAD_REQUEST)
 
-    def retrieve(self, response, *args, **kwargs):
+    def retrieve(self, request, *args, **kwargs):
         """Retrieve a specific mundane trade event"""
         event = self.get_object()
-        serialiser = SpellbookUpdateSerialiser(event)
+        serialiser = SpellbookUpdateSerialiser(event, context={"user": request.user})
         return Response(serialiser.data)
 
     def partial_update(self, request, *args, **kwargs):
@@ -72,7 +72,7 @@ class EventDowntimeSpellbookUpdateView(viewsets.GenericViewSet):
         try:
             if event.character.player is not request.user:
                 raise PermissionError
-            serialiser = SpellbookUpdateSerialiser(event, request.data, partial=True)
+            serialiser = SpellbookUpdateSerialiser(event, request.data, partial=True, context={"user": request.user})
             if serialiser.is_valid():
                 serialiser.save()
                 return Response({"message": "Event updated"}, HTTP_200_OK)

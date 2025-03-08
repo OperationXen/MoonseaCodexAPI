@@ -27,19 +27,20 @@ class CharacterEventView(APIView, LimitOffsetPagination):
             return Response({"message": "Specified character could not be found"}, status=HTTP_404_NOT_FOUND)
 
         games = character.games.all()
-        games_serialiser = CharacterGameSerialiser(games, many=True)
         rewards = DMReward.objects.filter(character_items_assigned=character)
-        rewards_serialiser = DMRewardSummary(rewards, many=True)
-        catchingup = CatchingUp.objects.filter(character=character)
-        catchingup_serialiser = CatchingUpSerialiser(catchingup, many=True)
-        mundanetrade = MundaneTrade.objects.filter(character=character)
-        mundanetrade_serialiser = MundaneTradeSerialiser(mundanetrade, many=True)
-        spellbookupdate = SpellbookUpdate.objects.filter(character=character)
-        spellbookupdate_serialiser = SpellbookUpdateSerialiser(spellbookupdate, many=True)
         freeform = FreeForm.objects.filter(character=character)
-        freeform_serialiser = FreeFormSerialiser(freeform, many=True)
+        catchingup = CatchingUp.objects.filter(character=character)
+        mundanetrade = MundaneTrade.objects.filter(character=character)
+        spellbookupdate = SpellbookUpdate.objects.filter(character=character)
+
+        games_serialiser = CharacterGameSerialiser(games, many=True, context={"user": request.user})
+        rewards_serialiser = DMRewardSummary(rewards, many=True, context={"user": request.user})
+        catchingup_serialiser = CatchingUpSerialiser(catchingup, many=True, context={"user": request.user})
+        mundanetrade_serialiser = MundaneTradeSerialiser(mundanetrade, many=True, context={"user": request.user})
+        spellupdate_serialiser = SpellbookUpdateSerialiser(spellbookupdate, many=True, context={"user": request.user})
+        freeform_serialiser = FreeFormSerialiser(freeform, many=True, context={"user": request.user})
 
         data = games_serialiser.data + rewards_serialiser.data
-        data = data + mundanetrade_serialiser.data + spellbookupdate_serialiser.data
+        data = data + mundanetrade_serialiser.data + spellupdate_serialiser.data
         data = data + freeform_serialiser.data + catchingup_serialiser.data
         return Response(data, HTTP_200_OK)
