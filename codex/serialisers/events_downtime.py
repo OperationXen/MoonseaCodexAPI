@@ -1,47 +1,48 @@
 from rest_framework import serializers
 
+from codex.serialisers.base import MoonseaCodexSerialiser
 from codex.models.events_downtime import CatchingUp, MundaneTrade, SpellbookUpdate, FreeForm
 
 
-class CatchingUpSerialiser(serializers.ModelSerializer):
+class CatchingUpSerialiser(MoonseaCodexSerialiser):
     """Serialiser for a catching up event"""
 
     event_type = serializers.ReadOnlyField(default="dt_catchingup")
 
     class Meta:
         model = CatchingUp
-        fields = ["uuid", "datetime", "character", "levels", "details", "event_type"]
-        read_only_fields = ["character"]
+        read_only_fields = ["uuid", "character", "editable", "event_type"]
+        fields = ["datetime", "levels", "details", *read_only_fields]
 
 
-class MundaneTradeSerialiser(serializers.ModelSerializer):
+class MundaneTradeSerialiser(MoonseaCodexSerialiser):
     """Serialiser for a mundane trade event"""
 
     event_type = serializers.ReadOnlyField(default="dt_mtrade")
 
     class Meta:
         model = MundaneTrade
-        fields = ["uuid", "datetime", "character", "gold_change", "sold", "purchased", "event_type"]
-        read_only_fields = ["character"]
+        read_only_fields = ["uuid", "character", "editable", "event_type"]
+        fields = ["datetime", "gold_change", "sold", "purchased", *read_only_fields]
 
 
-class SpellbookUpdateSerialiser(serializers.ModelSerializer):
+class SpellbookUpdateSerialiser(MoonseaCodexSerialiser):
     """Serialiser for a spellbook update event"""
 
     event_type = serializers.ReadOnlyField(default="dt_sbookupd")
 
     class Meta:
         model = SpellbookUpdate
-        fields = ["uuid", "datetime", "character", "gold", "downtime", "dm", "source", "spells", "event_type"]
-        read_only_fields = ["character"]
+        read_only_fields = ["uuid", "character", "editable", "event_type"]
+        fields = ["datetime", "gold", "downtime", "dm", "source", "spells", *read_only_fields]
 
 
-class FreeFormSerialiser(serializers.ModelSerializer):
+class FreeFormSerialiser(MoonseaCodexSerialiser):
     """Serialiser for a generic update event"""
 
     event_type = serializers.ReadOnlyField(default="dt_freeform")
 
     class Meta:
         model = FreeForm
-        fields = ["uuid", "datetime", "character", "title", "details", "event_type"]
-        read_only_fields = ["character"]
+        read_only_fields = ["uuid", "character", "editable", "event_type"]
+        fields = ["datetime", "title", "details", *read_only_fields]
