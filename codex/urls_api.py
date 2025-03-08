@@ -16,6 +16,7 @@ from codex.views.events.player_games import PlayerGamesViewSet
 from codex.views.events.events_dt_catchingup import EventDowntimeCatchingUpView
 from codex.views.events.events_dt_mundanetrade import EventDowntimeMundateTradeView
 from codex.views.events.events_dt_spellbook_update import EventDowntimeSpellbookUpdateView
+from codex.views.events.events_dt_freeform import EventDowntimeFreeFormView
 from codex.views.events.dm_rewards import DMRewardViewSet
 from codex.views.events.dm_games import DMGamesViewSet
 from codex.views.events.dm_events import DMEventView
@@ -37,6 +38,8 @@ router.register(r"dm_game", DMGamesViewSet, basename="dm_game")
 router.register(r"catchingup", EventDowntimeCatchingUpView, basename="catchingup")
 router.register(r"mundanetrade", EventDowntimeMundateTradeView, basename="mundanetrade")
 router.register(r"spellbook", EventDowntimeSpellbookUpdateView, basename="spellbook_update")
+router.register(r"freeform", EventDowntimeFreeFormView, basename="freeform")
+
 
 urlpatterns = [
     path("dm_events/<uuid:dm_uuid>", DMEventView.as_view(), name="dm_events"),

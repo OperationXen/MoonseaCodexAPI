@@ -6,6 +6,28 @@ from django.utils import timezone
 from codex.models.character import Character
 
 
+class FreeForm(models.Model):
+    """An activity which the user use for anything I've missed"""
+
+    uuid = models.UUIDField(default=uuid.uuid4, editable=False)
+    datetime = models.DateTimeField(default=timezone.now, null=True, blank=True)
+
+    character = models.ForeignKey(Character, null=True, on_delete=models.CASCADE)
+    title = models.CharField(max_length=256, default="Freeform event")
+    details = models.TextField(blank=True, null=True, help_text="Optional further details")
+
+    def __str__(self):
+        if self.datetime:
+            return f"{self.datetime.strftime('%Y/%m/%d')} - {self.character.name}"
+        return f"UNKNOWN DATE - {self.character.name}"
+
+    class Meta:
+        indexes = [
+            models.Index(fields=["uuid"], name="event_freeform_uuid_idx"),
+            models.Index(fields=["character"], name="event_freeform_character_idx"),
+        ]
+
+
 class CatchingUp(models.Model):
     """A downtime activity where a character can gain a level by training"""
 

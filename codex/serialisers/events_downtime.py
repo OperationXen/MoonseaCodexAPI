@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from codex.models.events_downtime import CatchingUp, MundaneTrade, SpellbookUpdate
+from codex.models.events_downtime import CatchingUp, MundaneTrade, SpellbookUpdate, FreeForm
 
 
 class CatchingUpSerialiser(serializers.ModelSerializer):
@@ -33,4 +33,15 @@ class SpellbookUpdateSerialiser(serializers.ModelSerializer):
     class Meta:
         model = SpellbookUpdate
         fields = ["uuid", "datetime", "character", "gold", "downtime", "dm", "source", "spells", "event_type"]
+        read_only_fields = ["character"]
+
+
+class FreeFormSerialiser(serializers.ModelSerializer):
+    """Serialiser for a generic update event"""
+
+    event_type = serializers.ReadOnlyField(default="dt_freeform")
+
+    class Meta:
+        model = FreeForm
+        fields = ["uuid", "datetime", "character", "title", "details", "event_type"]
         read_only_fields = ["character"]
