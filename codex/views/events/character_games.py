@@ -61,8 +61,8 @@ class CharacterGamesViewSet(viewsets.GenericViewSet):
                 pass
 
             # Update downtime and gold counts
-            awarded_gold = float(request.data.get("gold"))
-            awarded_downtime = int(request.data.get("downtime"))
+            awarded_gold = float(request.data.get("gold") or 0)
+            awarded_downtime = int(request.data.get("downtime") or 0)
             update_character_rewards(character, gold=awarded_gold, downtime=awarded_downtime)
             return Response(serialiser.data, HTTP_201_CREATED)
         else:
