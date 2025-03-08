@@ -83,7 +83,7 @@ class CharacterGamesViewSet(viewsets.GenericViewSet):
         else:
             if not request.user.is_authenticated:
                 return Response({"message": "Character UUID not set or invalid"}, HTTP_400_BAD_REQUEST)
-            queryset = Game.objects.filter(characters__player=request.user)
+            queryset = Game.objects.filter(characters__player=request.user).order_by("datetime")
 
         serialiser = CharacterGameSerialiser(queryset, many=True, context={"user": request.user})
         return self.get_paginated_response(self.paginate_queryset(serialiser.data))
