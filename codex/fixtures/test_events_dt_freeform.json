@@ -1,0 +1,12 @@
+[
+    {
+        "model": "codex.freeform",
+        "pk": 1,
+        "fields": {
+            "datetime": "2022-08-19T17:04:30.490Z",
+            "character": 1,
+            "title": "test event",
+            "details": "Here is a generic text field"
+        }
+    }
+]
