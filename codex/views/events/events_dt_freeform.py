@@ -42,10 +42,28 @@ class EventDowntimeFreeFormView(viewsets.GenericViewSet):
             return Response({"message": "This character does not belong to you"}, HTTP_403_FORBIDDEN)
         except ValueError as ve:
             return Response({"message": "No character specified"}, HTTP_400_BAD_REQUEST)
+        auto_apply = request.data.get("auto_apply")
+
+        if auto_apply:
+            gold_change = float(request.data.get("gold_change"))
+            if gold_change < 0 and char.gold < abs(gold_change):
+                return Response(
+                    {"message": f"Insufficient gold, this character has {char.gold} gp"}, HTTP_400_BAD_REQUEST
+                )
+            char.gold = char.gold + gold_change
+            downtime_change = float(request.data.get("downtime_change"))
+            if downtime_change < 0 and char.downtime < abs(downtime_change):
+                return Response(
+                    {"message": f"Insufficient downtime, this character has {char.downtime} days"},
+                    HTTP_400_BAD_REQUEST,
+                )
+            char.downtime = char.downtime + downtime_change
 
         serialiser = FreeFormSerialiser(data=request.data, context={"user": request.user})
         if serialiser.is_valid():
             event = serialiser.save(character=char)
+            if auto_apply:
+                char.save()
             return Response(serialiser.data, HTTP_201_CREATED)
         else:
             return Response({"message": "Invalid request data"}, HTTP_400_BAD_REQUEST)

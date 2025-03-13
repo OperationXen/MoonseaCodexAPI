@@ -45,4 +45,4 @@ class FreeFormSerialiser(MoonseaCodexSerialiser):
     class Meta:
         model = FreeForm
         read_only_fields = ["uuid", "character", "editable", "event_type"]
-        fields = ["datetime", "title", "details", *read_only_fields]
+        fields = ["datetime", "title", "details", "gold_change", "downtime_change", *read_only_fields]
