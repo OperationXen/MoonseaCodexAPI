@@ -10,6 +10,7 @@ class TestEventDowntimeFreeFormCRUDViews(TestCase):
     """Check create / retrieve / update / delete functionality for catching up events"""
 
     fixtures = ["test_users", "test_characters", "test_events_dt_freeform"]
+    test_event = {"title": "Test event", "details": "This test event is something of a placeholder"}
 
     def test_user_can_create_event_for_character(self) -> None:
         """A logged in user can create a catching up event"""
@@ -28,15 +29,48 @@ class TestEventDowntimeFreeFormCRUDViews(TestCase):
 
     def test_changes_automatically_applied(self) -> None:
         """If set, changes to gold or downtime should be automatically applied"""
-        pass
+        self.client.login(username="testuser1", password="testpassword")
+        character = Character.objects.get(pk=1)
+        test_event = self.test_event
+        test_event = test_event | {"gold_change": 100}
+        test_event = test_event | {"downtime_change": -10}
+        test_event = test_event | {"auto_apply": True}
+
+        initial_gold = character.gold
+        initial_downtime = character.downtime
+
+        response = self.client.post(reverse("freeform-list"), {**test_event, "character_uuid": character.uuid})
+        self.assertEqual(response.status_code, HTTP_201_CREATED)
+        character.refresh_from_db()
+        self.assertEqual(character.gold, initial_gold + 100)
+        self.assertEqual(character.downtime, initial_downtime - 10)
 
     def test_changes_fail_if_negative_result(self) -> None:
         """if set to apply and the result would be negative gold or DT, the request should fail"""
-        pass
+        self.client.login(username="testuser1", password="testpassword")
+        character = Character.objects.get(pk=1)
+        test_event = self.test_event
+        test_event = test_event | {"gold_change": -1000}
+        test_event = test_event | {"auto_apply": True}
+
+        response = self.client.post(reverse("freeform-list"), {**test_event, "character_uuid": character.uuid})
+        self.assertEqual(response.status_code, HTTP_400_BAD_REQUEST)
+        self.assertIn("message", response.data)
 
     def test_changes_not_always_applied(self) -> None:
         """if changes not set to apply, there should be no change and no checks"""
-        pass
+        self.client.login(username="testuser1", password="testpassword")
+        character = Character.objects.get(pk=1)
+        test_event = self.test_event
+        test_event = test_event | {"gold_change": 1000}
+        initial_gold = character.gold
+        initial_downtime = character.downtime
+
+        response = self.client.post(reverse("freeform-list"), {**test_event, "character_uuid": character.uuid})
+        self.assertEqual(response.status_code, HTTP_201_CREATED)
+        character.refresh_from_db()
+        self.assertEqual(initial_gold, character.gold)
+        self.assertEqual(initial_downtime, character.downtime)
 
     def test_incorrect_user_cant_create_event(self) -> None:
         """Cannot create a catching up event if you don't own the character"""
