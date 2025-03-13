@@ -18,6 +18,25 @@ class TestEventDowntimeFreeFormCRUDViews(TestCase):
 
         response = self.client.post(reverse("freeform-list"), {"character_uuid": character.uuid})
         self.assertEqual(response.status_code, HTTP_201_CREATED)
+        self.assertIn("gold_change", response.data)
+        self.assertEqual(response.data.get("gold_change"), 0)
+        self.assertIn("downtime_change", response.data)
+        self.assertEqual(response.data.get("downtime_change"), 0)
+        self.assertIn("title", response.data)
+        self.assertIn("details", response.data)
+        self.assertIn("editable", response.data)
+
+    def test_changes_automatically_applied(self) -> None:
+        """If set, changes to gold or downtime should be automatically applied"""
+        pass
+
+    def test_changes_fail_if_negative_result(self) -> None:
+        """if set to apply and the result would be negative gold or DT, the request should fail"""
+        pass
+
+    def test_changes_not_always_applied(self) -> None:
+        """if changes not set to apply, there should be no change and no checks"""
+        pass
 
     def test_incorrect_user_cant_create_event(self) -> None:
         """Cannot create a catching up event if you don't own the character"""

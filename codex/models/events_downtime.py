@@ -16,9 +16,16 @@ class FreeForm(models.Model):
     title = models.CharField(max_length=256, default="Freeform event")
     details = models.TextField(blank=True, null=True, help_text="Optional further details")
 
+    gold_change = models.IntegerField(
+        blank=True, default=0, help_text="Gold change for this event, negative values indicate gold spent"
+    )
+    downtime_change = models.IntegerField(
+        blank=True, default=0, help_text="Downtime change for this event, negative values indicate downtime used"
+    )
+
     def __str__(self):
         if self.datetime:
-            return f"{self.datetime.strftime('%Y/%m/%d')} - {self.character.name}"
+            return f"{self.datetime.strftime('%Y/%m/%d')} - {self.character.name} ({self.title})"
         return f"UNKNOWN DATE - {self.character.name}"
 
     class Meta:
