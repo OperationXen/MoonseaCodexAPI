@@ -78,7 +78,7 @@ class EventDowntimeFreeFormView(viewsets.GenericViewSet):
         """Update an existing freeform update event"""
         event = self.get_object()
         try:
-            if event.character.player is not request.user:
+            if event.character.player != request.user:
                 raise PermissionError
             serialiser = FreeFormSerialiser(event, request.data, partial=True, context={"user": request.user})
             if serialiser.is_valid():

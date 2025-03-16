@@ -64,7 +64,7 @@ class EventDowntimeMundateTradeView(viewsets.GenericViewSet):
         """Update an existing mundane trade event"""
         event = self.get_object()
         try:
-            if event.character.player is not request.user:
+            if event.character.player != request.user:
                 raise PermissionError
             serialiser = MundaneTradeSerialiser(event, request.data, partial=True, context={"user": request.user})
             if serialiser.is_valid():
