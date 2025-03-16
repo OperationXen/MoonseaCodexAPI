@@ -67,7 +67,7 @@ class EventDowntimeCatchingUpView(viewsets.GenericViewSet):
         """Update an existing CatchingUp event"""
         event = self.get_object()
         try:
-            if event.character.player is not request.user:
+            if event.character.player != request.user:
                 raise PermissionError
             serialiser = CatchingUpSerialiser(event, request.data, partial=True, context={"user": request.user})
             if serialiser.is_valid():
