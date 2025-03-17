@@ -5,7 +5,7 @@ from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
 from codex.models.character import Character
 from codex.models.items import MagicItem
-from codex.models.events import ManualCreation, ManualEdit
+from codex.models.events import ManualCreation, ManualEdit, Game
 from codex.serialisers.items import MagicItemSerialiser
 
 
@@ -17,6 +17,20 @@ class MagicItemViewSet(viewsets.GenericViewSet):
     lookup_value_regex = r"[\-0-9a-f]{36}"
 
     permission_classes = [IsAuthenticatedOrReadOnly]
+
+    def get_item_source(self, request, character):
+        """Get the item source from a request and sanity check it"""
+        item_source_type = request.data.get("item_source_type")
+        item_source = request.data.get("item_source")
+
+        if item_source_type == "game":
+            event = Game.objects.get(uuid=item_source)
+            if event.characters.contains(character):
+                return event
+            raise ValueError("Character not associated with game")
+
+        event = ManualCreation.objects.create(character=character, name=item_source)
+        return event
 
     def create_manualedit_event(self, existing_item, data):
         """Create a ManualEdit event to log the item update"""
@@ -46,8 +60,12 @@ class MagicItemViewSet(viewsets.GenericViewSet):
 
         serialiser = MagicItemSerialiser(data=request.data)
         if serialiser.is_valid():
+            try:
+                item_source = self.get_item_source(request, character)
+            except Exception as e:
+                return Response({"message": "Error with item origin event"}, HTTP_400_BAD_REQUEST)
             item = serialiser.save(character=character)
-            item.source = ManualCreation.objects.create(character=character)
+            item.source = item_source
             item.save()
 
             new_item = MagicItemSerialiser(item)
