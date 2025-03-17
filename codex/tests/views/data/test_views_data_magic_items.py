@@ -9,13 +9,13 @@ from django.urls.exceptions import NoReverseMatch
 
 from codex.models.character import Character
 from codex.models.items import MagicItem
-from codex.models.events import ManualCreation, ManualEdit
+from codex.models.events import ManualCreation, ManualEdit, Game
 
 
 class TestMagicItemCRUDViews(TestCase):
     """Check magic item create / retrieve / list / update / delete functionality"""
 
-    fixtures = ["test_users", "test_characters", "test_magic_items"]
+    fixtures = ["test_users", "test_characters", "test_magic_items", "test_character_games"]
     valid_data = {
         "name": "Far realm shard",
         "equipped": True,
@@ -92,6 +92,37 @@ class TestMagicItemCRUDViews(TestCase):
         self.assertIsInstance(item, MagicItem)
         self.assertIsInstance(item.source, ManualCreation)
         self.assertEqual(item.source.character, character)
+
+    def test_user_item_source_manual_custom_text(self) -> None:
+        """Ensure that when an item is created it has an origin event with configurable text"""
+        self.client.login(username="testuser1", password="testpassword")
+        test_data = copy(self.valid_data)
+        character = Character.objects.get(pk=2)
+        test_data["character_uuid"] = character.uuid
+        test_data["item_source"] = "Created by unit test"
+
+        response = self.client.post(reverse("magicitem-list"), test_data)
+        self.assertEqual(response.status_code, HTTP_201_CREATED)
+        item = MagicItem.objects.get(uuid=response.data.get("uuid"))
+        self.assertIsInstance(item.source, ManualCreation)
+        self.assertEqual(item.source.name, "Created by unit test")
+
+    def test_user_item_source_manual_game(self) -> None:
+        """Ensure that item can be associated to a game on creation"""
+        self.client.login(username="testuser1", password="testpassword")
+        test_data = copy(self.valid_data)
+        character = Character.objects.get(pk=2)
+        game = character.games.first()
+
+        test_data["character_uuid"] = character.uuid
+        test_data["item_source_type"] = "game"
+        test_data["item_source"] = game.uuid
+
+        response = self.client.post(reverse("magicitem-list"), test_data)
+        self.assertEqual(response.status_code, HTTP_201_CREATED)
+        item = MagicItem.objects.get(uuid=response.data.get("uuid"))
+        self.assertIsInstance(item.source, Game)
+        self.assertEqual(item.source.uuid, game.uuid)
 
     def test_anonymous_user_cannot_get_magicitem_by_pk(self) -> None:
         """Check that a lookup by PK fails"""
