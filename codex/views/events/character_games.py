@@ -25,7 +25,15 @@ class CharacterGamesViewSet(viewsets.GenericViewSet):
 
     def create_consumable(self, character, consumable):
         """Create consumable item for the character"""
-        item = Consumable.objects.create(character=character, **consumable)
+        new_consumable = {
+            "name": consumable.get("name"),
+            "type": consumable.get("type"),
+            "description": consumable.get("description"),
+            "rarity": consumable.get("rarity"),
+            "charges": consumable.get("charges"),
+        }
+
+        item = Consumable.objects.create(character=character, **new_consumable)
         return item
 
     def create_adventure_reward_item(self, event, character, item_name, rarity=None):
