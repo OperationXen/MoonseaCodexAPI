@@ -7,7 +7,7 @@ from django.urls import reverse
 
 from codex.models.users import CodexUser
 from codex.models.character import Character
-from codex.models.items import MagicItem
+from codex.models.items import MagicItem, Consumable
 from codex.models.events import Game
 
 
@@ -98,6 +98,30 @@ class TestCharacterGamesCRUDViews(TestCase):
         item = character.magicitems.all().order_by("-pk").first()
         self.assertIsInstance(item, MagicItem)
         self.assertEqual(item.name, "Magic Frog Hat")
+        self.assertEqual(item.rarity, "legendary")
+
+    def test_character_consumables_automatically_added(self) -> None:
+        """Consumable items associated to the game are automatically created"""
+        self.client.login(username="testuser1", password="testpassword")
+        test_data = copy(self.valid_data)
+        test_data["consumables"] = [
+            {
+                "name": "Potion of Enfrogification",
+                "rarity": "legendary",
+                "type": "potion",
+                "charges": 1,
+                "description": "Turns you into a frog",
+            },
+        ]
+
+        character = Character.objects.get(pk=1)
+        test_data["character_uuid"] = character.uuid
+
+        response = self.client.post(reverse("game-list"), test_data, content_type="application/json")
+        self.assertEqual(response.status_code, HTTP_201_CREATED)
+        item = character.consumables.all().order_by("-pk").first()
+        self.assertIsInstance(item, Consumable)
+        self.assertEqual(item.name, "Potion of Enfrogification")
         self.assertEqual(item.rarity, "legendary")
 
     def test_character_game_multiple_item_rewards(self) -> None:
