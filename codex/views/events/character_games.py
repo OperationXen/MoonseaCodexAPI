@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
 from codex.models.events import Game
-from codex.models.items import MagicItem
+from codex.models.items import MagicItem, Consumable
 from codex.models.character import Character
 
 from codex.serialisers.character_events import CharacterGameSerialiser
@@ -22,6 +22,11 @@ class CharacterGamesViewSet(viewsets.GenericViewSet):
 
     serializer_class = CharacterGameSerialiser
     permission_classes = [IsAuthenticatedOrReadOnly]
+
+    def create_consumable(self, character, consumable):
+        """Create consumable item for the character"""
+        item = Consumable.objects.create(character=character, **consumable)
+        return item
 
     def create_adventure_reward_item(self, event, character, item_name, rarity=None):
         """Create an item for the specified character from the dm reward data"""
@@ -54,9 +59,17 @@ class CharacterGamesViewSet(viewsets.GenericViewSet):
             game = serialiser.save(owner=request.user)
             game.characters.add(character)
 
+            # Create magic items specified in request and link to this game
             try:
                 for item in request.data.get("items", []):
                     new_item = self.create_adventure_reward_item(game, character, item["name"], item["rarity"])
+            except Exception as e:
+                pass
+
+            # Create consumable items specified in request
+            try:
+                for consumable in request.data.get("consumables", []):
+                    new_consumable = self.create_consumable(character, consumable)
             except Exception as e:
                 pass
 
