@@ -52,6 +52,9 @@ class TradeAdvertView(APIView):
             if item.adverts.all().count():
                 raise ValueError
             advert = Advert.objects.create(item=item, description=description)
+            # Mark the item as being in the market
+            item.market = True
+            item.save()
             serialiser = AdvertSerialiser(advert)
             return Response(serialiser.data)
 
@@ -67,9 +70,15 @@ class TradeAdvertView(APIView):
         if uuid:
             try:
                 advert = Advert.objects.get(uuid=uuid)
+                item = advert.item
                 if advert.item.character.player != request.user:
                     return Response({"message": "This item does not belong to you"}, HTTP_403_FORBIDDEN)
                 advert.delete()
+                remaining_adverts = Advert.objects.filter(item=item)
+                if not remaining_adverts:
+                    item.market = False
+                    item.save()
+
                 return Response({"message": "Advert deleted"}, HTTP_200_OK)
             except Advert.DoesNotExist:
                 return Response({"message": "Cannot find the advert specified"}, HTTP_400_BAD_REQUEST)
