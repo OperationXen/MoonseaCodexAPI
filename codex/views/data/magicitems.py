@@ -8,6 +8,8 @@ from codex.models.items import MagicItem
 from codex.models.events import ManualCreation, ManualEdit, Game
 from codex.serialisers.items import MagicItemSerialiser
 
+from codex.utils.trade import remove_adverts_for_item
+
 
 class MagicItemViewSet(viewsets.GenericViewSet):
     """CRUD views for permanent magic items"""
@@ -94,8 +96,13 @@ class MagicItemViewSet(viewsets.GenericViewSet):
         existing_item = self.get_object()
         if existing_item.character.player != request.user:
             return Response({"message": "This item does not belong to you"}, HTTP_403_FORBIDDEN)
+
         serialiser = MagicItemSerialiser(existing_item, data=request.data, partial=True)
         if serialiser.is_valid():
+            # If the item is being removed from the market
+            if request.data.get("market") == False:
+                remove_adverts_for_item(existing_item)
+
             self.create_manualedit_event(existing_item, request.data)
             item = serialiser.save()
             new_item = MagicItemSerialiser(item)
