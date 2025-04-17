@@ -66,7 +66,7 @@ def parse_csv_import(csv_data, user):
 
     try:
         games = get_games_from_events(events)
-        msc_games = create_msc_games(games, character)
+        msc_games = create_msc_games(games, character, user)
     except Exception as e:
         print(f"[!] Error parsing games: {e}")
 
