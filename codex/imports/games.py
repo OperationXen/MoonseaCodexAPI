@@ -17,7 +17,7 @@ def get_code_and_name(data):
     return (code, name)
 
 
-def create_msc_games(games, character):
+def create_msc_games(games, character, user):
     """for each game create an entry in MSC"""
     created = []
 
@@ -27,6 +27,7 @@ def create_msc_games(games, character):
 
             msc_game = Game.objects.create(
                 module=code or "?",
+                owner=user,
                 name=name,
                 datetime=dateparser.parse(game.date_played),
                 hours=int(game.session_length_hours or 0),
