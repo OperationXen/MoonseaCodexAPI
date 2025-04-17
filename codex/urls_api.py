@@ -13,8 +13,6 @@ from codex.views.events.magicitem_events import MagicItemEventView
 from codex.views.events.character_events import CharacterEventView
 from codex.views.events.character_games import CharacterGamesViewSet
 from codex.views.events.player_games import PlayerGamesViewSet
-from codex.views.events.events_dt_catchingup import EventDowntimeCatchingUpView
-from codex.views.events.events_dt_mundanetrade import EventDowntimeMundateTradeView
 from codex.views.events.events_dt_spellbook_update import EventDowntimeSpellbookUpdateView
 from codex.views.events.events_dt_freeform import EventDowntimeFreeFormView
 from codex.views.events.dm_rewards import DMRewardViewSet
@@ -35,8 +33,6 @@ router.register(r"games", PlayerGamesViewSet, basename="games")
 router.register(r"dm_log", DMLogViewSet, basename="dm_log")
 router.register(r"dm_reward", DMRewardViewSet, basename="dm_reward")
 router.register(r"dm_game", DMGamesViewSet, basename="dm_game")
-router.register(r"catchingup", EventDowntimeCatchingUpView, basename="catchingup")
-router.register(r"mundanetrade", EventDowntimeMundateTradeView, basename="mundanetrade")
 router.register(r"spellbook", EventDowntimeSpellbookUpdateView, basename="spellbook_update")
 router.register(r"freeform", EventDowntimeFreeFormView, basename="freeform")
 
