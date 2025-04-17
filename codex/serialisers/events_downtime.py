@@ -1,29 +1,7 @@
 from rest_framework import serializers
 
 from codex.serialisers.base import MoonseaCodexSerialiser
-from codex.models.events_downtime import CatchingUp, MundaneTrade, SpellbookUpdate, FreeForm
-
-
-class CatchingUpSerialiser(MoonseaCodexSerialiser):
-    """Serialiser for a catching up event"""
-
-    event_type = serializers.ReadOnlyField(default="dt_catchingup")
-
-    class Meta:
-        model = CatchingUp
-        read_only_fields = ["uuid", "character", "editable", "event_type"]
-        fields = ["datetime", "levels", "details", *read_only_fields]
-
-
-class MundaneTradeSerialiser(MoonseaCodexSerialiser):
-    """Serialiser for a mundane trade event"""
-
-    event_type = serializers.ReadOnlyField(default="dt_mtrade")
-
-    class Meta:
-        model = MundaneTrade
-        read_only_fields = ["uuid", "character", "editable", "event_type"]
-        fields = ["datetime", "gold_change", "sold", "purchased", *read_only_fields]
+from codex.models.events_downtime import SpellbookUpdate, FreeForm
 
 
 class SpellbookUpdateSerialiser(MoonseaCodexSerialiser):

@@ -12,8 +12,6 @@ class TestCharacterEventView(TestCase):
         "test_users",
         "test_characters",
         "test_character_games",
-        "test_events_dt_mundanetrade",
-        "test_events_dt_catchingup",
         "test_events_dt_spellbook_update",
         "test_events_dt_freeform",
     ]
@@ -41,34 +39,6 @@ class TestCharacterEventView(TestCase):
             reverse("character_events", kwargs={"character_uuid": "12345678-1234-1234-1234-12345678abcd"})
         )
         self.assertEqual(response.status_code, HTTP_404_NOT_FOUND)
-
-    def test_downtime_activity_catchingup(self) -> None:
-        """Ensure that the catching up activity is correctly represented"""
-        self.client.logout()
-        character = Character.objects.get(pk=1)
-
-        response = self.client.get(reverse("character_events", kwargs={"character_uuid": character.uuid}))
-        self.assertEqual(response.status_code, HTTP_200_OK)
-        events = response.data
-        self.assertIsInstance(events, list)
-        for event in events:
-            if event["event_type"] == "dt_catchingup":
-                return None
-        self.fail("Expected catching up event not returned")
-
-    def test_downtime_activity_mundanetrade(self) -> None:
-        """Ensure that the mundane trade activity is correctly represented"""
-        self.client.logout()
-        character = Character.objects.get(pk=1)
-
-        response = self.client.get(reverse("character_events", kwargs={"character_uuid": character.uuid}))
-        self.assertEqual(response.status_code, HTTP_200_OK)
-        events = response.data
-        self.assertIsInstance(events, list)
-        for event in events:
-            if event["event_type"] == "dt_mtrade":
-                return None
-        self.fail("Expected mundane trade event not returned")
 
     def test_downtime_activity_spellbook_update(self) -> None:
         """Ensure that the spellbook update activity is correctly represented"""
