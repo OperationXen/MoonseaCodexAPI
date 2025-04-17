@@ -7,6 +7,7 @@ from codex.views.data.dungeonmaster import DMLogViewSet
 from codex.views.data.character import CharacterViewSet
 from codex.views.data.character_images import CharacterImageView
 from codex.views.data.discord import DiscordBotQueryView
+from codex.views.data.item_source import ItemSourceView
 from codex.views.imports.character import CharacterImportView
 
 from codex.views.events.magicitem_events import MagicItemEventView
@@ -47,6 +48,8 @@ urlpatterns = [
         MagicItemEventView.as_view(),
         name="magicitem_events",
     ),
+    # Item source search
+    re_path(r"^magicitem/source/?", ItemSourceView.as_view(), name="item_source"),
     # Trade views ('advert' and 'offer' avoided to bypass adblockers)
     re_path(
         r"^magicitem/faeproposal/(?P<action>(accept|reject))/(?P<uuid>[0-9a-f\-]{36})/?",
