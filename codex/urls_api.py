@@ -2,9 +2,9 @@ from django.urls import path, re_path
 from rest_framework.routers import DefaultRouter
 
 from codex.views.data.items.magicitems import MagicItemViewSet
-from codex.views.data.items.items_reference import ReferenceMagicItemViewSet
+from codex.views.data.items.reference_items import ReferenceMagicItemViewSet
 from codex.views.data.items.consumables import ConsumableItemViewSet
-from codex.views.data.items.consumables_reference import ReferenceConsumableViewSet
+from codex.views.data.items.reference_consumables import ReferenceConsumableViewSet
 from codex.views.data.dungeonmaster import DMLogViewSet
 from codex.views.data.character import CharacterViewSet
 from codex.views.data.character_images import CharacterImageView
