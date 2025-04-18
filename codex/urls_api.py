@@ -8,7 +8,6 @@ from codex.views.data.items.reference_consumables import ReferenceConsumableView
 from codex.views.data.dungeonmaster import DMLogViewSet
 from codex.views.data.character import CharacterViewSet
 from codex.views.data.character_images import CharacterImageView
-from codex.views.data.discord import DiscordBotQueryView
 from codex.views.data.items.sources import ItemSourceView
 from codex.views.imports.character import CharacterImportView
 
@@ -67,9 +66,6 @@ urlpatterns = [
         r"^character/(?P<uuid>[0-9a-f\-]{36})/(?P<image_type>(artwork|token))/?",
         CharacterImageView.as_view(),
         name="character_artwork",
-    ),
-    re_path(
-        r"^discord_lookup/(?P<query_type>(character|items))/", DiscordBotQueryView.as_view(), name="discord_lookup"
     ),
     re_path(r"^character_import/?", CharacterImportView.as_view(), name="character_import"),
 ]
