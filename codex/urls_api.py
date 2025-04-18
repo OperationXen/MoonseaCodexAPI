@@ -1,13 +1,13 @@
 from django.urls import path, re_path
 from rest_framework.routers import DefaultRouter
 
-from codex.views.data.magicitems import MagicItemViewSet
-from codex.views.data.consumable_items import ConsumableItemViewSet
+from codex.views.data.items.magicitems import MagicItemViewSet
+from codex.views.data.items.consumables import ConsumableItemViewSet
 from codex.views.data.dungeonmaster import DMLogViewSet
 from codex.views.data.character import CharacterViewSet
 from codex.views.data.character_images import CharacterImageView
 from codex.views.data.discord import DiscordBotQueryView
-from codex.views.data.item_source import ItemSourceView
+from codex.views.data.items.sources import ItemSourceView
 from codex.views.imports.character import CharacterImportView
 
 from codex.views.events.magicitem_events import MagicItemEventView
