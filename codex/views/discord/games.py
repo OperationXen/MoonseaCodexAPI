@@ -55,6 +55,9 @@ class DiscordGamesCreateView(APIView):
         game_data["owner"] = owner
         game_data["dm"] = dm
 
+        items = request.data.get("items", None)
+        consumables = request.data.get("consumables", None)
+
         game = Game.objects.create(**game_data)
         new_game = DMGameSerialiser(game)
         return Response(new_game.data, HTTP_200_OK)
