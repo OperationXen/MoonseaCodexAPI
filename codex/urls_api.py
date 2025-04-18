@@ -20,6 +20,7 @@ from codex.views.events.events_dt_freeform import EventDowntimeFreeFormView
 from codex.views.events.dm_rewards import DMRewardViewSet
 from codex.views.events.dm_games import DMGamesViewSet
 from codex.views.events.dm_events import DMEventView
+from codex.views.events.games_search import SearchGamesView
 
 from codex.views.trade.adverts import TradeAdvertView
 from codex.views.trade.offers import TradeOfferView
@@ -44,6 +45,8 @@ router.register(r"freeform", EventDowntimeFreeFormView, basename="freeform")
 urlpatterns = [
     path("dm_events/<uuid:dm_uuid>", DMEventView.as_view(), name="dm_events"),
     path("character_events/<uuid:character_uuid>", CharacterEventView.as_view(), name="character_events"),
+    # search views
+    re_path(r"^game/search/?", SearchGamesView.as_view(), name="game_search"),
     # Event views
     re_path(r"^dm_events/*", DMEventView.as_view(), name="dm_events"),
     re_path(
