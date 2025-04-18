@@ -55,6 +55,16 @@ class DiscordGamesCreateView(APIView):
         game_data["owner"] = owner
         game_data["dm"] = dm
 
+        game_date = game_data["datetime"][0:10]
+        existing_game = (
+            Game.objects.filter(module=game_data["module"]).filter(dm=dm).filter(datetime__date=game_date).first()
+        )
+        if existing_game:
+            return Response(
+                {"message": f"A game matching this already exists with UUID: {existing_game.uuid}"},
+                HTTP_400_BAD_REQUEST,
+            )
+
         items = request.data.get("items", None)
         consumables = request.data.get("consumables", None)
 

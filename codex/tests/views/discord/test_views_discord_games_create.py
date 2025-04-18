@@ -69,10 +69,11 @@ class TestDiscordBotCharacterSearch(DiscordBaseTest):
         """If a game with that code, DM and date already exist, don't recreate"""
         apikey = APIKey.objects.get(pk=1)
         user = CodexUser.objects.get(pk=1)
+        dm = user.dm_info.first()
 
         test_data = copy(self.valid_data)
         test_data["datetime"] = now()
-        game = Game.objects.create(**test_data)
+        game = Game.objects.create(**test_data, dm=dm)
         self.assertEqual(game.name, test_data["name"])
         self.assertEqual(Game.objects.all().count(), 1)
 
@@ -86,4 +87,5 @@ class TestDiscordBotCharacterSearch(DiscordBaseTest):
             content_type="application/json",
         )
         self.assertEqual(response.status_code, HTTP_400_BAD_REQUEST)
+        self.assertIn("message", response.data)
         self.assertEqual(Game.objects.all().count(), 1)
