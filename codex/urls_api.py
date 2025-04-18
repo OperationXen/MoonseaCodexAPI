@@ -2,7 +2,9 @@ from django.urls import path, re_path
 from rest_framework.routers import DefaultRouter
 
 from codex.views.data.items.magicitems import MagicItemViewSet
+from codex.views.data.items.items_reference import ReferenceMagicItemViewSet
 from codex.views.data.items.consumables import ConsumableItemViewSet
+from codex.views.data.items.consumables_reference import ReferenceConsumableViewSet
 from codex.views.data.dungeonmaster import DMLogViewSet
 from codex.views.data.character import CharacterViewSet
 from codex.views.data.character_images import CharacterImageView
@@ -28,7 +30,9 @@ from codex.views.trade.action import TradeActionView
 router = DefaultRouter(trailing_slash=False)
 router.register(r"character", CharacterViewSet, basename="character")
 router.register(r"magicitem", MagicItemViewSet, basename="magicitem")
+router.register(r"reference_item", ReferenceMagicItemViewSet, basename="reference_item")
 router.register(r"consumable", ConsumableItemViewSet, basename="consumable")
+router.register(r"reference_consumable", ReferenceConsumableViewSet, basename="reference_consumable")
 router.register(r"game", CharacterGamesViewSet, basename="game")
 router.register(r"games", PlayerGamesViewSet, basename="games")
 router.register(r"dm_log", DMLogViewSet, basename="dm_log")

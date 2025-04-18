@@ -1,0 +1,38 @@
+[
+    {
+      "model": "codex.referenceconsumable",
+      "pk": 1,
+      "fields": {
+        "game": 1,
+        "name": "Potion of healing",
+        "type": "potion",
+        "rarity": "uncommon",
+        "charges": null,
+        "description": "Heals 1d8+4"
+      }
+    },
+    {
+        "model": "codex.referenceconsumable",
+        "pk": 2,
+        "fields": {
+          "game": 1,
+          "name": "Scroll of Mage Armour",
+          "type": "scroll",
+          "rarity": "uncommon",
+          "charges": null,
+          "description": "Mage armour. Armours a mage."
+        }
+    },
+    {
+        "model": "codex.referenceconsumable",
+        "pk": 3,
+        "fields": {
+          "game": 1,
+          "name": "Arrows +1",
+          "type": "ammo",
+          "rarity": "uncommon",
+          "charges": 10,
+          "description": "+1 bonus to attack and damage rolls"
+        }
+    }
+]
