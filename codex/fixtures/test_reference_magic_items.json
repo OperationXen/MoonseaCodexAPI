@@ -1,0 +1,107 @@
+[
+  {
+    "model": "codex.referencemagicitem",
+    "pk": 1,
+    "fields": {
+      "name": "Arcane Grimore +1",
+      "rp_name": "Dark grimore",
+      "minor_properties": "sentient",
+      "url": "http://example.com",
+      "game": 1,
+      "rarity": "uncommon",
+      "attunement": true,
+      "description": "",
+      "flavour": ""
+    }
+  },
+  {
+    "model": "codex.referencemagicitem",
+    "pk": 2,
+    "fields": {
+      "name": "Atlas of Endless Horizons",
+      "rp_name": "",
+      "minor_properties": "",
+      "url": "",
+      "game": 1,
+      "rarity": "rare",
+      "attunement": true,
+      "description": "",
+      "flavour": ""
+    }
+  },
+  {
+    "model": "codex.referencemagicitem",
+    "pk": 3,
+    "fields": {
+      "name": "Winged boots",
+      "rp_name": "",
+      "minor_properties": "",
+      "url": "",
+      "game": 1,
+      "rarity": "uncommon",
+      "attunement": true,
+      "description": "",
+      "flavour": ""
+    }
+  },
+  {
+    "model": "codex.referencemagicitem",
+    "pk": 4,
+    "fields": {
+      "name": "Lantern of Revealing",
+      "rp_name": "",
+      "minor_properties": "",
+      "url": "",
+      "game": 1,
+      "rarity": "uncommon",
+      "attunement": false,
+      "description": "This finds secret things",
+      "flavour": ""
+    }
+  },
+  {
+    "model": "codex.referencemagicitem",
+    "pk": 5,
+    "fields": {
+      "name": "The Hypnotoad",
+      "rp_name": "",
+      "minor_properties": "",
+      "url": "",
+      "game": 2,
+      "rarity": "veryrare",
+      "attunement": false,
+      "description": "All glory to the hypnotoad",
+      "flavour": ""
+    }
+  },
+  {
+    "model": "codex.referencemagicitem",
+    "pk": 6,
+    "fields": {
+      "name": "Hat of Frogs",
+      "rp_name": "",
+      "minor_properties": "",
+      "url": "",
+      "game": 2,
+      "rarity": "veryrare",
+      "attunement": false,
+      "description": "A hat that makes frogs",
+      "flavour": ""
+    }
+  },
+  {
+    "model": "codex.referencemagicitem",
+    "pk": 7,
+    "fields": {
+      "name": "Trident of Fish Command",
+      "rp_name": "",
+      "minor_properties": "",
+      "url": "",
+      "game": 2,
+      "rarity": "uncommon",
+      "attunement": false,
+      "description": "Can command fish",
+      "flavour": ""
+    }
+  }
+]

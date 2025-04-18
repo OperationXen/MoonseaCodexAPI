@@ -1,23 +1,11 @@
 from rest_framework import serializers
 
 from codex.models.items import MagicItem, Consumable
-from codex.utils.events import get_event_type
 
 
 ### ################################################################### ###
 ###                 Base classes for shared behaviours                  ###
 ### ################################################################### ###
-class TradableSerialiser(serializers.ModelSerializer):
-    market = serializers.SerializerMethodField()
-
-    def get_market(self, obj):
-        try:
-            cnt = obj.adverts.count()
-            return bool(cnt)
-        except:
-            return False
-
-
 class ItemSerialiser(serializers.ModelSerializer):
     """Base class containing useful functions"""
 
@@ -36,18 +24,6 @@ class ItemSerialiser(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         return super().to_representation(instance)
-
-
-# class ItemDetailsSerialiser(serializers.ModelSerializer):
-#     """Seraliser for details of a single item"""
-
-#     owner_name = serializers.ReadOnlyField(source="character.name", read_only=True)
-#     owner_uuid = serializers.ReadOnlyField(source="character.uuid", read_only=True)
-#     datetime_obtained = serializers.ReadOnlyField(source="source.datetime", read_only=True)
-#     source_event_type = serializers.SerializerMethodField()
-
-#     def get_source_event_type(self, obj):
-#         return get_event_type(obj.source)
 
 
 ### ################################################################### ###

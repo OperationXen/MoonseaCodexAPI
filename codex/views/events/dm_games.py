@@ -78,7 +78,7 @@ class DMGamesViewSet(viewsets.GenericViewSet):
         except ValidationError as ve:
             return Response({"message": "Invalid DM game Identifier"}, HTTP_400_BAD_REQUEST)
 
-        if game.owner == request.user and game.dm.player == request.user:
+        if game.owner != request.user and game.dm.player != request.user:
             return Response({"message": "This game is not owned by you and you are not the DM"}, HTTP_403_FORBIDDEN)
         game.delete()
         return Response({"message": "Game destroyed"}, HTTP_200_OK)
