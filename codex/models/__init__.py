@@ -2,6 +2,7 @@ from . import character
 from . import events
 from . import events_downtime
 from . import items
+from . import items_reference
 from . import dungeonmaster
 
 from .api_keys import APIKey
