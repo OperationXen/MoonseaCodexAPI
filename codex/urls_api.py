@@ -13,7 +13,7 @@ from codex.views.imports.character import CharacterImportView
 
 from codex.views.events.magicitem_events import MagicItemEventView
 from codex.views.events.character_events import CharacterEventView
-from codex.views.events.character_games import CharacterGamesViewSet
+from codex.views.events.games import CharacterGamesViewSet
 from codex.views.events.player_games import PlayerGamesViewSet
 from codex.views.events.events_dt_spellbook_update import EventDowntimeSpellbookUpdateView
 from codex.views.events.events_dt_freeform import EventDowntimeFreeFormView
