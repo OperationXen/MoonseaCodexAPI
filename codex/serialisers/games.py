@@ -12,7 +12,7 @@ class PartyCharacterSerialiser(serializers.ModelSerializer):
         fields = [*read_only_fields]
 
 
-class CharacterGameSerialiser(MoonseaCodexSerialiser):
+class GameSerialiser(MoonseaCodexSerialiser):
     """serialiser for games played"""
 
     event_type = serializers.ReadOnlyField(default="game")

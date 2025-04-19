@@ -3,14 +3,14 @@ from rest_framework.status import *
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 
-from codex.serialisers.character_events import CharacterGameSerialiser
+from codex.serialisers.games import GameSerialiser
 from codex.serialisers.characters import CharacterSerialiser
 
 
 class PlayerGamesViewSet(viewsets.GenericViewSet):
     """CRUD views for fetching all player games"""
 
-    serializer_class = CharacterGameSerialiser
+    serializer_class = GameSerialiser
     permission_classes = [IsAuthenticated]
 
     def list(self, request):
@@ -20,7 +20,7 @@ class PlayerGamesViewSet(viewsets.GenericViewSet):
 
         for character in characters:
             serialised_character = CharacterSerialiser(character)
-            serialised_games = CharacterGameSerialiser(character.games.all(), many=True)
+            serialised_games = GameSerialiser(character.games.all(), many=True)
             all_games.append({"character": serialised_character.data, "games": serialised_games.data})
 
         return Response(all_games)
