@@ -12,9 +12,10 @@ from codex.models.dungeonmaster import DungeonMasterInfo
 from codex.serialisers.games import GameSerialiser
 from codex.utils.character import update_character_rewards
 from codex.utils.items import get_matching_item
+from codex.utils.dm_info import update_dm_hours
 
 
-class CharacterGamesViewSet(viewsets.GenericViewSet):
+class GamesViewSet(viewsets.GenericViewSet):
     """CRUD views for character games"""
 
     lookup_field = "uuid"
@@ -59,13 +60,15 @@ class CharacterGamesViewSet(viewsets.GenericViewSet):
 
         # Get the game's DM if availabe
         dm_name = request.data.get("dm_name")
-        if dm_name:
-            if dm_name == "self":
-                dm = DungeonMasterInfo.objects.get(player=request.user)
+        service_hours = request.data.get("service_hours")
+
+        if dm_name == "self":
+            dm = DungeonMasterInfo.objects.get(player=request.user)
+            update_dm_hours(dm, service_hours)
         # DM is not set at creation time, so this game is being created by a player
         else:
             try:
-                character_uuid = request.data["character_uuid"]
+                character_uuid = request.data.get("character_uuid")
                 character = Character.objects.get(uuid=character_uuid)
             except (KeyError, Character.DoesNotExist):
                 return Response({"message": "Character UUID not set or invalid"}, HTTP_400_BAD_REQUEST)
@@ -77,6 +80,7 @@ class CharacterGamesViewSet(viewsets.GenericViewSet):
         if serialiser.is_valid():
             game = serialiser.save(owner=request.user, dm=dm)
 
+            # TODO - create reference items instead of player items
             # Create magic items specified in request and link to this game
             try:
                 for item in request.data.get("items", []):
@@ -108,21 +112,28 @@ class CharacterGamesViewSet(viewsets.GenericViewSet):
         return Response(serializer.data)
 
     def list(self, request):
-        """List all events for character, or for player if logged in and no character specified (paginated)"""
+        """List all events for character, or for player if logged in and no character specified"""
         if "character_uuid" in request.GET:
-            character_uuid = request.GET["character_uuid"]
+            character_uuid = request.query_params.get("character_uuid")
             character = Character.objects.get(uuid=character_uuid)
             queryset = character.games.all()
+        elif "dm_uuid" in request.GET:
+            dm_uuid = request.query_params.get("dm_uuid")
+            dm = DungeonMasterInfo.objects.get(uuid=dm_uuid)
+            queryset = Game.objects.filter(dm=dm)
         else:
             if not request.user.is_authenticated:
                 return Response({"message": "Character UUID not set or invalid"}, HTTP_400_BAD_REQUEST)
-            queryset = Game.objects.filter(characters__player=request.user).order_by("datetime")
+            played = Game.objects.filter(characters__player=request.user)
+            dmed = Game.objects.filter(dm__player=request.user)
+            queryset = played | dmed
 
+        queryset = queryset.order_by("datetime")
         serialiser = GameSerialiser(queryset, many=True, context={"user": request.user})
-        return self.get_paginated_response(self.paginate_queryset(serialiser.data))
+        return Response(serialiser.data)
 
     def partial_update(self, request, *args, **kwargs):
-        """Allow a player to add themselves to existing games by uuid"""
+        """Allow a the owner to modify the game"""
         game = self.get_object()
 
         if game.owner != request.user:

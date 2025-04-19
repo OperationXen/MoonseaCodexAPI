@@ -13,7 +13,7 @@ from codex.views.imports.character import CharacterImportView
 
 from codex.views.events.magicitem_events import MagicItemEventView
 from codex.views.events.character_events import CharacterEventView
-from codex.views.events.games import CharacterGamesViewSet
+from codex.views.events.games import GamesViewSet
 from codex.views.events.player_games import PlayerGamesViewSet
 from codex.views.events.events_dt_spellbook_update import EventDowntimeSpellbookUpdateView
 from codex.views.events.events_dt_freeform import EventDowntimeFreeFormView
@@ -33,7 +33,7 @@ router.register(r"magicitem", MagicItemViewSet, basename="magicitem")
 router.register(r"reference_item", ReferenceMagicItemViewSet, basename="reference_item")
 router.register(r"consumable", ConsumableItemViewSet, basename="consumable")
 router.register(r"reference_consumable", ReferenceConsumableViewSet, basename="reference_consumable")
-router.register(r"game", CharacterGamesViewSet, basename="game")
+router.register(r"game", GamesViewSet, basename="game")
 router.register(r"games", PlayerGamesViewSet, basename="games")
 router.register(r"dm_log", DMLogViewSet, basename="dm_log")
 router.register(r"dm_reward", DMRewardViewSet, basename="dm_reward")
