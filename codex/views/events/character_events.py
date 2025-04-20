@@ -7,7 +7,7 @@ from codex.models.events import DMReward
 from codex.models.character import Character
 from codex.models.events_downtime import SpellbookUpdate, FreeForm
 from codex.serialisers.games import GameSerialiser
-from codex.serialisers.dm_events import DMRewardSummary
+from codex.serialisers.dm_rewards import DMRewardSummary
 from codex.serialisers.events_downtime import SpellbookUpdateSerialiser, FreeFormSerialiser
 
 

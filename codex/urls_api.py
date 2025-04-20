@@ -18,7 +18,6 @@ from codex.views.events.player_games import PlayerGamesViewSet
 from codex.views.events.events_dt_spellbook_update import EventDowntimeSpellbookUpdateView
 from codex.views.events.events_dt_freeform import EventDowntimeFreeFormView
 from codex.views.events.dm_rewards import DMRewardViewSet
-from codex.views.events.dm_games import DMGamesViewSet
 from codex.views.events.dm_events import DMEventView
 from codex.views.events.games_search import SearchGamesView
 
@@ -37,7 +36,6 @@ router.register(r"game", GamesViewSet, basename="game")
 router.register(r"games", PlayerGamesViewSet, basename="games")
 router.register(r"dm_log", DMLogViewSet, basename="dm_log")
 router.register(r"dm_reward", DMRewardViewSet, basename="dm_reward")
-router.register(r"dm_game", DMGamesViewSet, basename="dm_game")
 router.register(r"spellbook", EventDowntimeSpellbookUpdateView, basename="spellbook_update")
 router.register(r"freeform", EventDowntimeFreeFormView, basename="freeform")
 
