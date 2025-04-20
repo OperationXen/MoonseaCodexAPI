@@ -60,7 +60,7 @@ class GamesViewSet(viewsets.GenericViewSet):
 
         # Get the game's DM if availabe
         dm_name = request.data.get("dm_name")
-        service_hours = request.data.get("service_hours")
+        service_hours = request.data.get("hours")
 
         if dm_name == "self":
             dm = DungeonMasterInfo.objects.get(player=request.user)
