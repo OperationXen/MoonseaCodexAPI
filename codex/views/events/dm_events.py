@@ -4,7 +4,7 @@ from rest_framework.status import *
 
 from codex.models.dungeonmaster import DungeonMasterInfo
 from codex.serialisers.games import GameSerialiser
-from codex.serialisers.dm_rewards import DMRewardSummary
+from codex.serialisers.dm_rewards import DMRewardSerialiser
 
 
 class DMEventView(APIView):
@@ -25,6 +25,6 @@ class DMEventView(APIView):
         games = dm.games.all()
         rewards = dm.rewards.all()
         games_serialiser = GameSerialiser(games, many=True)
-        rewards_serialiser = DMRewardSummary(rewards, many=True)
+        rewards_serialiser = DMRewardSerialiser(rewards, many=True)
         data = rewards_serialiser.data + games_serialiser.data
         return Response(data, status=HTTP_200_OK)

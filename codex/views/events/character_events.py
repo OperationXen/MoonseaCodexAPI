@@ -7,7 +7,7 @@ from codex.models.events import DMReward
 from codex.models.character import Character
 from codex.models.events_downtime import SpellbookUpdate, FreeForm
 from codex.serialisers.games import GameSerialiser
-from codex.serialisers.dm_rewards import DMRewardSummary
+from codex.serialisers.dm_rewards import DMRewardSerialiser
 from codex.serialisers.events_downtime import SpellbookUpdateSerialiser, FreeFormSerialiser
 
 
@@ -27,7 +27,7 @@ class CharacterEventView(APIView, LimitOffsetPagination):
         spellbookupdate = SpellbookUpdate.objects.filter(character=character)
 
         games_serialiser = GameSerialiser(games, many=True, context={"user": request.user})
-        rewards_serialiser = DMRewardSummary(rewards, many=True, context={"user": request.user})
+        rewards_serialiser = DMRewardSerialiser(rewards, many=True, context={"user": request.user})
         spellupdate_serialiser = SpellbookUpdateSerialiser(spellbookupdate, many=True, context={"user": request.user})
         freeform_serialiser = FreeFormSerialiser(freeform, many=True, context={"user": request.user})
 

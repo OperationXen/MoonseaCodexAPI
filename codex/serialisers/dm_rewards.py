@@ -3,18 +3,18 @@ from rest_framework import serializers
 from codex.models.events import DMReward
 
 
-class DMRewardSummary(serializers.ModelSerializer):
-    """Sumamry of DM rewards - for use in list view"""
-
+class DMRewardSerialiser(serializers.ModelSerializer):
     event_type = serializers.ReadOnlyField(default="dm_reward")
     character_level_assigned = serializers.ReadOnlyField(source="character_level_assigned.name")
     character_items_assigned = serializers.ReadOnlyField(source="character_items_assigned.name")
 
     class Meta:
         model = DMReward
-        fields = [
+        read_only_fields = [
             "uuid",
             "event_type",
+        ]
+        fields = [
             "datetime",
             "name",
             "gold",
@@ -22,5 +22,5 @@ class DMRewardSummary(serializers.ModelSerializer):
             "hours",
             "character_level_assigned",
             "character_items_assigned",
+            *read_only_fields,
         ]
-        read_only_fields = ["uuid"]
