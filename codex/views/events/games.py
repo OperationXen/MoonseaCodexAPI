@@ -7,20 +7,22 @@ from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from codex.models.events import Game
 from codex.models.items import MagicItem, Consumable
 from codex.models.character import Character
+from codex.models.dungeonmaster import DungeonMasterInfo
 
-from codex.serialisers.character_events import CharacterGameSerialiser
+from codex.serialisers.games import GameSerialiser
 from codex.utils.character import update_character_rewards
 from codex.utils.items import get_matching_item
+from codex.utils.dm_info import update_dm_hours
 
 
-class CharacterGamesViewSet(viewsets.GenericViewSet):
+class GamesViewSet(viewsets.GenericViewSet):
     """CRUD views for character games"""
 
     lookup_field = "uuid"
     lookup_url_kwarg = "uuid"
     lookup_value_regex = r"[\-0-9a-f]{36}"
 
-    serializer_class = CharacterGameSerialiser
+    serializer_class = GameSerialiser
     permission_classes = [IsAuthenticatedOrReadOnly]
 
     def create_consumable(self, character, consumable):
@@ -53,20 +55,32 @@ class CharacterGamesViewSet(viewsets.GenericViewSet):
 
     def create(self, request):
         """Create a new game and place the current character into it"""
-        try:
-            character_uuid = request.data["character_uuid"]
-            character = Character.objects.get(uuid=character_uuid)
-        except (KeyError, Character.DoesNotExist):
-            return Response({"message": "Character UUID not set or invalid"}, HTTP_400_BAD_REQUEST)
+        dm = None
+        character = None
 
-        if character.player != request.user:
-            return Response({"message": "This character does not belong to you"}, HTTP_403_FORBIDDEN)
+        # Get the game's DM if availabe
+        dm_name = request.data.get("dm_name")
+        service_hours = request.data.get("hours")
 
-        serialiser = CharacterGameSerialiser(data=request.data)
+        if dm_name == "self":
+            dm = DungeonMasterInfo.objects.get(player=request.user)
+            update_dm_hours(dm, service_hours)
+        # DM is not set at creation time, so this game is being created by a player
+        else:
+            try:
+                character_uuid = request.data.get("character_uuid")
+                character = Character.objects.get(uuid=character_uuid)
+            except (KeyError, Character.DoesNotExist):
+                return Response({"message": "Character UUID not set or invalid"}, HTTP_400_BAD_REQUEST)
+
+            if character.player != request.user:
+                return Response({"message": "This character does not belong to you"}, HTTP_403_FORBIDDEN)
+
+        serialiser = GameSerialiser(data=request.data)
         if serialiser.is_valid():
-            game = serialiser.save(owner=request.user)
-            game.characters.add(character)
+            game = serialiser.save(owner=request.user, dm=dm)
 
+            # TODO - create reference items instead of player items
             # Create magic items specified in request and link to this game
             try:
                 for item in request.data.get("items", []):
@@ -81,10 +95,12 @@ class CharacterGamesViewSet(viewsets.GenericViewSet):
             except Exception as e:
                 pass
 
-            # Update downtime and gold counts
-            awarded_gold = float(request.data.get("gold") or 0)
-            awarded_downtime = int(request.data.get("downtime") or 0)
-            update_character_rewards(character, gold=awarded_gold, downtime=awarded_downtime)
+            # if added by a player, update player specific things
+            if character:
+                game.characters.add(character)
+                awarded_gold = float(request.data.get("gold") or 0)
+                awarded_downtime = int(request.data.get("downtime") or 0)
+                update_character_rewards(character, gold=awarded_gold, downtime=awarded_downtime)
             return Response(serialiser.data, HTTP_201_CREATED)
         else:
             return Response({"message": "Game creation failed, invalid data"}, HTTP_400_BAD_REQUEST)
@@ -92,31 +108,38 @@ class CharacterGamesViewSet(viewsets.GenericViewSet):
     def retrieve(self, request, *args, **kwargs):
         """Get details for a single game by its UUID"""
         game = self.get_object()
-        serializer = CharacterGameSerialiser(game, context={"user": request.user})
+        serializer = GameSerialiser(game, context={"user": request.user})
         return Response(serializer.data)
 
     def list(self, request):
-        """List all events for character, or for player if logged in and no character specified (paginated)"""
+        """List all events for character, or for player if logged in and no character specified"""
         if "character_uuid" in request.GET:
-            character_uuid = request.GET["character_uuid"]
+            character_uuid = request.query_params.get("character_uuid")
             character = Character.objects.get(uuid=character_uuid)
             queryset = character.games.all()
+        elif "dm_uuid" in request.GET:
+            dm_uuid = request.query_params.get("dm_uuid")
+            dm = DungeonMasterInfo.objects.get(uuid=dm_uuid)
+            queryset = Game.objects.filter(dm=dm)
         else:
             if not request.user.is_authenticated:
                 return Response({"message": "Character UUID not set or invalid"}, HTTP_400_BAD_REQUEST)
-            queryset = Game.objects.filter(characters__player=request.user).order_by("datetime")
+            played = Game.objects.filter(characters__player=request.user)
+            dmed = Game.objects.filter(dm__player=request.user)
+            queryset = played | dmed
 
-        serialiser = CharacterGameSerialiser(queryset, many=True, context={"user": request.user})
-        return self.get_paginated_response(self.paginate_queryset(serialiser.data))
+        queryset = queryset.order_by("datetime")
+        serialiser = GameSerialiser(queryset, many=True, context={"user": request.user})
+        return Response(serialiser.data)
 
     def partial_update(self, request, *args, **kwargs):
-        """Allow a player to add themselves to existing games by uuid"""
+        """Allow a the owner to modify the game"""
         game = self.get_object()
 
         if game.owner != request.user:
             return Response({"message": "This game does not belong to you"}, HTTP_403_FORBIDDEN)
 
-        serialiser = CharacterGameSerialiser(game, data=request.data, partial=True)
+        serialiser = GameSerialiser(game, data=request.data, partial=True)
         if serialiser.is_valid():
             new_game = serialiser.save()
             return Response(serialiser.data, HTTP_200_OK)

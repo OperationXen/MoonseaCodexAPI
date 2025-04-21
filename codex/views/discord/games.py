@@ -6,8 +6,7 @@ from codex.models.users import CodexUser
 from codex.models.dungeonmaster import DungeonMasterInfo
 
 from codex.views.discord.auth import DiscordAPIPermissions
-from codex.serialisers.character_events import CharacterGameSerialiser
-from codex.serialisers.dm_events import DMGameSerialiser
+from codex.serialisers.games import GameSerialiser
 
 
 class DiscordGamesLookupView(APIView):
@@ -21,7 +20,7 @@ class DiscordGamesLookupView(APIView):
         queryset = Game.objects.filter(owner__discord_id__iexact=discord_id)
         queryset = queryset.filter(public=True)
 
-        serialiser = CharacterGameSerialiser(queryset, many=True)
+        serialiser = GameSerialiser(queryset, many=True)
         return Response(serialiser.data, HTTP_200_OK)
 
 
@@ -69,5 +68,5 @@ class DiscordGamesCreateView(APIView):
         consumables = request.data.get("consumables", None)
 
         game = Game.objects.create(**game_data)
-        new_game = DMGameSerialiser(game)
+        new_game = GameSerialiser(game)
         return Response(new_game.data, HTTP_200_OK)

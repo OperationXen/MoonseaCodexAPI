@@ -191,17 +191,15 @@ class TestCharacterGamesCRUDViews(TestCase):
 
         response = self.client.get(reverse("game-list"), {"character_uuid": character.uuid})
         self.assertEqual(response.status_code, HTTP_200_OK)
-        self.assertEqual(response.data.get("count"), 3)
-        self.assertIn("results", response.data)
-        results = response.data.get("results")
-        self.assertIsInstance(results, list)
-        self.assertEqual(len(results), 3)
-        self.assertIn("uuid", results[0])
-        self.assertIn("datetime", results[0])
-        self.assertIn("name", results[0])
-        self.assertIn("gold", results[0])
-        self.assertIn("downtime", results[0])
-        self.assertIn("levels", results[0])
+        self.assertEqual(len(response.data), 3)
+        self.assertIsInstance(response.data, list)
+        self.assertEqual(len(response.data), 3)
+        self.assertIn("uuid", response.data[0])
+        self.assertIn("datetime", response.data[0])
+        self.assertIn("name", response.data[0])
+        self.assertIn("gold", response.data[0])
+        self.assertIn("downtime", response.data[0])
+        self.assertIn("levels", response.data[0])
 
     def test_list_returns_own_games_played_if_not_specified(self) -> None:
         """If you fail to supply a character UUID and are logged in, the list view should return all games for your characters"""
@@ -209,7 +207,7 @@ class TestCharacterGamesCRUDViews(TestCase):
 
         response = self.client.get(reverse("game-list"))
         self.assertEqual(response.status_code, HTTP_200_OK)
-        self.assertEqual(response.data.get("count"), 3)
+        self.assertEqual(len(response.data), 3)
 
     def test_owner_can_edit_game(self) -> None:
         """Test that a user who owns the game can edit it"""

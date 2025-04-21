@@ -12,16 +12,18 @@ class PartyCharacterSerialiser(serializers.ModelSerializer):
         fields = [*read_only_fields]
 
 
-class CharacterGameSerialiser(MoonseaCodexSerialiser):
+class GameSerialiser(MoonseaCodexSerialiser):
     """serialiser for games played"""
 
     event_type = serializers.ReadOnlyField(default="game")
+    dm_uuid = serializers.ReadOnlyField(source="dm.uuid")
     characters = PartyCharacterSerialiser(many=True, read_only=True)
 
     class Meta:
         model = Game
         read_only_fields = [
             "uuid",
+            "dm_uuid",
             "editable",
             "characters",
             "event_type",
