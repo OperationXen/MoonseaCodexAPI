@@ -30,6 +30,15 @@ class MagicItemViewSet(viewsets.GenericViewSet):
             if event.characters.contains(character):
                 return event
             raise ValueError("Character not associated with game")
+        elif item_source_type == "level5":
+            event = ManualCreation.objects.create(character=character, name="Level 5 item selection")
+            return event
+        elif item_source_type == "trade":
+            event = ManualCreation.objects.create(character=character, name="Item trade (non-MSC)")
+            return event
+        elif item_source_type == "dmreward":
+            event = ManualCreation.objects.create(character=character, name="Manual DM reward")
+            return event
 
         event = ManualCreation.objects.create(character=character, name=item_source)
         return event
