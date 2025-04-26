@@ -73,12 +73,12 @@ class DMRewardViewSet(viewsets.GenericViewSet):
             hours = request.data.get("hours")
             if hours:
                 update_dm_hours(dm, -int(hours))
-            new_reward = DMRewardSerialiser(reward)
+            new_reward = DMRewardSerialiser(reward, context={"user": request.user})
             return Response(new_reward.data, HTTP_201_CREATED)
         else:
             return Response({"message": "DM Reward creation failed"}, HTTP_400_BAD_REQUEST)
 
-    def retrieve(self, response, *args, **kwargs):
+    def retrieve(self, request, *args, **kwargs):
         """Get details for a single DMReward by its UUID"""
         try:
             queryset = self.get_queryset()
@@ -86,12 +86,12 @@ class DMRewardViewSet(viewsets.GenericViewSet):
         except ValidationError as ve:
             return Response({"message": "Invalid DM Reward Identifier"}, HTTP_400_BAD_REQUEST)
 
-        serializer = DMRewardSerialiser(reward)
+        serializer = DMRewardSerialiser(reward, context={"user": request.user})
         return Response(serializer.data)
 
     def list(self, request):
         """List all events (paginated)"""
-        serialiser = DMRewardSerialiser(self.get_queryset(), many=True)
+        serialiser = DMRewardSerialiser(self.get_queryset(), many=True, context={"user": request.user})
         return self.get_paginated_response(self.paginate_queryset(serialiser.data))
 
     def partial_update(self, request, *args, **kwargs):
@@ -104,7 +104,7 @@ class DMRewardViewSet(viewsets.GenericViewSet):
 
         if reward.dm.player != request.user:
             return Response({"message": "This DM reward does not belong to you"}, HTTP_403_FORBIDDEN)
-        serialiser = DMRewardSerialiser(reward, data=request.data, partial=True)
+        serialiser = DMRewardSerialiser(reward, data=request.data, partial=True, context={"user": request.user})
         if serialiser.is_valid():
             new_reward = serialiser.save()
             return Response(serialiser.data, HTTP_200_OK)
