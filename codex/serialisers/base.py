@@ -18,6 +18,9 @@ class MoonseaCodexSerialiser(serializers.ModelSerializer):
             if hasattr(obj, "character") and obj.character.player == user:
                 return True
 
+            if hasattr(obj, "dm") and obj.dm.player == user:
+                return True
+
             return False
         except Exception:
             return False
