@@ -37,7 +37,7 @@ class MagicItemViewSet(viewsets.GenericViewSet):
             event = ManualCreation.objects.create(character=character, name="Item trade (non-MSC)")
             return event
         elif item_source_type == "dmreward":
-            event = ManualCreation.objects.create(character=character, name="Misc DM reward")
+            event = ManualCreation.objects.create(character=character, name="Manual DM reward")
             return event
 
         event = ManualCreation.objects.create(character=character, name=item_source)
