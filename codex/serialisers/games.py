@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
 from codex.serialisers.base import MoonseaCodexSerialiser
+from codex.serialisers.items_reference import ReferenceMagicItemSerialiser, ReferenceConsumableSerialiser
 from codex.models.character import Character
 from codex.models.events import Game
 
@@ -18,6 +19,9 @@ class GameSerialiser(MoonseaCodexSerialiser):
     event_type = serializers.ReadOnlyField(default="game")
     dm_uuid = serializers.ReadOnlyField(source="dm.uuid")
     characters = PartyCharacterSerialiser(many=True, read_only=True)
+
+    magicitems = ReferenceMagicItemSerialiser(many=True)
+    consumables = ReferenceConsumableSerialiser(many=True)
 
     class Meta:
         model = Game
@@ -38,5 +42,7 @@ class GameSerialiser(MoonseaCodexSerialiser):
             "downtime",
             "levels",
             "notes",
+            "magicitems",
+            "consumables",
             *read_only_fields,
         ]

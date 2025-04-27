@@ -129,6 +129,7 @@ class GamesViewSet(viewsets.GenericViewSet):
             queryset = played | dmed
 
         queryset = queryset.order_by("datetime")
+        queryset = queryset.prefetch_related("characters", "magicitems", "consumables")
         serialiser = GameSerialiser(queryset, many=True, context={"user": request.user})
         return Response(serialiser.data)
 
