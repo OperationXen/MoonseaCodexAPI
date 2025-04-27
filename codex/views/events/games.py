@@ -80,21 +80,6 @@ class GamesViewSet(viewsets.GenericViewSet):
         if serialiser.is_valid():
             game = serialiser.save(owner=request.user, dm=dm)
 
-            # TODO - create reference items instead of player items
-            # Create magic items specified in request and link to this game
-            try:
-                for item in request.data.get("items", []):
-                    new_item = self.create_adventure_reward_item(game, character, item["name"], item["rarity"])
-            except Exception as e:
-                pass
-
-            # Create consumable items specified in request
-            try:
-                for consumable in request.data.get("consumables", []):
-                    new_consumable = self.create_consumable(character, consumable)
-            except Exception as e:
-                pass
-
             # if added by a player, update player specific things
             if character:
                 game.characters.add(character)
@@ -103,7 +88,8 @@ class GamesViewSet(viewsets.GenericViewSet):
                 update_character_rewards(character, gold=awarded_gold, downtime=awarded_downtime)
             return Response(serialiser.data, HTTP_201_CREATED)
         else:
-            return Response({"message": "Game creation failed, invalid data"}, HTTP_400_BAD_REQUEST)
+            errors = serialiser.errors
+            return Response({"message": "Game creation failed, invalid data", "errors": errors}, HTTP_400_BAD_REQUEST)
 
     def retrieve(self, request, *args, **kwargs):
         """Get details for a single game by its UUID"""
