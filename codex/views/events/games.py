@@ -10,7 +10,7 @@ from codex.models.character import Character
 from codex.models.dungeonmaster import DungeonMasterInfo
 
 from codex.serialisers.games import GameSerialiser
-from codex.utils.character import update_character_rewards
+from codex.utils.character import update_character_rewards, add_reference_items_to_character
 from codex.utils.items import get_matching_item
 from codex.utils.dm_info import update_dm_hours
 
@@ -86,6 +86,7 @@ class GamesViewSet(viewsets.GenericViewSet):
                 awarded_gold = float(request.data.get("gold") or 0)
                 awarded_downtime = int(request.data.get("downtime") or 0)
                 update_character_rewards(character, gold=awarded_gold, downtime=awarded_downtime)
+                add_reference_items_to_character(character, game)
             return Response(serialiser.data, HTTP_201_CREATED)
         else:
             errors = serialiser.errors
@@ -169,4 +170,6 @@ class GamesViewSet(viewsets.GenericViewSet):
 
         game = self.get_object()
         game.characters.add(character)
+        update_character_rewards(character, gold=game.gold, downtime=game.downtime)
+        add_reference_items_to_character(character, game)
         return Response({"message": "Added character to an existing game"}, HTTP_200_OK)

@@ -86,7 +86,7 @@ class TestCharacterGamesCRUDViews(TestCase):
         """A character should get the item they enter in the game"""
         self.client.login(username="testuser1", password="testpassword")
         test_data = copy(self.valid_data)
-        test_data["items"] = [
+        test_data["magicitems"] = [
             {"name": "Magic Frog Hat", "rarity": "legendary"},
         ]
 
@@ -128,7 +128,7 @@ class TestCharacterGamesCRUDViews(TestCase):
         """A single game can have an arbitrary number of items rewarded"""
         self.client.login(username="testuser1", password="testpassword")
         test_data = copy(self.valid_data)
-        test_data["items"] = [
+        test_data["magicitems"] = [
             {"name": "Item 1", "rarity": "common"},
             {"name": "Item 2", "rarity": "uncommon"},
             {"name": "Item 3", "rarity": "rare"},
@@ -141,7 +141,7 @@ class TestCharacterGamesCRUDViews(TestCase):
         response = self.client.post(reverse("game-list"), test_data, content_type="application/json")
         self.assertEqual(response.status_code, HTTP_201_CREATED)
         item_count = character.magicitems.all().count()
-        self.assertEqual(len(test_data["items"]), item_count)
+        self.assertEqual(len(test_data["magicitems"]), item_count)
 
     def test_character_game_blank_item_array(self) -> None:
         """Check that the create function handles an empty item array"""
