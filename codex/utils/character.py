@@ -16,7 +16,6 @@ def update_character_rewards(char: Character, gold: float = 0, downtime: int = 0
 
 
 def add_reference_items_to_character(character: Character, game: Game) -> None:
-    """Add reference items to a character"""
     for item in game.magicitems.all():
         MagicItem.objects.create(
             character=character,

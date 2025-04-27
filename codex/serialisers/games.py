@@ -61,3 +61,20 @@ class GameSerialiser(MoonseaCodexSerialiser):
             for consumable in reference_consumables:
                 ReferenceConsumable.objects.create(game=game, **consumable)
         return game
+
+    def update(self, instance, validated_data):
+        with transaction.atomic():
+            reference_items = validated_data.pop("magicitems", [])
+            reference_consumables = validated_data.pop("consumables", [])
+            instance = super().update(instance, validated_data)
+
+            # Delete existing items and consumables
+            ReferenceMagicItem.objects.filter(game=instance).delete()
+            ReferenceConsumable.objects.filter(game=instance).delete()
+
+            # Create new items and consumables
+            for item in reference_items:
+                ReferenceMagicItem.objects.create(game=instance, **item)
+            for consumable in reference_consumables:
+                ReferenceConsumable.objects.create(game=instance, **consumable)
+        return instance
