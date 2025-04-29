@@ -51,13 +51,12 @@ class DMRewardViewSet(viewsets.GenericViewSet):
         """Create a new reward, ownership set to requesting user"""
         dm = DungeonMasterInfo.objects.filter(player=request.user)[0]
         service_hours = request.data.get("hours")
-        event = request.data.get("event", None)
-        item = event.get("item", None)
-        rarity = event.get("rarity", None)
-        gold = event.get("gold", None)
-        downtime = event.get("downtime", None)
-        char_levels = event.get("charLevels", None)
-        char_items = event.get("charItems", None)
+        item = request.data.get("item", None)
+        rarity = request.data.get("rarity", None)
+        gold = request.data.get("gold", None)
+        downtime = request.data.get("downtime", None)
+        char_levels = request.data.get("charLevels", None)
+        char_items = request.data.get("charItems", None)
 
         try:
             character_levels = Character.objects.get(uuid=char_levels)
@@ -68,7 +67,7 @@ class DMRewardViewSet(viewsets.GenericViewSet):
         except Character.DoesNotExist:
             character_items = None
 
-        serialiser = DMRewardSerialiser(data=event)
+        serialiser = DMRewardSerialiser(data=request.data)
         if serialiser.is_valid():
             reward = serialiser.save(
                 dm=dm, character_level_assigned=character_levels, character_items_assigned=character_items

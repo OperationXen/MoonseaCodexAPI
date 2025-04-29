@@ -66,9 +66,9 @@ class TestDMRewardCRUDViews(TestCase):
 
     def test_can_list_rewards_by_dm_uuid(self) -> None:
         """Check that a DM's selected rewards can be listed if you know the DM UUID"""
-        dm_uuid = DungeonMasterInfo.objects.get(pk=2)
+        dm = DungeonMasterInfo.objects.get(pk=2)
 
-        response = self.client.get(reverse("dm_reward-list") + f"?dm={dm_uuid}")
+        response = self.client.get(reverse("dm_reward-list") + f"?dm_uuid={dm.uuid}")
         self.assertEqual(response.status_code, HTTP_200_OK)
         self.assertEqual(response.data["count"], 1)
         self.assertEqual(response.data["results"][0]["name"], "Test Reward")
