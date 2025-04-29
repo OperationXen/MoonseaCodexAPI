@@ -31,7 +31,10 @@ class TestDMRewardCRUDViews(TestCase):
         self.assertEqual(response.status_code, HTTP_403_FORBIDDEN)
 
     def test_user_can_create_dm_rewards(self) -> None:
+        character = Character.objects.get(pk=1)
         test_data = copy(self.valid_data)
+        test_data["charItems"] = character.uuid
+        test_data["charLevels"] = character.uuid
 
         self.client.login(username="testuser1", password="testpassword")
         response = self.client.post(reverse("dm_reward-list"), test_data)
@@ -43,7 +46,10 @@ class TestDMRewardCRUDViews(TestCase):
     def test_user_service_hours_updated_on_creation(self) -> None:
         """Ensure a user's available dm hours are updated when a reward is taken"""
         initial_hours = 100
+        character = Character.objects.get(pk=1)
         test_data = copy(self.valid_data)
+        test_data["charItems"] = character.uuid
+        test_data["charLevels"] = character.uuid
 
         self.client.login(username="testuser1", password="testpassword")
         dm_info = DungeonMasterInfo.objects.get(player__username="testuser1")
@@ -66,9 +72,9 @@ class TestDMRewardCRUDViews(TestCase):
 
     def test_can_list_rewards_by_dm_uuid(self) -> None:
         """Check that a DM's selected rewards can be listed if you know the DM UUID"""
-        dm_uuid = DungeonMasterInfo.objects.get(pk=2)
+        dm = DungeonMasterInfo.objects.get(pk=2)
 
-        response = self.client.get(reverse("dm_reward-list") + f"?dm={dm_uuid}")
+        response = self.client.get(reverse("dm_reward-list") + f"?dm_uuid={dm.uuid}")
         self.assertEqual(response.status_code, HTTP_200_OK)
         self.assertEqual(response.data["count"], 1)
         self.assertEqual(response.data["results"][0]["name"], "Test Reward")

@@ -50,29 +50,35 @@ class DMRewardViewSet(viewsets.GenericViewSet):
     def create(self, request):
         """Create a new reward, ownership set to requesting user"""
         dm = DungeonMasterInfo.objects.filter(player=request.user)[0]
+        service_hours = request.data.get("hours")
+        item = request.data.get("item", None)
+        rarity = request.data.get("rarity", None)
+        gold = request.data.get("gold", None)
+        downtime = request.data.get("downtime", None)
+        char_levels = request.data.get("charLevels", None)
+        char_items = request.data.get("charItems", None)
+
         try:
-            character_levels = Character.objects.get(uuid=request.data.get("charLevels"))
+            character_levels = Character.objects.get(uuid=char_levels)
         except Character.DoesNotExist:
             character_levels = None
         try:
-            character_items = Character.objects.get(uuid=request.data.get("charItems"))
+            character_items = Character.objects.get(uuid=char_items)
         except Character.DoesNotExist:
             character_items = None
+
+        if not character_items and not character_levels:
+            return Response({"message": "No recipients specified"}, HTTP_400_BAD_REQUEST)
 
         serialiser = DMRewardSerialiser(data=request.data)
         if serialiser.is_valid():
             reward = serialiser.save(
                 dm=dm, character_level_assigned=character_levels, character_items_assigned=character_items
             )
-            item = self.create_dm_reward_item(
-                reward, character_items, request.data.get("item"), request.data.get("rarity")
-            )
-            misc_rewards_done = self.assign_other_rewards(
-                character_items, request.data.get("gold"), request.data.get("downtime")
-            )
-            hours = request.data.get("hours")
-            if hours:
-                update_dm_hours(dm, -int(hours))
+            item = self.create_dm_reward_item(reward, character_items, item, rarity)
+            misc_rewards_done = self.assign_other_rewards(character_items, gold, downtime)
+            if service_hours:
+                update_dm_hours(dm, -int(service_hours))
             new_reward = DMRewardSerialiser(reward, context={"user": request.user})
             return Response(new_reward.data, HTTP_201_CREATED)
         else:
@@ -91,7 +97,13 @@ class DMRewardViewSet(viewsets.GenericViewSet):
 
     def list(self, request):
         """List all events (paginated)"""
-        serialiser = DMRewardSerialiser(self.get_queryset(), many=True, context={"user": request.user})
+        uuid = self.request.query_params.get("dm_uuid", None)
+        queryset = self.get_queryset()
+        if uuid:
+            queryset = queryset.filter(dm__uuid=uuid)
+        else:
+            queryset = queryset.filter(dm__player=request.user)
+        serialiser = DMRewardSerialiser(queryset, many=True, context={"user": request.user})
         return self.get_paginated_response(self.paginate_queryset(serialiser.data))
 
     def partial_update(self, request, *args, **kwargs):
