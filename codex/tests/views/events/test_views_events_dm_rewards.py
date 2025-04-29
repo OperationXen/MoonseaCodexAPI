@@ -31,7 +31,10 @@ class TestDMRewardCRUDViews(TestCase):
         self.assertEqual(response.status_code, HTTP_403_FORBIDDEN)
 
     def test_user_can_create_dm_rewards(self) -> None:
+        character = Character.objects.get(pk=1)
         test_data = copy(self.valid_data)
+        test_data["charItems"] = character.uuid
+        test_data["charLevels"] = character.uuid
 
         self.client.login(username="testuser1", password="testpassword")
         response = self.client.post(reverse("dm_reward-list"), test_data)
@@ -43,7 +46,10 @@ class TestDMRewardCRUDViews(TestCase):
     def test_user_service_hours_updated_on_creation(self) -> None:
         """Ensure a user's available dm hours are updated when a reward is taken"""
         initial_hours = 100
+        character = Character.objects.get(pk=1)
         test_data = copy(self.valid_data)
+        test_data["charItems"] = character.uuid
+        test_data["charLevels"] = character.uuid
 
         self.client.login(username="testuser1", password="testpassword")
         dm_info = DungeonMasterInfo.objects.get(player__username="testuser1")
