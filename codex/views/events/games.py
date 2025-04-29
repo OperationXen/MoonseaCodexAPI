@@ -130,6 +130,10 @@ class GamesViewSet(viewsets.GenericViewSet):
         serialiser = GameSerialiser(game, data=request.data, partial=True)
         if serialiser.is_valid():
             new_game = serialiser.save()
+            # if the user owns the game and has a character who played
+            # then they're editing their own game and will expect the changes to items to be reflected
+
+            # Not going to update deleted items or anything that's been changed as the user may have edited them
             return Response(serialiser.data, HTTP_200_OK)
         else:
             return Response({"message": "Invalid data in update request"}, HTTP_400_BAD_REQUEST)
