@@ -67,6 +67,9 @@ class DMRewardViewSet(viewsets.GenericViewSet):
         except Character.DoesNotExist:
             character_items = None
 
+        if not character_items and not character_levels:
+            return Response({"message": "No recipients specified"}, HTTP_400_BAD_REQUEST)
+
         serialiser = DMRewardSerialiser(data=request.data)
         if serialiser.is_valid():
             reward = serialiser.save(
