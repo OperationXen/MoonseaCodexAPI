@@ -173,6 +173,8 @@ class GamesViewSet(viewsets.GenericViewSet):
             return Response({"message": "Character could not be found"}, HTTP_400_BAD_REQUEST)
 
         game = self.get_object()
+        if character in game.characters.all():
+            return Response({"message": f"Character '{character.name}' already in this game"}, HTTP_400_BAD_REQUEST)
         game.characters.add(character)
         update_character_rewards(character, gold=game.gold, downtime=game.downtime)
         add_reference_items_to_character(character, game)
