@@ -1,3 +1,5 @@
+from django.contrib.contenttypes.models import ContentType
+
 from codex.models.character import Character
 from codex.models.items import MagicItem, Consumable
 from codex.models.events import Game
@@ -34,7 +36,7 @@ def add_reference_items_to_character(character: Character, game: Game) -> None:
     for consumable in game.consumables.all():
         Consumable.objects.create(
             character=character,
-            # source=game,
+            source=game,
             # Copy the consumable data from the reference item to the new item
             name=consumable.name,
             type=consumable.type,
@@ -42,3 +44,16 @@ def add_reference_items_to_character(character: Character, game: Game) -> None:
             rarity=consumable.rarity,
             charges=consumable.charges,
         )
+
+
+def update_items_from_reference(character: Character, game: Game) -> None:
+    """Reflect changes made to reference items on a game into the copies in a characters inventory"""
+    # get all affected items (that the character still owns)
+    items = character.magicitems.filter(object_id=game.id, content_type=ContentType.objects.get_for_model(Game).id)
+    consumables = character.consumables.filter(
+        object_id=game.id, content_type=ContentType.objects.get_for_model(Game).id
+    )
+    # remove them and add the new ones
+    items.delete()
+    consumables.delete()
+    add_reference_items_to_character(character, game)

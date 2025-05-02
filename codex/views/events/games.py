@@ -11,6 +11,8 @@ from codex.models.dungeonmaster import DungeonMasterInfo
 
 from codex.serialisers.games import GameSerialiser
 from codex.utils.character import update_character_rewards, add_reference_items_to_character
+from codex.utils.character import update_items_from_reference
+
 from codex.utils.items import get_matching_item
 from codex.utils.dm_info import update_dm_hours
 
@@ -130,10 +132,15 @@ class GamesViewSet(viewsets.GenericViewSet):
         serialiser = GameSerialiser(game, data=request.data, partial=True)
         if serialiser.is_valid():
             new_game = serialiser.save()
-            # if the user owns the game and has a character who played
-            # then they're editing their own game and will expect the changes to items to be reflected
-
-            # Not going to update deleted items or anything that's been changed as the user may have edited them
+            if new_game.owner == request.user:
+                try:
+                    # if the user has a character who played in the game
+                    update_chars = new_game.characters.all().filter(player=request.user)
+                    for update_char in update_chars:
+                        # then they're editing their own game and will expect the changes to items to be reflected immediately
+                        update_items_from_reference(update_char, game)
+                except Character.DoesNotExist:
+                    pass
             return Response(serialiser.data, HTTP_200_OK)
         else:
             return Response({"message": "Invalid data in update request"}, HTTP_400_BAD_REQUEST)
