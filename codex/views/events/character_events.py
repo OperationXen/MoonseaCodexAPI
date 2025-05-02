@@ -22,6 +22,7 @@ class CharacterEventView(APIView, LimitOffsetPagination):
             return Response({"message": "Specified character could not be found"}, status=HTTP_404_NOT_FOUND)
 
         games = character.games.all()
+        games.prefetch_related("magicitems", "consumables")
         rewards = DMReward.objects.filter(character_items_assigned=character)
         freeform = FreeForm.objects.filter(character=character)
         spellbookupdate = SpellbookUpdate.objects.filter(character=character)

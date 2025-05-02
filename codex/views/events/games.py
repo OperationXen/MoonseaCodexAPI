@@ -10,7 +10,9 @@ from codex.models.character import Character
 from codex.models.dungeonmaster import DungeonMasterInfo
 
 from codex.serialisers.games import GameSerialiser
-from codex.utils.character import update_character_rewards
+from codex.utils.character import update_character_rewards, add_reference_items_to_character
+from codex.utils.character import update_items_from_reference
+
 from codex.utils.items import get_matching_item
 from codex.utils.dm_info import update_dm_hours
 
@@ -80,30 +82,17 @@ class GamesViewSet(viewsets.GenericViewSet):
         if serialiser.is_valid():
             game = serialiser.save(owner=request.user, dm=dm)
 
-            # TODO - create reference items instead of player items
-            # Create magic items specified in request and link to this game
-            try:
-                for item in request.data.get("items", []):
-                    new_item = self.create_adventure_reward_item(game, character, item["name"], item["rarity"])
-            except Exception as e:
-                pass
-
-            # Create consumable items specified in request
-            try:
-                for consumable in request.data.get("consumables", []):
-                    new_consumable = self.create_consumable(character, consumable)
-            except Exception as e:
-                pass
-
             # if added by a player, update player specific things
             if character:
                 game.characters.add(character)
                 awarded_gold = float(request.data.get("gold") or 0)
                 awarded_downtime = int(request.data.get("downtime") or 0)
                 update_character_rewards(character, gold=awarded_gold, downtime=awarded_downtime)
+                add_reference_items_to_character(character, game)
             return Response(serialiser.data, HTTP_201_CREATED)
         else:
-            return Response({"message": "Game creation failed, invalid data"}, HTTP_400_BAD_REQUEST)
+            errors = serialiser.errors
+            return Response({"message": "Game creation failed, invalid data", "errors": errors}, HTTP_400_BAD_REQUEST)
 
     def retrieve(self, request, *args, **kwargs):
         """Get details for a single game by its UUID"""
@@ -129,6 +118,7 @@ class GamesViewSet(viewsets.GenericViewSet):
             queryset = played | dmed
 
         queryset = queryset.order_by("datetime")
+        queryset = queryset.prefetch_related("characters", "magicitems", "consumables")
         serialiser = GameSerialiser(queryset, many=True, context={"user": request.user})
         return Response(serialiser.data)
 
@@ -142,6 +132,15 @@ class GamesViewSet(viewsets.GenericViewSet):
         serialiser = GameSerialiser(game, data=request.data, partial=True)
         if serialiser.is_valid():
             new_game = serialiser.save()
+            if new_game.owner == request.user:
+                try:
+                    # if the user has a character who played in the game
+                    update_chars = new_game.characters.all().filter(player=request.user)
+                    for update_char in update_chars:
+                        # then they're editing their own game and will expect the changes to items to be reflected immediately
+                        update_items_from_reference(update_char, game)
+                except Character.DoesNotExist:
+                    pass
             return Response(serialiser.data, HTTP_200_OK)
         else:
             return Response({"message": "Invalid data in update request"}, HTTP_400_BAD_REQUEST)
@@ -181,5 +180,9 @@ class GamesViewSet(viewsets.GenericViewSet):
             return Response({"message": "Character could not be found"}, HTTP_400_BAD_REQUEST)
 
         game = self.get_object()
+        if character in game.characters.all():
+            return Response({"message": f"Character '{character.name}' already in this game"}, HTTP_400_BAD_REQUEST)
         game.characters.add(character)
+        update_character_rewards(character, gold=game.gold, downtime=game.downtime)
+        add_reference_items_to_character(character, game)
         return Response({"message": "Added character to an existing game"}, HTTP_200_OK)

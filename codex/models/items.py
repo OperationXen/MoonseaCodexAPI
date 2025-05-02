@@ -42,6 +42,18 @@ class Consumable(models.Model):
     )
     description = models.TextField(blank=True, null=True)
 
+    content_type = models.ForeignKey(
+        ContentType,
+        on_delete=models.CASCADE,
+        verbose_name="Origin Type",
+        null=True,
+        help_text="Type of event that resulted in this object coming to you",
+    )
+    object_id = models.PositiveIntegerField(
+        verbose_name="Event ID", null=True, help_text="ID of the specific source event"
+    )
+    source = GenericForeignKey("content_type", "object_id")
+
     def __str__(self):
         """String representation"""
         if self.charges:

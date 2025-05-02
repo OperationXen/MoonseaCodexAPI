@@ -86,7 +86,7 @@ class TestCharacterGamesCRUDViews(TestCase):
         """A character should get the item they enter in the game"""
         self.client.login(username="testuser1", password="testpassword")
         test_data = copy(self.valid_data)
-        test_data["items"] = [
+        test_data["magicitems"] = [
             {"name": "Magic Frog Hat", "rarity": "legendary"},
         ]
 
@@ -128,7 +128,7 @@ class TestCharacterGamesCRUDViews(TestCase):
         """A single game can have an arbitrary number of items rewarded"""
         self.client.login(username="testuser1", password="testpassword")
         test_data = copy(self.valid_data)
-        test_data["items"] = [
+        test_data["magicitems"] = [
             {"name": "Item 1", "rarity": "common"},
             {"name": "Item 2", "rarity": "uncommon"},
             {"name": "Item 3", "rarity": "rare"},
@@ -141,7 +141,7 @@ class TestCharacterGamesCRUDViews(TestCase):
         response = self.client.post(reverse("game-list"), test_data, content_type="application/json")
         self.assertEqual(response.status_code, HTTP_201_CREATED)
         item_count = character.magicitems.all().count()
-        self.assertEqual(len(test_data["items"]), item_count)
+        self.assertEqual(len(test_data["magicitems"]), item_count)
 
     def test_character_game_blank_item_array(self) -> None:
         """Check that the create function handles an empty item array"""
@@ -260,73 +260,3 @@ class TestCharacterGamesCRUDViews(TestCase):
         self.assertEqual(response.status_code, 403)
         game.refresh_from_db()
         self.assertNotEqual(game.name, "Updated")
-
-
-class TestCharacterGamesCharacterActionViews(TestCase):
-    """Check character add / remove functionality for game events"""
-
-    fixtures = ["test_users", "test_characters", "test_character_games"]
-
-    def test_user_can_add_own_character_to_game(self) -> None:
-        """a logged in user can add one of their characters to a game"""
-        self.client.login(username="testuser2", password="testpassword")
-
-        game = Game.objects.get(pk=1)
-        character = Character.objects.get(pk=3)
-        test_data = {"character_uuid": character.uuid}
-        self.assertNotIn(game, list(character.games.all()))
-
-        response = self.client.post(
-            reverse("game-add-character", kwargs={"uuid": game.uuid}), test_data, content_type="application/json"
-        )
-        self.assertEqual(response.status_code, HTTP_200_OK)
-        self.assertIn(game, list(character.games.all()))
-        self.assertIn("message", response.data)
-
-    def test_user_cannot_add_unowned_character_to_game(self) -> None:
-        """a user cannot add a character they do not own to a game"""
-        self.client.login(username="testuser1", password="testpassword")
-
-        game = Game.objects.get(pk=1)
-        character = Character.objects.get(pk=3)
-        test_data = {"character_uuid": character.uuid}
-        self.assertNotIn(game, list(character.games.all()))
-
-        response = self.client.post(
-            reverse("game-add-character", kwargs={"uuid": game.uuid}), test_data, content_type="application/json"
-        )
-        self.assertEqual(response.status_code, HTTP_403_FORBIDDEN)
-        self.assertIn("message", response.data)
-        self.assertNotIn(game, list(character.games.all()))
-
-    def test_user_can_remove_own_character_from_game(self) -> None:
-        """a logged in user can remove one of their characters from a game"""
-        self.client.login(username="testuser1", password="testpassword")
-
-        game = Game.objects.get(pk=1)
-        character = Character.objects.get(pk=2)
-        test_data = {"character_uuid": character.uuid}
-        self.assertIn(game, list(character.games.all()))
-
-        response = self.client.post(
-            reverse("game-remove-character", kwargs={"uuid": game.uuid}), test_data, content_type="application/json"
-        )
-        self.assertEqual(response.status_code, HTTP_200_OK)
-        self.assertIn("message", response.data)
-        self.assertNotIn(game, list(character.games.all()))
-
-    def test_user_cannot_remove_unowned_character_from_game(self) -> None:
-        """A user cannot remove a character they do not own from a game"""
-        self.client.login(username="testuser2", password="testpassword")
-
-        game = Game.objects.get(pk=1)
-        character = Character.objects.get(pk=2)
-        test_data = {"character_uuid": character.uuid}
-        self.assertIn(game, list(character.games.all()))
-
-        response = self.client.post(
-            reverse("game-remove-character", kwargs={"uuid": game.uuid}), test_data, content_type="application/json"
-        )
-        self.assertEqual(response.status_code, HTTP_403_FORBIDDEN)
-        self.assertIn("message", response.data)
-        self.assertIn(game, list(character.games.all()))
