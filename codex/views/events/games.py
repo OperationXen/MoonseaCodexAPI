@@ -132,15 +132,13 @@ class GamesViewSet(viewsets.GenericViewSet):
         serialiser = GameSerialiser(game, data=request.data, partial=True)
         if serialiser.is_valid():
             new_game = serialiser.save()
-            if new_game.owner == request.user:
-                try:
-                    # if the user has a character who played in the game
-                    update_chars = new_game.characters.all().filter(player=request.user)
-                    for update_char in update_chars:
-                        # then they're editing their own game and will expect the changes to items to be reflected immediately
-                        update_items_from_reference(update_char, game)
-                except Character.DoesNotExist:
-                    pass
+            try:
+                # Attempt to update the characters in the game with the new items
+                update_chars = new_game.characters.all()
+                for update_char in update_chars:
+                    update_items_from_reference(update_char, game)
+            except Character.DoesNotExist:
+                pass
             return Response(serialiser.data, HTTP_200_OK)
         else:
             return Response({"message": "Invalid data in update request"}, HTTP_400_BAD_REQUEST)

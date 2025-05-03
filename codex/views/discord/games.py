@@ -38,14 +38,15 @@ class DiscordGamesCreateView(APIView):
         except Exception as e:
             return Response({"message": "Could not find a matching MSC user"}, HTTP_400_BAD_REQUEST)
 
+        game_date = request.data.get("datetime")
         game_data = {
-            "datetime": request.data.get("datetime"),
-            "name": request.data.get("name"),
-            "dm_name": request.data.get("dm_name"),
+            "datetime": game_date,
+            "name": request.data.get("name", ""),
+            "dm_name": request.data.get("dm_name", owner_discord_id),
             "notes": request.data.get("notes", "Autocreated from discord"),
-            "module": request.data.get("module"),
+            "module": request.data.get("module", ""),
             "hours": request.data.get("hours", 4),
-            "hours_notes": request.data.get("hours_notes"),
+            "hours_notes": request.data.get("hours_notes", ""),
             "location": request.data.get("location", "Triden games"),
             "gold": request.data.get("gold", 0),
             "downtime": request.data.get("downtime", 10),
@@ -54,7 +55,6 @@ class DiscordGamesCreateView(APIView):
         game_data["owner"] = owner
         game_data["dm"] = dm
 
-        game_date = game_data["datetime"][0:10]
         existing_game = (
             Game.objects.filter(module=game_data["module"]).filter(dm=dm).filter(datetime__date=game_date).first()
         )
@@ -67,6 +67,9 @@ class DiscordGamesCreateView(APIView):
         items = request.data.get("items", None)
         consumables = request.data.get("consumables", None)
 
-        game = Game.objects.create(**game_data)
+        try:
+            game = Game.objects.create(**game_data)
+        except Exception as e:
+            return Response({"message": "Could not create game"}, HTTP_400_BAD_REQUEST)
         new_game = GameSerialiser(game)
         return Response(new_game.data, HTTP_200_OK)
