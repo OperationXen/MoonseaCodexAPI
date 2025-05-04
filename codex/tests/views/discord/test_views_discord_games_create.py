@@ -19,7 +19,7 @@ class TestDiscordBotCharacterSearch(DiscordBaseTest):
     fixtures = ["test_users", "test_apikeys"]
 
     valid_data = test_data = {
-        "datetime": now().isoformat(),
+        "datetime": now().timestamp(),
         "name": "Test game",
         "dm_name": "DM Bot",
         "notes": "This is a test game",
