@@ -40,9 +40,9 @@ class Character(models.Model):
     gold = models.FloatField(null=True, blank=True, help_text="Gold held by character (silver and copper in decimal)")
     downtime = models.FloatField(null=True, blank=True, help_text="Days of downtime")
     # optional fields
-    campaign = models.CharField(max_length=128, default="Forgotten Realms", blank=True, null=True)
-    bastion = models.CharField(max_length=256, blank=True, null=True, help_text="Link to bastion map")
-    faction = models.CharField(max_length=128, blank=True, null=True, help_text="Faction and reknown level")
+    campaign = models.CharField(max_length=128, default="Forgotten Realms", blank=True)
+    bastion = models.CharField(max_length=256, blank=True, default="", help_text="Link to bastion map")
+    faction = models.CharField(max_length=128, blank=True, default="", help_text="Faction and reknown level")
     sheet = models.URLField(max_length=256, blank=True, null=True, help_text="Link to DND Beyond character sheet")
     season = models.CharField(
         max_length=128, blank=True, null=True, default="11", help_text="AL season that this character was created"
