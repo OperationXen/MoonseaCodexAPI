@@ -96,7 +96,12 @@ class MagicItemViewSet(viewsets.GenericViewSet):
             return Response({"message": "You need to log in to do that"}, HTTP_403_FORBIDDEN)
 
         queryset = self.get_queryset()
-        queryset = queryset.filter(character__player=request.user).order_by("name")
+        character_uuid = request.query_params.get("character", None)
+        if character_uuid:
+            queryset = queryset.filter(character__uuid=character_uuid)
+        else:
+            queryset = queryset.filter(character__player=request.user)
+        queryset = queryset.order_by("name")
         serialiser = MagicItemSerialiser(queryset, many=True, context={"user": request.user})
         return Response(serialiser.data, HTTP_200_OK)
 
