@@ -135,6 +135,15 @@ class TestConsumableItemCRUDViews(TestCase):
             self.assertIn("editable", result)
             self.assertTrue(result.get("editable"))
 
+    def test_list_items_for_character(self) -> None:
+        """A user can request items for a specific character"""
+        self.client.login(username="testuser1", password="testpassword")
+        character = Character.objects.get(pk=2)
+
+        response = self.client.get(reverse("consumable-list"), {"character": character.uuid})
+        self.assertEqual(response.status_code, HTTP_200_OK)
+        self.assertEqual(len(response.data), 1)
+
     def test_anyone_cannot_update_item(self) -> None:
         """someone who doesn't own an item cannot change it"""
         self.client.login(username="testuser2", password="testpassword")

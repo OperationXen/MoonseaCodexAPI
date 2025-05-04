@@ -37,5 +37,18 @@
           "charges": 10,
           "description": "+1 bonus to attack and damage rolls"
         }
-    }
+    },
+    {
+      "model": "codex.consumable",
+      "pk": 4,
+      "fields": {
+        "name": "Holy handgrenade",
+        "character": 2,
+        "type": "ammo",
+        "equipped": true,
+        "rarity": "uncommon",
+        "charges": 1,
+        "description": "First shalt thou take out the Holy Pin. Then, thou shalt count to three. No more, no less. Three shall be the number thou shalt count, and the number of the counting shall be three. Four shalt thou not count, neither count thou two, excepting that thou then proceed to three. Five is right out. Once the number three, being the third number, be reached, then lobbest thou thy Holy Hand Grenade of Antioch towards thy foe, who, being naughty in my sight, shall snuff it. Amen."
+      }
+  }
 ]

@@ -165,6 +165,15 @@ class TestMagicItemCRUDViews(TestCase):
             self.assertTrue(result["owner_name"])
             self.assertTrue(result["name"])
 
+    def test_list_items_for_character(self) -> None:
+        """A user can list items for a specific character"""
+        self.client.login(username="testuser1", password="testpassword")
+        character = Character.objects.get(pk=2)
+
+        response = self.client.get(reverse("magicitem-list"), {"character": character.uuid})
+        self.assertEqual(response.status_code, HTTP_200_OK)
+        self.assertEqual(len(response.data), 2)
+
     def test_anyone_cannot_update_item(self) -> None:
         """someone who doesn't own an item cannot change it"""
         self.client.login(username="testuser2", password="testpassword")
