@@ -1,3 +1,4 @@
+from datetime import datetime
 from rest_framework.views import APIView, Response
 from rest_framework.status import *
 
@@ -38,7 +39,7 @@ class DiscordGamesCreateView(APIView):
         except Exception as e:
             return Response({"message": "Could not find a matching MSC user"}, HTTP_400_BAD_REQUEST)
 
-        game_date = request.data.get("datetime", "1970-01-01")[:10]
+        game_date = datetime.fromtimestamp(float(request.data.get("datetime")))
         game_data = {
             "datetime": game_date,
             "name": request.data.get("name", ""),
