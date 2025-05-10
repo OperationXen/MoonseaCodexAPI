@@ -46,6 +46,8 @@ class GameSerialiser(MoonseaCodexSerialiser):
             "notes",
             "magicitems",
             "consumables",
+            "hours",
+            "hours_notes",
             *read_only_fields,
         ]
 
